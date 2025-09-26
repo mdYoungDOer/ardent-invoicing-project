@@ -2,70 +2,69 @@ import {
   Box, 
   Container, 
   Typography, 
-  Button, 
   Grid, 
   Card, 
   CardContent,
   AppBar,
   Toolbar,
-  IconButton
+  IconButton,
+  Avatar,
+  Button
 } from '@mui/material';
 import { 
   Brightness4 as DarkModeIcon, 
   Brightness7 as LightModeIcon,
-  Receipt as ReceiptIcon,
+  ArrowBack as ArrowBackIcon,
+  Business as BusinessIcon,
   TrendingUp as TrendingUpIcon,
-  Shield as ShieldIcon,
-  Speed as SpeedIcon
+  Public as PublicIcon
 } from '@mui/icons-material';
 import { useTheme as useNextTheme } from 'next-themes';
 import Link from 'next/link';
 
-export default function Home() {
+export default function About() {
   const { theme: nextTheme, setTheme } = useNextTheme();
 
   const toggleTheme = () => {
     setTheme(nextTheme === 'dark' ? 'light' : 'dark');
   };
 
-  const features = [
-    {
-      icon: <ReceiptIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Multi-Currency Invoices (GHS Default)',
-      description: 'Create professional invoices in Ghana Cedis with support for multiple currencies. Automated numbering and customizable templates.'
-    },
-    {
-      icon: <TrendingUpIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Auto-VAT & Reports',
-      description: 'Automatically calculate VAT, generate comprehensive reports, and track your business performance with real-time analytics.'
-    },
-    {
-      icon: <ShieldIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Secure & Compliant',
-      description: 'Bank-level security with full compliance to Ghanaian tax regulations. Your data is protected and backed up securely.'
-    },
-    {
-      icon: <SpeedIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Lightning Fast',
-      description: 'Built for speed and efficiency. Create invoices in seconds, track expenses on the go, and get paid faster.'
-    }
-  ];
-
-  const testimonials = [
+  const team = [
     {
       name: 'Kwame Asante',
-      business: 'Asante Trading Ltd',
-      text: 'Ardent Invoicing has transformed how we handle our billing. The GHS integration is seamless and our clients love the professional invoices.'
+      role: 'Founder & CEO',
+      bio: 'Former accountant with 10+ years experience in Ghanaian SME finance and tax compliance.',
+      avatar: 'KA'
     },
     {
       name: 'Ama Serwaa',
-      business: 'Serwaa Consultancy',
-      text: 'The expense tracking feature has saved us hours every week. Now we can focus on growing our business instead of managing paperwork.'
+      role: 'CTO',
+      bio: 'Full-stack developer passionate about building solutions for African businesses.',
+      avatar: 'AS'
     },
     {
       name: 'Kofi Mensah',
-      business: 'Mensah Logistics',
-      text: 'As a small business owner, I needed something affordable yet powerful. Ardent Invoicing delivers exactly what we need.'
+      role: 'Head of Product',
+      bio: 'Product manager with deep understanding of SME challenges in Ghana.',
+      avatar: 'KM'
+    }
+  ];
+
+  const values = [
+    {
+      icon: <BusinessIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      title: 'SME-First Approach',
+      description: 'We build features that matter most to Ghanaian small and medium enterprises.'
+    },
+    {
+      icon: <TrendingUpIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      title: 'Growth-Oriented',
+      description: 'Our platform scales with your business, from startup to enterprise.'
+    },
+    {
+      icon: <PublicIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      title: 'Local Expertise',
+      description: 'Built by Ghanaians, for Ghanaians, with deep understanding of local business needs.'
     }
   ];
 
@@ -74,18 +73,21 @@ export default function Home() {
       {/* Header */}
       <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider' }}>
         <Toolbar>
+          <IconButton component={Link} href="/" sx={{ mr: 2 }}>
+            <ArrowBackIcon />
+          </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700, color: 'primary.main' }}>
             Ardent Invoicing
           </Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button color="inherit" component={Link} href="/" sx={{ color: 'text.primary' }}>
+              Home
+            </Button>
             <Button color="inherit" component={Link} href="/features" sx={{ color: 'text.primary' }}>
               Features
             </Button>
             <Button color="inherit" component={Link} href="/pricing" sx={{ color: 'text.primary' }}>
               Pricing
-            </Button>
-            <Button color="inherit" component={Link} href="/about" sx={{ color: 'text.primary' }}>
-              About
             </Button>
             <Button variant="outlined" component={Link} href="/login" sx={{ color: 'primary.main', borderColor: 'primary.main' }}>
               Login
@@ -101,110 +103,93 @@ export default function Home() {
       </AppBar>
 
       {/* Hero Section */}
-      <Box
-        sx={{
-          background: 'linear-gradient(135deg, #a67c00 0%, #ffffff 100%)',
-          py: { xs: 8, md: 12 },
-          minHeight: { xs: '70vh', md: '80vh' },
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
+      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.paper' }}>
         <Container maxWidth="lg">
-          <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={6}>
+          <Box sx={{ textAlign: 'center', mb: 8 }}>
+            <Typography
+              variant="h1"
+              component="h1"
+              sx={{
+                fontSize: { xs: '2.5rem', md: '3.5rem' },
+                fontWeight: 700,
+                color: 'text.primary',
+                mb: 3,
+                lineHeight: 1.2
+              }}
+            >
+              About{' '}
               <Typography
+                component="span"
                 variant="h1"
-                component="h1"
                 sx={{
                   fontSize: { xs: '2.5rem', md: '3.5rem' },
                   fontWeight: 700,
-                  color: 'text.primary',
-                  mb: 3,
-                  lineHeight: 1.2
+                  background: 'linear-gradient(135deg, #a67c00 0%, #746354 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
                 }}
               >
-                Empower Your{' '}
-                <Typography
-                  component="span"
-                  variant="h1"
-                  sx={{
-                    fontSize: { xs: '2.5rem', md: '3.5rem' },
-                    fontWeight: 700,
-                    background: 'linear-gradient(135deg, #a67c00 0%, #746354 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  }}
-                >
-                  Ghanaian SME
-                </Typography>
+                Ardent Invoicing
               </Typography>
+            </Typography>
+            <Typography
+              variant="h5"
+              component="p"
+              sx={{
+                color: 'text.secondary',
+                mb: 4,
+                fontSize: { xs: '1.1rem', md: '1.3rem' },
+                lineHeight: 1.6,
+                maxWidth: 700,
+                mx: 'auto'
+              }}
+            >
+              Empowering Ghanaian SMEs with professional invoicing and expense management solutions.
+            </Typography>
+          </Box>
+        </Container>
+      </Box>
+
+      {/* Mission Section */}
+      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={6} alignItems="center">
+            <Grid item xs={12} md={6}>
               <Typography
-                variant="h5"
-                component="p"
+                variant="h2"
+                component="h2"
                 sx={{
-                  color: 'text.secondary',
-                  mb: 4,
-                  fontSize: { xs: '1.1rem', md: '1.3rem' },
-                  lineHeight: 1.6
+                  mb: 3,
+                  fontSize: { xs: '2rem', md: '2.5rem' }
                 }}
               >
-                Invoice in GHS, Track Expenses Seamlessly – Get Paid Faster
+                Our Mission
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  component={Link}
-                  href="/signup"
-                  sx={{
-                    bgcolor: 'primary.main',
-                    px: 4,
-                    py: 1.5,
-                    fontSize: '1.1rem',
-                    '&:hover': {
-                      bgcolor: 'primary.dark'
-                    }
-                  }}
-                >
-                  Start Free Trial
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  component={Link}
-                  href="/pricing"
-                  sx={{
-                    borderColor: 'primary.main',
-                    color: 'primary.main',
-                    px: 4,
-                    py: 1.5,
-                    fontSize: '1.1rem',
-                    '&:hover': {
-                      borderColor: 'primary.dark',
-                      color: 'primary.dark'
-                    }
-                  }}
-                >
-                  View Pricing
-                </Button>
-              </Box>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 3, lineHeight: 1.8 }}>
+                At Ardent Invoicing, we believe that every Ghanaian SME deserves access to professional-grade 
+                financial management tools. We're on a mission to simplify invoicing and expense tracking, 
+                helping businesses focus on what they do best – growing their operations.
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
+                Founded in 2024 by a team of Ghanaian entrepreneurs and developers, we understand the unique 
+                challenges faced by SMEs in Ghana. From tax compliance to multi-currency transactions, 
+                we've built our platform with these local needs in mind.
+              </Typography>
             </Grid>
             <Grid item xs={12} md={6}>
               <Box
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
                   height: { xs: 300, md: 400 },
-                  bgcolor: 'rgba(255, 255, 255, 0.1)',
+                  bgcolor: 'rgba(166, 124, 0, 0.1)',
                   borderRadius: 4,
-                  backdropFilter: 'blur(10px)'
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                <Typography variant="h6" sx={{ color: 'text.secondary', textAlign: 'center' }}>
-                  Dashboard Preview Coming Soon
+                <Typography variant="h6" color="text.secondary" sx={{ textAlign: 'center' }}>
+                  Mission Image Coming Soon
                 </Typography>
               </Box>
             </Grid>
@@ -212,7 +197,7 @@ export default function Home() {
         </Container>
       </Box>
 
-      {/* Features Section */}
+      {/* Values Section */}
       <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.paper' }}>
         <Container maxWidth="lg">
           <Typography
@@ -220,31 +205,19 @@ export default function Home() {
             component="h2"
             sx={{
               textAlign: 'center',
-              mb: 2,
+              mb: 6,
               fontSize: { xs: '2rem', md: '2.5rem' }
             }}
           >
-            Why Choose Ardent Invoicing?
-          </Typography>
-          <Typography
-            variant="h6"
-            component="p"
-            sx={{
-              textAlign: 'center',
-              color: 'text.secondary',
-              mb: 6,
-              maxWidth: 600,
-              mx: 'auto'
-            }}
-          >
-            Built specifically for Ghanaian SMEs with features that matter most to your business
+            Our Values
           </Typography>
           <Grid container spacing={4}>
-            {features.map((feature, index) => (
-              <Grid item xs={12} md={6} key={index}>
+            {values.map((value, index) => (
+              <Grid item xs={12} md={4} key={index}>
                 <Card
                   sx={{
                     height: '100%',
+                    textAlign: 'center',
                     transition: 'transform 0.3s ease-in-out',
                     '&:hover': {
                       transform: 'translateY(-4px)'
@@ -252,14 +225,14 @@ export default function Home() {
                   }}
                 >
                   <CardContent sx={{ p: 4 }}>
-                    <Box sx={{ mb: 2 }}>
-                      {feature.icon}
+                    <Box sx={{ mb: 3 }}>
+                      {value.icon}
                     </Box>
                     <Typography variant="h5" component="h3" sx={{ mb: 2, fontWeight: 600 }}>
-                      {feature.title}
+                      {value.title}
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
-                      {feature.description}
+                      {value.description}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -269,7 +242,7 @@ export default function Home() {
         </Container>
       </Box>
 
-      {/* Testimonials Section */}
+      {/* Team Section */}
       <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' }}>
         <Container maxWidth="lg">
           <Typography
@@ -281,15 +254,15 @@ export default function Home() {
               fontSize: { xs: '2rem', md: '2.5rem' }
             }}
           >
-            Trusted by Ghanaian SMEs
+            Meet Our Team
           </Typography>
-          <Grid container spacing={4}>
-            {testimonials.map((testimonial, index) => (
-              <Grid item xs={12} md={4} key={index}>
+          <Grid container spacing={4} justifyContent="center">
+            {team.map((member, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card
                   sx={{
                     height: '100%',
-                    bgcolor: 'background.paper',
+                    textAlign: 'center',
                     transition: 'transform 0.3s ease-in-out',
                     '&:hover': {
                       transform: 'translateY(-4px)'
@@ -297,14 +270,27 @@ export default function Home() {
                   }}
                 >
                   <CardContent sx={{ p: 4 }}>
-                    <Typography variant="body1" sx={{ mb: 3, fontStyle: 'italic' }}>
-                      "{testimonial.text}"
+                    <Avatar
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        bgcolor: 'primary.main',
+                        mx: 'auto',
+                        mb: 3,
+                        fontSize: '1.5rem',
+                        fontWeight: 600
+                      }}
+                    >
+                      {member.avatar}
+                    </Avatar>
+                    <Typography variant="h5" component="h3" sx={{ mb: 1, fontWeight: 600 }}>
+                      {member.name}
                     </Typography>
-                    <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-                      {testimonial.name}
+                    <Typography variant="h6" color="primary.main" sx={{ mb: 2 }}>
+                      {member.role}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {testimonial.business}
+                      {member.bio}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -333,7 +319,7 @@ export default function Home() {
                 color: 'white'
               }}
             >
-              Ready to Get Started?
+              Ready to Join Us?
             </Typography>
             <Typography
               variant="h6"
@@ -345,7 +331,8 @@ export default function Home() {
                 mx: 'auto'
               }}
             >
-              Join hundreds of Ghanaian SMEs who trust Ardent Invoicing to manage their finances
+              Start your journey with Ardent Invoicing today and experience the difference 
+              professional financial management can make.
             </Typography>
             <Button
               variant="contained"
@@ -364,7 +351,7 @@ export default function Home() {
                 }
               }}
             >
-              Start Free Trial
+              Get Started Free
             </Button>
           </Box>
         </Container>
@@ -384,14 +371,14 @@ export default function Home() {
             </Grid>
             <Grid item xs={12} md={6}>
               <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', md: 'flex-end' }, gap: 4 }}>
+                <Button color="inherit" component={Link} href="/" sx={{ color: 'text.primary' }}>
+                  Home
+                </Button>
                 <Button color="inherit" component={Link} href="/features" sx={{ color: 'text.primary' }}>
                   Features
                 </Button>
                 <Button color="inherit" component={Link} href="/pricing" sx={{ color: 'text.primary' }}>
                   Pricing
-                </Button>
-                <Button color="inherit" component={Link} href="/about" sx={{ color: 'text.primary' }}>
-                  About
                 </Button>
               </Box>
             </Grid>

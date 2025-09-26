@@ -1,26 +1,93 @@
-@import "tailwindcss";
+/* Global styles for Ardent Invoicing */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-inter: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: var(--font-inter);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: #2c2c2c;
+  background: #ffffff;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a67c00;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7a5a00;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid #a67c00;
+  outline-offset: 2px;
+}
+
+/* Custom gradient backgrounds */
+.gradient-primary {
+  background: linear-gradient(135deg, #a67c00 0%, #d4a853 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #746354 0%, #9a8577 100%);
+}
+
+.gradient-light {
+  background: linear-gradient(135deg, #a67c00 0%, #ffffff 100%);
+}
+
+/* Utility classes */
+.text-gradient {
+  background: linear-gradient(135deg, #a67c00 0%, #746354 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-custom {
+  box-shadow: 0 4px 20px rgba(166, 124, 0, 0.15);
+}
+
+.shadow-custom-hover {
+  box-shadow: 0 8px 30px rgba(166, 124, 0, 0.25);
+}
+
+/* Mobile-first responsive utilities */
+@media (max-width: 600px) {
+  .mobile-padding {
+    padding: 1rem;
+  }
+  
+  .mobile-text-sm {
+    font-size: 0.875rem;
+  }
 }
