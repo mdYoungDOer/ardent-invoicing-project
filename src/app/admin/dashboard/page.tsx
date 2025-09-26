@@ -25,7 +25,26 @@ import {
   Paper,
   Button,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem as SelectMenuItem,
+  Switch,
+  FormControlLabel,
+  Snackbar,
+  Fab,
+  Tooltip,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Badge
 } from '@mui/material';
 import { 
   Brightness4 as DarkModeIcon, 
@@ -40,30 +59,35 @@ import {
   Search as SearchIcon,
   Visibility as VisibilityIcon,
   Edit as EditIcon,
-  Block as BlockIcon
+  Delete as DeleteIcon,
+  Add as AddIcon,
+  Refresh as RefreshIcon,
+  Download as DownloadIcon,
+  FilterList as FilterIcon,
+  MoreVert as MoreVertIcon,
+  CheckCircle as CheckCircleIcon,
+  Cancel as CancelIcon,
+  Warning as WarningIcon,
+  Info as InfoIcon,
+  Dashboard as DashboardIcon,
+  Analytics as AnalyticsIcon,
+  Security as SecurityIcon,
+  Notifications as NotificationsIcon
 } from '@mui/icons-material';
 import { useTheme as useNextTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { formatCurrency, getCurrencyFlag } from '@/lib/exchange-rates';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-
-export const dynamic = 'force-dynamic';
-
-interface User {
-  id: string;
-  email: string;
-  role: string;
-}
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
 interface Tenant {
   id: string;
   business_name: string;
-  sme_user_id: string;
   subscription_tier: string;
+  subscription_status: string;
   created_at: string;
-  is_active: boolean;
+  updated_at: string;
 }
 
 interface TenantStats {
@@ -71,6 +95,14 @@ interface TenantStats {
   total_revenue: number;
   active_users: number;
 }
+
+interface User {
+  id: string;
+  email: string;
+  role: string;
+}
+
+const COLORS = ['#a67c00', '#746354', '#8BC34A', '#FF9800', '#F44336', '#2196F3'];
 
 export default function AdminDashboard() {
   const { theme: nextTheme, setTheme } = useNextTheme();
@@ -83,6 +115,11 @@ export default function AdminDashboard() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [tierFilter, setTierFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' | 'warning' | 'info' });
 
   const toggleTheme = () => {
     setTheme(nextTheme === 'dark' ? 'light' : 'dark');
@@ -98,11 +135,23 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
+      // Clear localStorage
+      localStorage.removeItem('ardent_admin');
+      localStorage.removeItem('ardent_user');
+      
       await supabase.auth.signOut();
       router.push('/');
     } catch (error) {
       console.error('Error logging out:', error);
     }
+  };
+
+  const showSnackbar = (message: string, severity: 'success' | 'error' | 'warning' | 'info' = 'success') => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   useEffect(() => {
@@ -130,9 +179,12 @@ export default function AdminDashboard() {
               console.log('✅ NUCLEAR: Using stored admin data');
               
               // Set admin in store
-              useAppStore.getState().setUser(adminData);
+              setUser(adminData);
               
               console.log('✅ NUCLEAR: Admin dashboard access granted via localStorage');
+              
+              // Load tenants data
+              await loadTenantsData();
               return;
             } else {
               console.log('⚠️ NUCLEAR: Stored admin data too old, falling back to session');
@@ -172,10 +224,11 @@ export default function AdminDashboard() {
 
         setUser(userData);
 
-        // Fetch all tenants with stats
+        // Load tenants data
         await loadTenantsData();
 
       } catch (error: unknown) {
+        console.error('Error loading admin data:', error);
         setError(error instanceof Error ? error.message : 'Failed to load admin data');
       } finally {
         setLoading(false);
@@ -187,7 +240,6 @@ export default function AdminDashboard() {
 
   const loadTenantsData = async () => {
     try {
-      // Fetch all tenants
       const { data: tenantsData, error: tenantsError } = await supabase
         .from('tenants')
         .select('*')
@@ -196,7 +248,7 @@ export default function AdminDashboard() {
       if (tenantsError) throw tenantsError;
       setTenants(tenantsData || []);
 
-      // Fetch stats for each tenant
+      // Load stats for each tenant
       const statsPromises = (tenantsData || []).map(async (tenant) => {
         const [invoicesResult, usersResult] = await Promise.all([
           supabase
@@ -229,6 +281,64 @@ export default function AdminDashboard() {
 
     } catch (error) {
       console.error('Error loading tenants data:', error);
+      showSnackbar('Failed to load tenants data', 'error');
+    }
+  };
+
+  const handleEditTenant = (tenant: Tenant) => {
+    setSelectedTenant(tenant);
+    setEditDialogOpen(true);
+  };
+
+  const handleDeleteTenant = (tenant: Tenant) => {
+    setSelectedTenant(tenant);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleSaveTenant = async () => {
+    if (!selectedTenant) return;
+
+    try {
+      const { error } = await supabase
+        .from('tenants')
+        .update({
+          business_name: selectedTenant.business_name,
+          subscription_tier: selectedTenant.subscription_tier,
+          subscription_status: selectedTenant.subscription_status,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', selectedTenant.id);
+
+      if (error) throw error;
+
+      setEditDialogOpen(false);
+      setSelectedTenant(null);
+      showSnackbar('Tenant updated successfully');
+      await loadTenantsData();
+    } catch (error) {
+      console.error('Error updating tenant:', error);
+      showSnackbar('Failed to update tenant', 'error');
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedTenant) return;
+
+    try {
+      const { error } = await supabase
+        .from('tenants')
+        .delete()
+        .eq('id', selectedTenant.id);
+
+      if (error) throw error;
+
+      setDeleteDialogOpen(false);
+      setSelectedTenant(null);
+      showSnackbar('Tenant deleted successfully');
+      await loadTenantsData();
+    } catch (error) {
+      console.error('Error deleting tenant:', error);
+      showSnackbar('Failed to delete tenant', 'error');
     }
   };
 
@@ -242,12 +352,23 @@ export default function AdminDashboard() {
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active': return 'success';
+      case 'inactive': return 'default';
+      case 'suspended': return 'error';
+      case 'pending': return 'warning';
+      default: return 'default';
+    }
+  };
+
   const filteredTenants = tenants.filter(tenant => {
     const matchesSearch = searchTerm === '' || 
       tenant.business_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesTier = tierFilter === '' || tenant.subscription_tier === tierFilter;
+    const matchesStatus = statusFilter === '' || tenant.subscription_status === statusFilter;
     
-    return matchesSearch && matchesTier;
+    return matchesSearch && matchesTier && matchesStatus;
   });
 
   const totalStats = Object.values(tenantStats).reduce((acc, stats) => ({
@@ -296,37 +417,51 @@ export default function AdminDashboard() {
   }
 
   return (
-    <Box>
-      {/* Header */}
-      <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700, color: 'primary.main' }}>
-            Ardent Invoicing - Admin
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-              Super Admin
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      {/* Enhanced Header */}
+      <AppBar position="sticky" elevation={0} sx={{ 
+        bgcolor: 'background.paper', 
+        borderBottom: 1, 
+        borderColor: 'divider',
+        backdropFilter: 'blur(20px)',
+        background: nextTheme === 'dark' ? 'rgba(18, 18, 18, 0.95)' : 'rgba(255, 255, 255, 0.95)'
+      }}>
+        <Toolbar sx={{ py: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <DashboardIcon sx={{ mr: 2, color: 'primary.main' }} />
+            <Typography variant="h6" component="div" sx={{ fontWeight: 700, color: 'primary.main' }}>
+              Ardent Invoicing - Admin
             </Typography>
-            <IconButton onClick={toggleTheme} color="inherit">
+          </Box>
+          
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <Chip 
+              icon={<SecurityIcon />}
+              label="Super Admin" 
+              color="primary" 
+              variant="outlined"
+              size="small"
+            />
+            
+            <IconButton onClick={toggleTheme} color="inherit" sx={{ 
+              bgcolor: 'action.hover',
+              '&:hover': { bgcolor: 'action.selected' }
+            }}>
               {nextTheme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
             </IconButton>
+            
             <IconButton onClick={handleProfileMenuOpen} color="inherit">
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+              <Avatar sx={{ width: 36, height: 36, bgcolor: 'primary.main' }}>
                 {user?.email?.charAt(0).toUpperCase()}
               </Avatar>
             </IconButton>
+            
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleProfileMenuClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
               <MenuItem onClick={handleProfileMenuClose}>
                 <SettingsIcon sx={{ mr: 1 }} />
@@ -342,31 +477,35 @@ export default function AdminDashboard() {
       </AppBar>
 
       {/* Dashboard Content */}
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Welcome Section */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 1 }}>
             Admin Dashboard
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Welcome back, {user?.email}! Here&apos;s an overview of your platform.
+            Welcome back, {user?.email}! Here's an overview of your platform.
           </Typography>
         </Box>
 
-        {/* Stats Grid */}
+        {/* Enhanced Stats Grid */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
-            <Card>
+            <Card sx={{ 
+              background: 'linear-gradient(135deg, #a67c00 0%, #d4af37 100%)',
+              color: 'white',
+              '&:hover': { transform: 'translateY(-2px)', boxShadow: 4 }
+            }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                  <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mr: 2 }}>
                     <BusinessIcon />
                   </Avatar>
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
                       {tenants.length}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Total Tenants
                     </Typography>
                   </Box>
@@ -376,17 +515,21 @@ export default function AdminDashboard() {
           </Grid>
           
           <Grid item xs={12} sm={6} md={3}>
-            <Card>
+            <Card sx={{ 
+              background: 'linear-gradient(135deg, #4caf50 0%, #8bc34a 100%)',
+              color: 'white',
+              '&:hover': { transform: 'translateY(-2px)', boxShadow: 4 }
+            }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar sx={{ bgcolor: 'success.main', mr: 2 }}>
+                  <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mr: 2 }}>
                     <PeopleIcon />
                   </Avatar>
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
                       {totalStats.totalUsers}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Active Users
                     </Typography>
                   </Box>
@@ -396,17 +539,21 @@ export default function AdminDashboard() {
           </Grid>
           
           <Grid item xs={12} sm={6} md={3}>
-            <Card>
+            <Card sx={{ 
+              background: 'linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)',
+              color: 'white',
+              '&:hover': { transform: 'translateY(-2px)', boxShadow: 4 }
+            }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar sx={{ bgcolor: 'warning.main', mr: 2 }}>
+                  <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mr: 2 }}>
                     <MoneyIcon />
                   </Avatar>
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      {getCurrencyFlag('GHS')} {formatCurrency(totalStats.totalRevenue, 'GHS')}
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                      {formatCurrency(totalStats.totalRevenue)}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Platform Revenue
                     </Typography>
                   </Box>
@@ -416,17 +563,21 @@ export default function AdminDashboard() {
           </Grid>
           
           <Grid item xs={12} sm={6} md={3}>
-            <Card>
+            <Card sx={{ 
+              background: 'linear-gradient(135deg, #ff9800 0%, #ffb74d 100%)',
+              color: 'white',
+              '&:hover': { transform: 'translateY(-2px)', boxShadow: 4 }
+            }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar sx={{ bgcolor: 'info.main', mr: 2 }}>
+                  <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mr: 2 }}>
                     <TrendingUpIcon />
                   </Avatar>
                   <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
                       {totalStats.totalInvoices}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Total Invoices
                     </Typography>
                   </Box>
@@ -436,12 +587,12 @@ export default function AdminDashboard() {
           </Grid>
         </Grid>
 
-        {/* Charts */}
+        {/* Enhanced Charts Section */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} lg={8}>
+          <Grid item xs={12} md={8}>
             <Card>
               <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+                <Typography variant="h6" gutterBottom>
                   Monthly Tenant Growth
                 </Typography>
                 <Box sx={{ height: 300 }}>
@@ -450,13 +601,13 @@ export default function AdminDashboard() {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" />
                       <YAxis />
-                      <Tooltip />
+                      <RechartsTooltip />
                       <Line 
                         type="monotone" 
                         dataKey="tenants" 
                         stroke="#a67c00" 
                         strokeWidth={3}
-                        name="New Tenants"
+                        dot={{ fill: '#a67c00', strokeWidth: 2, r: 4 }}
                       />
                     </LineChart>
                   </ResponsiveContainer>
@@ -465,21 +616,31 @@ export default function AdminDashboard() {
             </Card>
           </Grid>
           
-          <Grid item xs={12} lg={4}>
+          <Grid item xs={12} md={4}>
             <Card>
               <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+                <Typography variant="h6" gutterBottom>
                   Subscription Tiers
                 </Typography>
                 <Box sx={{ height: 300 }}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={tierDistributionData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="tier" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="count" fill="#a67c00" />
-                    </BarChart>
+                    <PieChart>
+                      <Pie
+                        data={tierDistributionData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ tier, count }) => `${tier}: ${count}`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="count"
+                      >
+                        {tierDistributionData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip />
+                    </PieChart>
                   </ResponsiveContainer>
                 </Box>
               </CardContent>
@@ -487,146 +648,249 @@ export default function AdminDashboard() {
           </Grid>
         </Grid>
 
-        {/* Tenants Table */}
+        {/* Enhanced Tenants Table */}
         <Card>
-          <CardContent sx={{ p: 0 }}>
-            <Box sx={{ p: 3, borderBottom: 1, borderColor: 'divider' }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
-                  All Tenants
-                </Typography>
-                <Button variant="contained" size="small">
+          <CardContent>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6">
+                All Tenants ({filteredTenants.length})
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<RefreshIcon />}
+                  onClick={loadTenantsData}
+                >
+                  Refresh
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<DownloadIcon />}
+                >
                   Export Data
                 </Button>
               </Box>
-              
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    placeholder="Search tenants..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SearchIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                    size="small"
-                  />
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <TextField
-                    fullWidth
-                    select
-                    label="Subscription Tier"
-                    value={tierFilter}
-                    onChange={(e) => setTierFilter(e.target.value)}
-                    size="small"
-                  >
-                    <MenuItem value="">All Tiers</MenuItem>
-                    <MenuItem value="free">Free</MenuItem>
-                    <MenuItem value="starter">Starter</MenuItem>
-                    <MenuItem value="pro">Pro</MenuItem>
-                    <MenuItem value="enterprise">Enterprise</MenuItem>
-                  </TextField>
-                </Grid>
-              </Grid>
             </Box>
-            
-            <TableContainer>
+
+            {/* Enhanced Filters */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+              <TextField
+                placeholder="Search tenants..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ minWidth: 200 }}
+              />
+              
+              <FormControl sx={{ minWidth: 120 }}>
+                <InputLabel>Subscription</InputLabel>
+                <Select
+                  value={tierFilter}
+                  onChange={(e) => setTierFilter(e.target.value)}
+                  label="Subscription"
+                >
+                  <SelectMenuItem value="">All Tiers</SelectMenuItem>
+                  <SelectMenuItem value="free">Free</SelectMenuItem>
+                  <SelectMenuItem value="starter">Starter</SelectMenuItem>
+                  <SelectMenuItem value="pro">Pro</SelectMenuItem>
+                  <SelectMenuItem value="enterprise">Enterprise</SelectMenuItem>
+                </Select>
+              </FormControl>
+              
+              <FormControl sx={{ minWidth: 120 }}>
+                <InputLabel>Status</InputLabel>
+                <Select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  label="Status"
+                >
+                  <SelectMenuItem value="">All Status</SelectMenuItem>
+                  <SelectMenuItem value="active">Active</SelectMenuItem>
+                  <SelectMenuItem value="inactive">Inactive</SelectMenuItem>
+                  <SelectMenuItem value="suspended">Suspended</SelectMenuItem>
+                  <SelectMenuItem value="pending">Pending</SelectMenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            {/* Enhanced Table */}
+            <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
               <Table>
                 <TableHead>
-                  <TableRow>
-                    <TableCell>Business Name</TableCell>
-                    <TableCell>Subscription</TableCell>
-                    <TableCell align="right">Invoices</TableCell>
-                    <TableCell align="right">Revenue</TableCell>
-                    <TableCell align="center">Users</TableCell>
-                    <TableCell>Created</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell align="center">Actions</TableCell>
+                  <TableRow sx={{ bgcolor: 'grey.50' }}>
+                    <TableCell><strong>Business Name</strong></TableCell>
+                    <TableCell><strong>Subscription</strong></TableCell>
+                    <TableCell><strong>Invoices</strong></TableCell>
+                    <TableCell><strong>Revenue</strong></TableCell>
+                    <TableCell><strong>Users</strong></TableCell>
+                    <TableCell><strong>Created</strong></TableCell>
+                    <TableCell><strong>Status</strong></TableCell>
+                    <TableCell align="center"><strong>Actions</strong></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredTenants.map((tenant) => {
-                    const stats = tenantStats[tenant.id];
-                    return (
-                      <TableRow key={tenant.id} hover>
-                        <TableCell>
+                  {filteredTenants.map((tenant) => (
+                    <TableRow key={tenant.id} hover>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
+                            {tenant.business_name.charAt(0).toUpperCase()}
+                          </Avatar>
                           <Typography variant="body2" sx={{ fontWeight: 500 }}>
                             {tenant.business_name}
                           </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={tenant.subscription_tier}
-                            color={getSubscriptionTierColor(tenant.subscription_tier)}
-                            size="small"
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          {stats?.total_invoices || 0}
-                        </TableCell>
-                        <TableCell align="right">
-                          {getCurrencyFlag('GHS')} {formatCurrency(stats?.total_revenue || 0, 'GHS')}
-                        </TableCell>
-                        <TableCell align="center">
-                          {stats?.active_users || 0}
-                        </TableCell>
-                        <TableCell>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Chip 
+                          label={tenant.subscription_tier.toUpperCase()} 
+                          color={getSubscriptionTierColor(tenant.subscription_tier) as any}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {tenantStats[tenant.id]?.total_invoices || 0}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {formatCurrency(tenantStats[tenant.id]?.total_revenue || 0)}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {tenantStats[tenant.id]?.active_users || 0}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
                           {new Date(tenant.created_at).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={tenant.is_active ? 'Active' : 'Inactive'}
-                            color={tenant.is_active ? 'success' : 'default'}
-                            size="small"
-                          />
-                        </TableCell>
-                        <TableCell align="center">
-                          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                            <IconButton size="small">
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Chip 
+                          label={tenant.subscription_status.toUpperCase()} 
+                          color={getStatusColor(tenant.subscription_status) as any}
+                          size="small"
+                          icon={tenant.subscription_status === 'active' ? <CheckCircleIcon /> : 
+                                tenant.subscription_status === 'inactive' ? <CancelIcon /> : 
+                                tenant.subscription_status === 'suspended' ? <WarningIcon /> : <InfoIcon />}
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                          <Tooltip title="View Details">
+                            <IconButton size="small" color="primary">
                               <VisibilityIcon />
                             </IconButton>
-                            <IconButton size="small">
+                          </Tooltip>
+                          <Tooltip title="Edit Tenant">
+                            <IconButton 
+                              size="small" 
+                              color="warning"
+                              onClick={() => handleEditTenant(tenant)}
+                            >
                               <EditIcon />
                             </IconButton>
-                            <IconButton size="small" color="error">
-                              <BlockIcon />
+                          </Tooltip>
+                          <Tooltip title="Delete Tenant">
+                            <IconButton 
+                              size="small" 
+                              color="error"
+                              onClick={() => handleDeleteTenant(tenant)}
+                            >
+                              <DeleteIcon />
                             </IconButton>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                          </Tooltip>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
-            
-            {filteredTenants.length === 0 && (
-              <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography variant="body1" color="text.secondary">
-                  No tenants found matching your criteria.
-                </Typography>
-              </Box>
-            )}
           </CardContent>
         </Card>
       </Container>
 
-      {/* Footer */}
-      <Box sx={{ py: 4, bgcolor: 'background.default', borderTop: 1, borderColor: 'divider', mt: 'auto' }}>
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-              © 2024 Ardent Invoicing. All rights reserved.
-            </Typography>
+      {/* Edit Tenant Dialog */}
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Tenant</DialogTitle>
+        <DialogContent>
+          <Box sx={{ pt: 2 }}>
+            <TextField
+              fullWidth
+              label="Business Name"
+              value={selectedTenant?.business_name || ''}
+              onChange={(e) => setSelectedTenant({...selectedTenant!, business_name: e.target.value})}
+              sx={{ mb: 2 }}
+            />
+            
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Subscription Tier</InputLabel>
+              <Select
+                value={selectedTenant?.subscription_tier || ''}
+                onChange={(e) => setSelectedTenant({...selectedTenant!, subscription_tier: e.target.value})}
+                label="Subscription Tier"
+              >
+                <SelectMenuItem value="free">Free</SelectMenuItem>
+                <SelectMenuItem value="starter">Starter</SelectMenuItem>
+                <SelectMenuItem value="pro">Pro</SelectMenuItem>
+                <SelectMenuItem value="enterprise">Enterprise</SelectMenuItem>
+              </Select>
+            </FormControl>
+            
+            <FormControl fullWidth>
+              <InputLabel>Status</InputLabel>
+              <Select
+                value={selectedTenant?.subscription_status || ''}
+                onChange={(e) => setSelectedTenant({...selectedTenant!, subscription_status: e.target.value})}
+                label="Status"
+              >
+                <SelectMenuItem value="active">Active</SelectMenuItem>
+                <SelectMenuItem value="inactive">Inactive</SelectMenuItem>
+                <SelectMenuItem value="suspended">Suspended</SelectMenuItem>
+                <SelectMenuItem value="pending">Pending</SelectMenuItem>
+              </Select>
+            </FormControl>
           </Box>
-        </Container>
-      </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleSaveTenant} variant="contained">Save Changes</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+        <DialogTitle>Delete Tenant</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete "{selectedTenant?.business_name}"? This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message={snackbar.message}
+      />
     </Box>
   );
 }
