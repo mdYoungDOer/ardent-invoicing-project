@@ -4,16 +4,23 @@ Allow: /
 # Sitemap
 Sitemap: https://ardentinvoicing.com/sitemap.xml
 
-# Disallow admin and API routes
+# Disallow admin and sensitive areas
 Disallow: /admin/
-Disallow: /api/
 Disallow: /dashboard/
-Disallow: /client/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin-access/
 
 # Allow important pages
 Allow: /
-Allow: /pricing
 Allow: /features
+Allow: /pricing
 Allow: /about
-Allow: /login
-Allow: /signup
+Allow: /faq
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+
+# Crawl delay
+Crawl-delay: 1

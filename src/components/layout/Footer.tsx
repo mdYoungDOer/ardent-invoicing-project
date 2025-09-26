@@ -57,9 +57,9 @@ export default function Footer() {
       title: "Legal",
       links: [
         { label: "Privacy Policy", href: "/privacy" },
-        { label: "Terms of Service", href: "/terms" },
-        { label: "Cookie Policy", href: "/cookies" },
-        { label: "GDPR", href: "/gdpr" }
+        { label: "Terms of Use", href: "/terms" },
+        { label: "Cookies Policy", href: "/cookies" },
+        { label: "GDPR Compliance", href: "/privacy#gdpr" }
       ]
     }
   ];
@@ -88,11 +88,12 @@ export default function Footer() {
                 <Image 
                   src="/logo.png" 
                   alt="Ardent Invoicing" 
-                  width={112} 
-                  height={64}
+                  width={48} 
+                  height={48}
                   style={{ 
                     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
-                    transition: 'transform 0.3s ease'
+                    transition: 'transform 0.3s ease',
+                    objectFit: 'contain'
                   }}
                 />
               </Box>
@@ -198,13 +199,6 @@ export default function Footer() {
                 ))}
               </Box>
             </Box>
-
-        {/* Additional Info */}
-        <Box sx={{ mt: 4, textAlign: 'center' }}>
-          <Typography variant="caption" sx={{ opacity: 0.6 }}>
-            Ardent Invoicing is a registered trademark. All product names, logos, and brands are property of their respective owners.
-          </Typography>
-        </Box>
       </Container>
     </Box>
   );

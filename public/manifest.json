@@ -1,76 +1,45 @@
 {
-  "name": "Ardent Invoicing",
-  "short_name": "Ardent",
-  "description": "Professional invoicing and expense tracking for Ghanaian SMEs",
+  "name": "Ardent Invoicing - Professional Invoicing for Ghanaian SMEs",
+  "short_name": "Ardent Invoicing",
+  "description": "Streamline your business finances with professional invoicing, expense tracking, and payment management. Built specifically for Ghanaian businesses.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#a67c00",
   "orientation": "portrait-primary",
-  "icons": [
-    {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
-    }
-  ],
-  "categories": ["business", "productivity", "finance"],
+  "scope": "/",
   "lang": "en-GH",
   "dir": "ltr",
-  "scope": "/",
-  "prefer_related_applications": false,
-  "screenshots": [
+  "categories": ["business", "finance", "productivity"],
+  "icons": [
     {
-      "src": "/screenshots/mobile-dashboard.png",
-      "sizes": "390x844",
+      "src": "/favicon.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "form_factor": "narrow"
+      "purpose": "any maskable"
     },
     {
-      "src": "/screenshots/desktop-dashboard.png",
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/favicon.png",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide"
@@ -78,25 +47,25 @@
   ],
   "shortcuts": [
     {
-      "name": "Create Invoice",
-      "short_name": "New Invoice",
-      "description": "Create a new invoice quickly",
-      "url": "/dashboard/invoices/new",
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Access your business dashboard",
+      "url": "/dashboard",
       "icons": [
         {
-          "src": "/icons/invoice-shortcut.png",
+          "src": "/favicon.png",
           "sizes": "96x96"
         }
       ]
     },
     {
-      "name": "Add Expense",
-      "short_name": "New Expense",
-      "description": "Add a new expense with receipt",
-      "url": "/dashboard/expenses/new",
+      "name": "Create Invoice",
+      "short_name": "Invoice",
+      "description": "Create a new invoice",
+      "url": "/dashboard/invoices/new",
       "icons": [
         {
-          "src": "/icons/expense-shortcut.png",
+          "src": "/favicon.png",
           "sizes": "96x96"
         }
       ]

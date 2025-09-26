@@ -77,12 +77,13 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
             <Image 
               src="/logo.png" 
               alt="Ardent Invoicing" 
-              width={48} 
-              height={48}
+              width={40} 
+              height={40}
               style={{ 
                 marginRight: 8,
                 cursor: 'pointer',
-                transition: 'transform 0.3s ease'
+                transition: 'transform 0.3s ease',
+                objectFit: 'contain'
               }}
             />
           </Link>
@@ -157,18 +158,17 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
   return (
     <>
       <AppBar 
-        position="fixed" 
+        position="sticky" 
         elevation={scrolled ? 4 : 0} 
         sx={{ 
-          bgcolor: scrolled ? 'background.paper' : 'transparent',
-          borderBottom: scrolled ? 1 : 0, 
+          bgcolor: 'background.paper',
+          borderBottom: 1, 
           borderColor: 'divider',
-          backdropFilter: scrolled ? 'blur(20px)' : 'none',
-          background: scrolled 
-            ? (nextTheme === 'dark' ? 'rgba(18, 18, 18, 0.95)' : 'rgba(255, 255, 255, 0.95)')
-            : 'transparent',
+          backdropFilter: scrolled ? 'blur(20px)' : 'blur(10px)',
+          background: nextTheme === 'dark' 
+            ? 'rgba(18, 18, 18, 0.95)' 
+            : 'rgba(255, 255, 255, 0.95)',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          transform: scrolled ? 'translateY(0)' : 'translateY(0)',
           zIndex: 1100
         }}
       >
@@ -183,12 +183,13 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
               <Image 
                 src="/logo.png" 
                 alt="Ardent Invoicing" 
-                width={scrolled ? 80 : 112} 
-                height={scrolled ? 48 : 64}
+                width={scrolled ? 40 : 48} 
+                height={scrolled ? 40 : 48}
                 style={{ 
                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  objectFit: 'contain'
                 }}
               />
             </Link>
