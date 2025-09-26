@@ -89,10 +89,10 @@ export default function Home() {
             <Button color="inherit" component={Link} href="/about" sx={{ color: 'text.primary' }}>
               About
             </Button>
-            <Button variant="outlined" component={Link} href="/login" sx={{ color: 'primary.main', borderColor: 'primary.main' }}>
-              Login
+            <Button variant="outlined" component={Link} href="/sme/login" sx={{ color: 'primary.main', borderColor: 'primary.main' }}>
+              SME Login
             </Button>
-            <Button variant="contained" component={Link} href="/signup" sx={{ bgcolor: 'primary.main' }}>
+            <Button variant="contained" component={Link} href="/sme/signup" sx={{ bgcolor: 'primary.main' }}>
               Get Started
             </Button>
             <IconButton onClick={toggleTheme} color="inherit">
@@ -353,7 +353,7 @@ export default function Home() {
               variant="contained"
               size="large"
               component={Link}
-              href="/signup"
+              href="/sme/signup"
               sx={{
                 bgcolor: 'white',
                 color: 'primary.main',

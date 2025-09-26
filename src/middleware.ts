@@ -86,7 +86,8 @@ export async function middleware(req: NextRequest) {
     } else if (pathname.startsWith('/dashboard')) {
       redirectUrl.pathname = '/sme/login';
     } else {
-      redirectUrl.pathname = '/login';
+      // Default redirect to SME login for unknown routes
+      redirectUrl.pathname = '/sme/login';
     }
     redirectUrl.searchParams.set('redirectTo', pathname);
     return NextResponse.redirect(redirectUrl);
@@ -168,8 +169,6 @@ export async function middleware(req: NextRequest) {
 
   // If user is authenticated and trying to access login/signup pages, redirect based on role
   if (session && (
-    pathname === '/login' || 
-    pathname === '/signup' ||
     pathname.startsWith('/sme/login') ||
     pathname.startsWith('/sme/signup') ||
     pathname.startsWith('/admin/login') ||
@@ -202,16 +201,16 @@ export async function middleware(req: NextRequest) {
         console.log('✅ Redirecting SME user to dashboard');
         redirectUrl.pathname = '/dashboard';
       } else {
-        console.log('✅ Redirecting unknown role to main login');
-        redirectUrl.pathname = '/login';
+        console.log('✅ Redirecting unknown role to SME login');
+        redirectUrl.pathname = '/sme/login';
       }
       
       return NextResponse.redirect(redirectUrl);
     } catch (error) {
       console.error('❌ Error in login redirect logic:', error);
-      // If we can't determine role, redirect to main login
+      // If we can't determine role, redirect to SME login
       const redirectUrl = req.nextUrl.clone();
-      redirectUrl.pathname = '/login';
+      redirectUrl.pathname = '/sme/login';
       return NextResponse.redirect(redirectUrl);
     }
   }
