@@ -36,7 +36,6 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
 export default function AboutPage() {
-  const { theme: nextTheme, setTheme } = useNextTheme();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mounted, setMounted] = useState(false);
@@ -44,10 +43,6 @@ export default function AboutPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const toggleTheme = () => {
-    setTheme(nextTheme === 'dark' ? 'light' : 'dark');
-  };
 
   const values = [
     {
@@ -107,77 +102,7 @@ export default function AboutPage() {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       {/* Header */}
-      <AppBar 
-        position="sticky" 
-        elevation={0} 
-        sx={{ 
-          bgcolor: 'background.paper', 
-          borderBottom: 1, 
-          borderColor: 'divider',
-          backdropFilter: 'blur(10px)',
-          background: 'rgba(255, 255, 255, 0.8)',
-          '&.MuiAppBar-root': {
-            background: nextTheme === 'dark' ? 'rgba(18, 18, 18, 0.8)' : 'rgba(255, 255, 255, 0.8)'
-          }
-        }}
-      >
-        <Toolbar>
-          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <Image 
-              src="/logo.png" 
-              alt="Ardent Invoicing" 
-              width={40} 
-              height={40}
-              style={{ marginRight: 12 }}
-            />
-            <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-              Ardent Invoicing
-            </Typography>
-          </Box>
-          
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2, mr: 3 }}>
-            <Button component={Link} href="/" color="inherit">
-              Home
-            </Button>
-            <Button component={Link} href="/features" color="inherit">
-              Features
-            </Button>
-            <Button component={Link} href="/pricing" color="inherit">
-              Pricing
-            </Button>
-            <Button component={Link} href="/faq" color="inherit">
-              FAQ
-            </Button>
-            <Button component={Link} href="/contact" color="inherit">
-              Contact
-            </Button>
-          </Box>
-
-          <IconButton onClick={toggleTheme} color="inherit" sx={{ mr: 2 }}>
-            {nextTheme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-          </IconButton>
-
-          <Button 
-            component={Link} 
-            href="/sme/login" 
-            variant="outlined" 
-            sx={{ mr: 1 }}
-          >
-            Sign In
-          </Button>
-          <Button 
-            component={Link} 
-            href="/sme/signup" 
-            variant="contained"
-            sx={{ 
-              bgcolor: 'primary.main',
-              '&:hover': { bgcolor: 'primary.dark' }
-            }}
-          >
-            Get Started
-          </Button>
-        </Toolbar>
-      </AppBar>
+      <Header currentPath="/about" />
 
       {/* Hero Section */}
       <Box 

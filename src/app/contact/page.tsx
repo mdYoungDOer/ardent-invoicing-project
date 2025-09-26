@@ -5,9 +5,6 @@ import {
   Container, 
   Typography, 
   Button, 
-  AppBar,
-  Toolbar,
-  IconButton,
   Grid,
   Card,
   CardContent,
@@ -21,8 +18,6 @@ import {
   CircularProgress
 } from '@mui/material';
 import { 
-  Brightness4 as DarkModeIcon, 
-  Brightness7 as LightModeIcon,
   ArrowForward as ArrowForwardIcon,
   Phone as PhoneIcon,
   Email as EmailIcon,
@@ -32,13 +27,13 @@ import {
   Send as SendIcon,
   CheckCircle as CheckIcon
 } from '@mui/icons-material';
-import { useTheme as useNextTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
 export default function ContactPage() {
-  const { theme: nextTheme, setTheme } = useNextTheme();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mounted, setMounted] = useState(false);
@@ -58,10 +53,6 @@ export default function ContactPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const toggleTheme = () => {
-    setTheme(nextTheme === 'dark' ? 'light' : 'dark');
-  };
 
   const handleInputChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
