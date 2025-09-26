@@ -113,13 +113,10 @@ export async function middleware(req: NextRequest) {
       return NextResponse.next();
     }
     
-    // For admin routes, still redirect (more secure)
+    // For admin routes, also allow localStorage authentication
     if (pathname.startsWith('/admin')) {
-      console.log('❌ Middleware: No session for admin route, redirecting to login');
-      const redirectUrl = req.nextUrl.clone();
-      redirectUrl.pathname = '/admin/login';
-      redirectUrl.searchParams.set('redirectTo', pathname);
-      return NextResponse.redirect(redirectUrl);
+      console.log('✅ NUCLEAR: Allowing admin dashboard to handle localStorage authentication');
+      return NextResponse.next();
     }
   }
 
