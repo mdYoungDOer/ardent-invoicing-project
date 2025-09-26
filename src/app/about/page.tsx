@@ -5,9 +5,6 @@ import {
   Container, 
   Typography, 
   Button, 
-  AppBar,
-  Toolbar,
-  IconButton,
   Grid,
   Card,
   CardContent,
@@ -20,8 +17,6 @@ import {
   Chip
 } from '@mui/material';
 import { 
-  Brightness4 as DarkModeIcon, 
-  Brightness7 as LightModeIcon,
   ArrowForward as ArrowForwardIcon,
   Business as BusinessIcon,
   People as PeopleIcon,
@@ -34,10 +29,11 @@ import {
   Email as EmailIcon,
   LocationOn as LocationIcon
 } from '@mui/icons-material';
-import { useTheme as useNextTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
 export default function AboutPage() {
   const { theme: nextTheme, setTheme } = useNextTheme();
