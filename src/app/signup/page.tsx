@@ -194,15 +194,15 @@ export default function Signup() {
         throw new Error('Failed to create user account');
       }
 
-      // Create super admin user record
+      // Create super admin user record (no subscription attributes needed)
       const { error: userError } = await supabase
         .from('users')
         .insert({
           id: authData.user.id,
           email: formData.email,
-          role: 'super',
-          subscription_tier: 'enterprise',
-          is_unlimited_free: true
+          role: 'super'
+          // Super admins don't need subscription_tier, is_unlimited_free, etc.
+          // They have platform-wide access by default
         });
 
       if (userError) throw userError;
