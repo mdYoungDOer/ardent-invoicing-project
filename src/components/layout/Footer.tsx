@@ -84,14 +84,14 @@ export default function Footer() {
           {/* Company Info */}
           <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ mb: 4 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Box
                   component="img"
                   src="/logo.png"
                   alt="Ardent Invoicing"
                   sx={{
-                    width: 80,
-                    height: 80,
+                    width: 120,
+                    height: 120,
                     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
                     transition: 'transform 0.3s ease',
                     objectFit: 'contain',

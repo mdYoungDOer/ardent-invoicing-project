@@ -90,8 +90,8 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
               src="/logo.png"
               alt="Ardent Invoicing"
               sx={{
-                width: 60,
-                height: 60,
+                width: 40,
+                height: 40,
                 marginRight: 1,
                 cursor: 'pointer',
                 transition: 'transform 0.3s ease',
@@ -171,7 +171,7 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
   return (
     <>
       <AppBar 
-        position="sticky" 
+        position="fixed" 
         elevation={scrolled ? 4 : 0} 
         sx={{ 
           bgcolor: scrolled ? 'background.paper' : 'transparent',
@@ -189,8 +189,8 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
         }}
       >
         <Toolbar sx={{ 
-          py: scrolled ? 1.5 : 2, 
-          px: { xs: 2, md: 4 },
+          py: scrolled ? 0.5 : 1, 
+          px: { xs: 1, md: 2 },
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
         }}>
           {/* Logo - Clickable Link to Homepage */}
@@ -201,8 +201,8 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
                 src="/logo.png"
                 alt="Ardent Invoicing"
                 sx={{
-                  width: scrolled ? 60 : 80,
-                  height: scrolled ? 60 : 80,
+                  width: scrolled ? 40 : 60,
+                  height: scrolled ? 40 : 60,
                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   cursor: 'pointer',
