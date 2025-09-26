@@ -124,12 +124,19 @@ export default function Login() {
     setError('');
 
     try {
+      console.log('Starting super admin login...');
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase auth error:', error);
+        throw error;
+      }
+
+      console.log('Auth successful, checking user role...');
 
       // Check if user has super admin role
       const { data: userData, error: userError } = await supabase
@@ -138,14 +145,23 @@ export default function Login() {
         .eq('id', data.user.id)
         .single();
 
-      if (userError) throw userError;
+      if (userError) {
+        console.error('User data fetch error:', userError);
+        throw userError;
+      }
+
+      console.log('User role:', userData.role);
 
       if (userData.role !== 'super') {
         throw new Error('Access denied. This account is not authorized for super admin access.');
       }
 
-      router.push('/admin/dashboard');
+      console.log('Login successful, redirecting to admin dashboard...');
+      
+      // Force a page refresh to ensure auth state is updated
+      window.location.href = '/admin/dashboard';
     } catch (error: any) {
+      console.error('Login error:', error);
       setError(error.message || 'An error occurred during login');
     } finally {
       setLoading(false);

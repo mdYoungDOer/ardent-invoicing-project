@@ -99,11 +99,30 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // If user is authenticated and trying to access login/signup, redirect to dashboard
+  // If user is authenticated and trying to access login/signup, redirect based on role
   if (session && (pathname === '/login' || pathname === '/signup')) {
-    const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = '/dashboard';
-    return NextResponse.redirect(redirectUrl);
+    try {
+      const { data: user } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      const redirectUrl = req.nextUrl.clone();
+      
+      if (user?.role === 'super') {
+        redirectUrl.pathname = '/admin/dashboard';
+      } else {
+        redirectUrl.pathname = '/dashboard';
+      }
+      
+      return NextResponse.redirect(redirectUrl);
+    } catch (error) {
+      // If we can't determine role, redirect to dashboard
+      const redirectUrl = req.nextUrl.clone();
+      redirectUrl.pathname = '/dashboard';
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   return res;
