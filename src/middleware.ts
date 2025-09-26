@@ -80,19 +80,34 @@ export async function middleware(req: NextRequest) {
   // If user is authenticated but trying to access admin route without proper role
   if (session && isAdminRoute) {
     try {
-      const { data: user } = await supabase
+      console.log('🔍 Middleware: Checking user role for admin route');
+      console.log('User ID:', session.user.id);
+      
+      const { data: user, error: userError } = await supabase
         .from('users')
         .select('role')
         .eq('id', session.user.id)
         .single();
 
+      console.log('User role query result:', { user, userError });
+
+      if (userError) {
+        console.error('❌ Error fetching user role:', userError);
+        const redirectUrl = req.nextUrl.clone();
+        redirectUrl.pathname = '/login';
+        return NextResponse.redirect(redirectUrl);
+      }
+
       if (!user || user.role !== 'super') {
+        console.log('❌ User not authorized for admin access. Role:', user?.role);
         const redirectUrl = req.nextUrl.clone();
         redirectUrl.pathname = '/dashboard';
         return NextResponse.redirect(redirectUrl);
       }
+
+      console.log('✅ User authorized for admin access');
     } catch (error) {
-      console.error('Error checking user role:', error);
+      console.error('❌ Error checking user role:', error);
       const redirectUrl = req.nextUrl.clone();
       redirectUrl.pathname = '/login';
       return NextResponse.redirect(redirectUrl);
@@ -102,22 +117,36 @@ export async function middleware(req: NextRequest) {
   // If user is authenticated and trying to access login/signup, redirect based on role
   if (session && (pathname === '/login' || pathname === '/signup')) {
     try {
-      const { data: user } = await supabase
+      console.log('🔍 Middleware: User authenticated, checking role for redirect');
+      console.log('User ID:', session.user.id);
+      
+      const { data: user, error: userError } = await supabase
         .from('users')
         .select('role')
         .eq('id', session.user.id)
         .single();
 
+      console.log('User role for redirect:', { user, userError });
+
       const redirectUrl = req.nextUrl.clone();
       
+      if (userError) {
+        console.error('❌ Error fetching user role for redirect:', userError);
+        redirectUrl.pathname = '/dashboard';
+        return NextResponse.redirect(redirectUrl);
+      }
+      
       if (user?.role === 'super') {
+        console.log('✅ Redirecting super admin to admin dashboard');
         redirectUrl.pathname = '/admin/dashboard';
       } else {
+        console.log('✅ Redirecting regular user to dashboard');
         redirectUrl.pathname = '/dashboard';
       }
       
       return NextResponse.redirect(redirectUrl);
     } catch (error) {
+      console.error('❌ Error in login redirect logic:', error);
       // If we can't determine role, redirect to dashboard
       const redirectUrl = req.nextUrl.clone();
       redirectUrl.pathname = '/dashboard';
