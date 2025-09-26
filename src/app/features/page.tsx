@@ -215,6 +215,12 @@ export default function FeaturesPage() {
             <Button component={Link} href="/about" color="inherit">
               About
             </Button>
+            <Button component={Link} href="/faq" color="inherit">
+              FAQ
+            </Button>
+            <Button component={Link} href="/contact" color="inherit">
+              Contact
+            </Button>
           </Box>
 
           <IconButton onClick={toggleTheme} color="inherit" sx={{ mr: 2 }}>

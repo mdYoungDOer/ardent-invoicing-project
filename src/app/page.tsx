@@ -5,44 +5,32 @@ import {
   Container, 
   Typography, 
   Button, 
-  AppBar,
-  Toolbar,
-  IconButton,
   Grid,
   Card,
   CardContent,
-  CardMedia,
   Chip,
   Avatar,
-  Paper,
   useTheme,
   useMediaQuery,
   Stack,
   Divider
 } from '@mui/material';
 import { 
-  Brightness4 as DarkModeIcon, 
-  Brightness7 as LightModeIcon,
-  Business as BusinessIcon,
   Receipt as ReceiptIcon,
   Analytics as AnalyticsIcon,
   Security as SecurityIcon,
   Speed as SpeedIcon,
-  Support as SupportIcon,
   CheckCircle as CheckIcon,
   Star as StarIcon,
-  ArrowForward as ArrowForwardIcon,
-  Phone as PhoneIcon,
-  Email as EmailIcon,
-  LocationOn as LocationIcon
+  ArrowForward as ArrowForwardIcon
 } from '@mui/icons-material';
-import { useTheme as useNextTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
 export default function HomePage() {
-  const { theme: nextTheme, setTheme } = useNextTheme();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mounted, setMounted] = useState(false);
@@ -50,10 +38,6 @@ export default function HomePage() {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const toggleTheme = () => {
-    setTheme(nextTheme === 'dark' ? 'light' : 'dark');
-  };
 
   const features = [
     {
@@ -168,71 +152,7 @@ export default function HomePage() {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       {/* Header */}
-      <AppBar 
-        position="sticky" 
-        elevation={0} 
-        sx={{ 
-          bgcolor: 'background.paper', 
-          borderBottom: 1, 
-          borderColor: 'divider',
-          backdropFilter: 'blur(10px)',
-          background: 'rgba(255, 255, 255, 0.8)',
-          '&.MuiAppBar-root': {
-            background: nextTheme === 'dark' ? 'rgba(18, 18, 18, 0.8)' : 'rgba(255, 255, 255, 0.8)'
-          }
-        }}
-      >
-        <Toolbar>
-          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <Image 
-              src="/logo.png" 
-              alt="Ardent Invoicing" 
-              width={40} 
-              height={40}
-              style={{ marginRight: 12 }}
-            />
-            <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-              Ardent Invoicing
-            </Typography>
-          </Box>
-          
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2, mr: 3 }}>
-            <Button component={Link} href="/features" color="inherit">
-              Features
-            </Button>
-            <Button component={Link} href="/pricing" color="inherit">
-              Pricing
-            </Button>
-            <Button component={Link} href="/about" color="inherit">
-              About
-            </Button>
-          </Box>
-
-          <IconButton onClick={toggleTheme} color="inherit" sx={{ mr: 2 }}>
-            {nextTheme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-          </IconButton>
-
-          <Button 
-            component={Link} 
-            href="/sme/login" 
-            variant="outlined" 
-            sx={{ mr: 1 }}
-          >
-            Sign In
-          </Button>
-          <Button 
-            component={Link} 
-            href="/sme/signup" 
-            variant="contained"
-            sx={{ 
-              bgcolor: 'primary.main',
-              '&:hover': { bgcolor: 'primary.dark' }
-            }}
-          >
-            Get Started
-          </Button>
-        </Toolbar>
-      </AppBar>
+      <Header currentPath="/" />
 
       {/* Hero Section */}
       <Box 
@@ -557,116 +477,7 @@ export default function HomePage() {
       </Box>
 
       {/* Footer */}
-      <Box sx={{ bgcolor: 'grey.900', color: 'white', py: 8 }}>
-        <Container maxWidth="lg">
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={4}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Image 
-                  src="/logo.png" 
-                  alt="Ardent Invoicing" 
-                  width={32} 
-                  height={32}
-                  style={{ marginRight: 12 }}
-                />
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  Ardent Invoicing
-                </Typography>
-              </Box>
-              <Typography variant="body2" sx={{ mb: 3, opacity: 0.8 }}>
-                Empowering Ghanaian SMEs with professional invoicing and expense management solutions.
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <IconButton sx={{ color: 'white' }}>
-                  <PhoneIcon />
-                </IconButton>
-                <IconButton sx={{ color: 'white' }}>
-                  <EmailIcon />
-                </IconButton>
-                <IconButton sx={{ color: 'white' }}>
-                  <LocationIcon />
-                </IconButton>
-              </Box>
-            </Grid>
-            
-            <Grid item xs={12} md={2}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                Product
-              </Typography>
-              <Stack spacing={1}>
-                <Link href="/features" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Features</Typography>
-                </Link>
-                <Link href="/pricing" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Pricing</Typography>
-                </Link>
-                <Link href="/security" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Security</Typography>
-                </Link>
-              </Stack>
-            </Grid>
-            
-            <Grid item xs={12} md={2}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                Company
-              </Typography>
-              <Stack spacing={1}>
-                <Link href="/about" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">About</Typography>
-                </Link>
-                <Link href="/contact" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Contact</Typography>
-                </Link>
-                <Link href="/careers" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Careers</Typography>
-                </Link>
-              </Stack>
-            </Grid>
-            
-            <Grid item xs={12} md={2}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                Support
-              </Typography>
-              <Stack spacing={1}>
-                <Link href="/help" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Help Center</Typography>
-                </Link>
-                <Link href="/docs" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Documentation</Typography>
-                </Link>
-                <Link href="/status" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Status</Typography>
-                </Link>
-              </Stack>
-            </Grid>
-            
-            <Grid item xs={12} md={2}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                Legal
-              </Typography>
-              <Stack spacing={1}>
-                <Link href="/privacy" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Privacy</Typography>
-                </Link>
-                <Link href="/terms" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Terms</Typography>
-                </Link>
-                <Link href="/cookies" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Cookies</Typography>
-                </Link>
-              </Stack>
-            </Grid>
-          </Grid>
-          
-          <Divider sx={{ my: 4, bgcolor: 'grey.700' }} />
-          
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="body2" sx={{ opacity: 0.8 }}>
-              © 2025 Ardent Invoicing. All rights reserved. Powered by Mega Web Services
-            </Typography>
-          </Box>
-        </Container>
-      </Box>
+      <Footer />
     </Box>
   );
 }

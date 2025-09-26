@@ -149,6 +149,12 @@ export default function AboutPage() {
             <Button component={Link} href="/pricing" color="inherit">
               Pricing
             </Button>
+            <Button component={Link} href="/faq" color="inherit">
+              FAQ
+            </Button>
+            <Button component={Link} href="/contact" color="inherit">
+              Contact
+            </Button>
           </Box>
 
           <IconButton onClick={toggleTheme} color="inherit" sx={{ mr: 2 }}>

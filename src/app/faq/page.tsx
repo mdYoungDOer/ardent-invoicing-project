@@ -11,35 +11,36 @@ import {
   Grid,
   Card,
   CardContent,
-  Chip,
   Paper,
   useTheme,
   useMediaQuery,
   Stack,
   Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Chip
 } from '@mui/material';
 import { 
   Brightness4 as DarkModeIcon, 
   Brightness7 as LightModeIcon,
-  CheckCircle as CheckIcon,
   ArrowForward as ArrowForwardIcon,
-  Business as BusinessIcon,
-  Receipt as ReceiptIcon,
-  Analytics as AnalyticsIcon,
+  ExpandMore as ExpandMoreIcon,
+  Help as HelpIcon,
   Security as SecurityIcon,
+  Payment as PaymentIcon,
+  Business as BusinessIcon,
   Support as SupportIcon,
-  Speed as SpeedIcon
+  Phone as PhoneIcon,
+  Email as EmailIcon,
+  LocationOn as LocationIcon
 } from '@mui/icons-material';
 import { useTheme as useNextTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
-export default function PricingPage() {
+export default function FAQPage() {
   const { theme: nextTheme, setTheme } = useNextTheme();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -53,105 +54,144 @@ export default function PricingPage() {
     setTheme(nextTheme === 'dark' ? 'light' : 'dark');
   };
 
-  const pricingPlans = [
+  const faqCategories = [
     {
-      name: "Free",
-      price: "₵0",
-      period: "forever",
-      description: "Perfect for getting started with basic invoicing needs",
-      features: [
-        "2 invoices per month",
-        "Basic expense tracking",
-        "Email support",
-        "Mobile app access",
-        "GHS currency support",
-        "Basic reporting"
-      ],
-      cta: "Get Started Free",
-      popular: false,
-      color: "grey"
+      title: "General Questions",
+      icon: <HelpIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      questions: [
+        {
+          question: "What is Ardent Invoicing?",
+          answer: "Ardent Invoicing is a comprehensive invoicing and expense management platform designed specifically for Ghanaian SMEs. We help businesses create professional invoices, track expenses, and manage their finances with GHS support and local compliance features."
+        },
+        {
+          question: "Who can use Ardent Invoicing?",
+          answer: "Ardent Invoicing is designed for Ghanaian small and medium enterprises (SMEs), freelancers, consultants, and any business that needs professional invoicing and expense management. Our platform is suitable for businesses of all sizes."
+        },
+        {
+          question: "Do I need any special software to use Ardent Invoicing?",
+          answer: "No special software is required. Ardent Invoicing is a web-based platform that works in any modern web browser. We also have mobile apps for iOS and Android for managing your business on the go."
+        },
+        {
+          question: "Is there a free trial available?",
+          answer: "Yes! We offer a 14-day free trial for all paid plans. No credit card is required to start your trial. You can explore all features and see how Ardent Invoicing can benefit your business."
+        }
+      ]
     },
     {
-      name: "Starter",
-      price: "₵129",
-      period: "per month",
-      description: "Ideal for growing businesses that need more invoicing capacity",
-      features: [
-        "20 invoices per month",
-        "Advanced expense tracking",
-        "Priority support",
-        "Custom branding",
-        "Payment reminders",
-        "Basic analytics",
-        "Receipt scanning",
-        "Team collaboration (2 users)"
-      ],
-      cta: "Start Free Trial",
-      popular: true,
-      color: "primary"
+      title: "Pricing & Billing",
+      icon: <PaymentIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      questions: [
+        {
+          question: "What are your pricing plans?",
+          answer: "We offer four plans: Free (₵0/month), Starter (₵129/month), Pro (₵489/month), and Enterprise (₵999/month). Each plan includes different features and invoice limits. You can upgrade or downgrade at any time."
+        },
+        {
+          question: "What payment methods do you accept?",
+          answer: "We accept all major credit cards, mobile money (MTN, Vodafone, AirtelTigo), and bank transfers in Ghana. All payments are processed securely through our payment partners."
+        },
+        {
+          question: "Can I change my plan anytime?",
+          answer: "Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate any billing differences. You can also cancel your subscription at any time."
+        },
+        {
+          question: "Do you offer discounts for annual payments?",
+          answer: "Yes! We offer a 20% discount for annual payments. This can save you significant money compared to monthly billing. Contact our sales team for more information about annual pricing."
+        }
+      ]
     },
     {
-      name: "Pro",
-      price: "₵489",
-      period: "per month",
-      description: "For established businesses with advanced needs",
-      features: [
-        "400 invoices per month",
-        "Advanced analytics & reporting",
-        "Team collaboration (10 users)",
-        "API access",
-        "Custom integrations",
-        "Advanced receipt scanning",
-        "Multi-currency support",
-        "Automated workflows",
-        "Priority phone support"
-      ],
-      cta: "Start Free Trial",
-      popular: false,
-      color: "secondary"
+      title: "Security & Compliance",
+      icon: <SecurityIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      questions: [
+        {
+          question: "Is my data secure?",
+          answer: "Absolutely. We use bank-level security with end-to-end encryption, secure data centers, and regular security audits. Your data is protected with the same security standards used by major financial institutions."
+        },
+        {
+          question: "Is Ardent Invoicing compliant with Ghana tax laws?",
+          answer: "Yes, our platform is designed to help you stay compliant with Ghana tax regulations. We include VAT calculations, tax reporting features, and generate reports that meet GRA requirements."
+        },
+        {
+          question: "Where is my data stored?",
+          answer: "Your data is stored in secure, encrypted cloud servers. We use industry-leading cloud providers with data centers that meet international security standards. Your data is backed up regularly and protected against loss."
+        },
+        {
+          question: "Can I export my data?",
+          answer: "Yes, you can export all your data at any time. We provide export options for invoices, expenses, and reports in various formats including PDF, Excel, and CSV. Your data belongs to you."
+        }
+      ]
     },
     {
-      name: "Enterprise",
-      price: "₵999",
-      period: "per month",
-      description: "For large organizations with unlimited needs",
-      features: [
-        "Unlimited invoices",
-        "White-label solution",
-        "Dedicated support manager",
-        "Custom development",
-        "SLA guarantee",
-        "Advanced security features",
-        "Custom integrations",
-        "Unlimited team members",
-        "24/7 phone support"
-      ],
-      cta: "Contact Sales",
-      popular: false,
-      color: "warning"
+      title: "Features & Usage",
+      icon: <BusinessIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      questions: [
+        {
+          question: "Can I customize my invoices?",
+          answer: "Yes! You can customize your invoices with your business logo, colors, and branding. You can also create custom invoice templates and add your business information to maintain a professional appearance."
+        },
+        {
+          question: "Does Ardent Invoicing support multiple currencies?",
+          answer: "Yes, we support multiple currencies including GHS (Ghana Cedis), USD, EUR, and GBP. You can invoice in different currencies and we'll handle the exchange rate calculations automatically."
+        },
+        {
+          question: "Can I track expenses with receipts?",
+          answer: "Absolutely! You can upload receipt photos and our system will automatically extract the information using OCR technology. You can categorize expenses, add notes, and generate expense reports for tax purposes."
+        },
+        {
+          question: "Is there a mobile app?",
+          answer: "Yes, we have mobile apps for both iOS and Android. You can create invoices, track expenses, view reports, and manage your business from anywhere using your mobile device."
+        },
+        {
+          question: "Can multiple team members use the same account?",
+          answer: "Yes, depending on your plan. Starter plans include 2 users, Pro plans include 10 users, and Enterprise plans include unlimited users. You can assign different roles and permissions to team members."
+        }
+      ]
+    },
+    {
+      title: "Support & Help",
+      icon: <SupportIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      questions: [
+        {
+          question: "What kind of support do you offer?",
+          answer: "We offer multiple support channels including email support, live chat, phone support (for Pro and Enterprise plans), and a comprehensive help center with tutorials and guides."
+        },
+        {
+          question: "How quickly do you respond to support requests?",
+          answer: "We aim to respond to all support requests within 24 hours. Pro and Enterprise customers receive priority support with faster response times. Critical issues are addressed immediately."
+        },
+        {
+          question: "Do you offer training for new users?",
+          answer: "Yes! We provide onboarding assistance, video tutorials, and can arrange training sessions for your team. We want to ensure you get the most out of Ardent Invoicing."
+        },
+        {
+          question: "Is there a user community or forum?",
+          answer: "Yes, we have an active user community where you can connect with other Ghanaian businesses, share tips, ask questions, and learn from each other's experiences."
+        }
+      ]
     }
   ];
 
-  const features = [
+  const contactInfo = [
     {
-      icon: <ReceiptIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: "Professional Invoicing",
-      description: "Create beautiful, branded invoices in seconds"
+      icon: <PhoneIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      title: "Phone Support",
+      description: "Call us for immediate assistance",
+      details: "+233 20 123 4567",
+      availability: "Mon-Fri: 8AM-6PM GMT"
     },
     {
-      icon: <AnalyticsIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: "Expense Tracking",
-      description: "Track and categorize business expenses with ease"
+      icon: <EmailIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      title: "Email Support",
+      description: "Send us your questions anytime",
+      details: "support@ardentinvoicing.com",
+      availability: "24/7 response within 24 hours"
     },
     {
-      icon: <SecurityIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: "Bank-Level Security",
-      description: "Your data is protected with enterprise-grade security"
-    },
-    {
-      icon: <SupportIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: "24/7 Support",
-      description: "Get help when you need it with our dedicated support team"
+      icon: <LocationIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+      title: "Office Location",
+      description: "Visit us in Accra",
+      details: "123 Business District, Accra, Ghana",
+      availability: "Mon-Fri: 9AM-5PM GMT"
     }
   ];
 
@@ -197,14 +237,11 @@ export default function PricingPage() {
             <Button component={Link} href="/features" color="inherit">
               Features
             </Button>
+            <Button component={Link} href="/pricing" color="inherit">
+              Pricing
+            </Button>
             <Button component={Link} href="/about" color="inherit">
               About
-            </Button>
-            <Button component={Link} href="/faq" color="inherit">
-              FAQ
-            </Button>
-            <Button component={Link} href="/contact" color="inherit">
-              Contact
             </Button>
           </Box>
 
@@ -256,7 +293,7 @@ export default function PricingPage() {
                 lineHeight: 1.2
               }}
             >
-              Simple, Transparent Pricing
+              Frequently Asked Questions
             </Typography>
             <Typography 
               variant="h6" 
@@ -268,12 +305,12 @@ export default function PricingPage() {
                 mx: 'auto'
               }}
             >
-              Choose the plan that fits your business. All plans include GHS support, 
-              mobile access, and our commitment to your success.
+              Find answers to common questions about Ardent Invoicing. 
+              Can't find what you're looking for? Contact our support team.
             </Typography>
             <Button 
               component={Link} 
-              href="/sme/signup" 
+              href="/contact" 
               variant="contained"
               size="large"
               endIcon={<ArrowForwardIcon />}
@@ -290,117 +327,89 @@ export default function PricingPage() {
                 transition: 'all 0.3s ease'
               }}
             >
-              Start Free Trial
+              Contact Support
             </Button>
           </Box>
         </Container>
       </Box>
 
-      {/* Pricing Cards */}
+      {/* FAQ Categories */}
       <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' }}>
         <Container maxWidth="lg">
-          <Grid container spacing={3} justifyContent="center">
-            {pricingPlans.map((plan, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
-                <Card 
-                  elevation={plan.popular ? 8 : 2}
-                  sx={{ 
-                    height: '100%',
-                    position: 'relative',
-                    border: plan.popular ? 2 : 0,
-                    borderColor: 'primary.main',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: 6
-                    }
-                  }}
-                >
-                  {plan.popular && (
-                    <Chip 
-                      label="Most Popular" 
-                      color="primary" 
-                      sx={{ 
-                        position: 'absolute', 
-                        top: -12, 
-                        left: '50%', 
-                        transform: 'translateX(-50%)',
-                        fontWeight: 600
-                      }} 
-                    />
-                  )}
-                  <CardContent sx={{ p: 4, textAlign: 'center' }}>
-                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 1 }}>
-                      {plan.name}
-                    </Typography>
-                    <Typography variant="h3" component="div" sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}>
-                      {plan.price}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      {plan.period}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      {plan.description}
-                    </Typography>
-                    
-                    <List sx={{ textAlign: 'left', mb: 3 }}>
-                      {plan.features.map((feature, featureIndex) => (
-                        <ListItem key={featureIndex} sx={{ px: 0, py: 0.5 }}>
-                          <ListItemIcon sx={{ minWidth: 32 }}>
-                            <CheckIcon sx={{ color: 'success.main', fontSize: 20 }} />
-                          </ListItemIcon>
-                          <ListItemText 
-                            primary={feature}
-                            primaryTypographyProps={{ variant: 'body2' }}
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
+          {faqCategories.map((category, categoryIndex) => (
+            <Box key={categoryIndex} sx={{ mb: 8 }}>
+              <Box sx={{ textAlign: 'center', mb: 6 }}>
+                <Box sx={{ mb: 2 }}>
+                  {category.icon}
+                </Box>
+                <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 2 }}>
+                  {category.title}
+                </Typography>
+                <Divider sx={{ maxWidth: 200, mx: 'auto' }} />
+              </Box>
 
-                    <Button 
-                      component={Link} 
-                      href={plan.name === 'Enterprise' ? '/contact' : '/sme/signup'}
-                      variant={plan.popular ? 'contained' : 'outlined'}
-                      fullWidth
-                      size="large"
-                      sx={{ 
-                        mt: 2,
-                        ...(plan.popular && {
-                          bgcolor: 'primary.main',
-                          '&:hover': { bgcolor: 'primary.dark' }
-                        })
+              <Box sx={{ maxWidth: 800, mx: 'auto' }}>
+                {category.questions.map((faq, faqIndex) => (
+                  <Accordion 
+                    key={faqIndex}
+                    elevation={2}
+                    sx={{ 
+                      mb: 2,
+                      '&:before': { display: 'none' },
+                      '&.Mui-expanded': {
+                        margin: '0 0 16px 0'
+                      }
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        '&.Mui-expanded': {
+                          minHeight: 'auto'
+                        },
+                        '& .MuiAccordionSummary-content': {
+                          margin: '16px 0'
+                        }
                       }}
                     >
-                      {plan.cta}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                        {faq.question}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography variant="body1" color="text.secondary">
+                        {faq.answer}
+                      </Typography>
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+              </Box>
+            </Box>
+          ))}
         </Container>
       </Box>
 
-      {/* Features Section */}
+      {/* Contact Support Section */}
       <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'grey.50' }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center', mb: 8 }}>
             <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
-              Everything Included in Every Plan
+              Still Have Questions?
             </Typography>
             <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
-              All our plans come with essential features to help you manage your business finances effectively.
+              Our support team is here to help. Get in touch with us through any of these channels.
             </Typography>
           </Box>
 
           <Grid container spacing={4}>
-            {features.map((feature, index) => (
-              <Grid item xs={12} md={6} key={index}>
+            {contactInfo.map((contact, index) => (
+              <Grid item xs={12} md={4} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 
                     height: '100%',
                     p: 3,
+                    textAlign: 'center',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-4px)',
@@ -408,77 +417,29 @@ export default function PricingPage() {
                     }
                   }}
                 >
-                  <CardContent sx={{ textAlign: 'center' }}>
+                  <CardContent>
                     <Box sx={{ mb: 2 }}>
-                      {feature.icon}
+                      {contact.icon}
                     </Box>
-                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 2 }}>
-                      {feature.title}
+                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 1 }}>
+                      {contact.title}
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                      {feature.description}
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      {contact.description}
                     </Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                      {contact.details}
+                    </Typography>
+                    <Chip 
+                      label={contact.availability}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
                   </CardContent>
                 </Card>
               </Grid>
             ))}
-          </Grid>
-        </Container>
-      </Box>
-
-      {/* FAQ Section */}
-      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' }}>
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 8 }}>
-            <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
-              Frequently Asked Questions
-            </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
-              Get answers to common questions about our pricing and features.
-            </Typography>
-          </Box>
-
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                  Can I change plans anytime?
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                  Is there a free trial?
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Yes, all paid plans come with a 14-day free trial. No credit card required.
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                  Do you support GHS currency?
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Absolutely! All plans include full GHS support with Ghana-specific tax calculations.
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                  What payment methods do you accept?
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  We accept all major credit cards, mobile money, and bank transfers in Ghana.
-                </Typography>
-              </Paper>
-            </Grid>
           </Grid>
         </Container>
       </Box>
@@ -605,14 +566,14 @@ export default function PricingPage() {
                 Support
               </Typography>
               <Stack spacing={1}>
+                <Link href="/faq" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">FAQ</Typography>
+                </Link>
                 <Link href="/help" style={{ color: 'white', textDecoration: 'none' }}>
                   <Typography variant="body2">Help Center</Typography>
                 </Link>
                 <Link href="/docs" style={{ color: 'white', textDecoration: 'none' }}>
                   <Typography variant="body2">Documentation</Typography>
-                </Link>
-                <Link href="/status" style={{ color: 'white', textDecoration: 'none' }}>
-                  <Typography variant="body2">Status</Typography>
                 </Link>
               </Stack>
             </Grid>
