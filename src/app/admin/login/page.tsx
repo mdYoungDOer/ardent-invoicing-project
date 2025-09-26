@@ -99,8 +99,8 @@ export default function AdminLogin() {
 
       console.log('✅ Admin role confirmed, redirecting...');
       
-      // Step 4: Force redirect to admin dashboard
-      window.location.href = '/admin/dashboard';
+      // Step 4: Redirect to admin dashboard
+      router.push('/admin/dashboard');
       
     } catch (error: any) {
       console.error('❌ Admin login error:', error);

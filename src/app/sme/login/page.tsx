@@ -97,8 +97,8 @@ export default function SmeLogin() {
 
       console.log('✅ SME role confirmed, redirecting...');
       
-      // Step 4: Force redirect to SME dashboard
-      window.location.href = '/dashboard';
+      // Step 4: Redirect to SME dashboard
+      router.push('/dashboard');
       
     } catch (error: any) {
       console.error('❌ SME login error:', error);
