@@ -135,8 +135,8 @@ export default function AdminDashboard() {
         if (tenantsError) throw tenantsError;
         setTenants(tenantsData);
 
-      } catch (error: any) {
-        setError(error.message || 'Failed to load admin data');
+      } catch (error: unknown) {
+        setError(error instanceof Error ? error.message : 'Failed to load admin data');
       } finally {
         setLoading(false);
       }

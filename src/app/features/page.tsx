@@ -1,7 +1,10 @@
+'use client';
+
 import { 
   Box, 
   Container, 
   Typography, 
+  Button,
   Grid, 
   Card, 
   CardContent,

@@ -116,8 +116,8 @@ export default function Dashboard() {
           setTenant(tenantData);
         }
 
-      } catch (error: any) {
-        setError(error.message || 'Failed to load user data');
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Failed to load user data');
       } finally {
         setLoading(false);
       }
@@ -237,7 +237,7 @@ export default function Dashboard() {
             Welcome back, {user?.email}!
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Here's what's happening with your business today.
+            Here&apos;s what&apos;s happening with your business today.
           </Typography>
         </Box>
 
@@ -310,7 +310,7 @@ export default function Dashboard() {
               </Box>
               {quotaPercentage > 80 && (
                 <Alert severity="warning" sx={{ mt: 2 }}>
-                  You're running low on invoice quota. Consider upgrading your plan to continue creating invoices.
+                  You&apos;re running low on invoice quota. Consider upgrading your plan to continue creating invoices.
                 </Alert>
               )}
             </CardContent>

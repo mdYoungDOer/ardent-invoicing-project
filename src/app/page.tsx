@@ -1,3 +1,5 @@
+'use client';
+
 import { 
   Box, 
   Container, 
@@ -298,7 +300,7 @@ export default function Home() {
                 >
                   <CardContent sx={{ p: 4 }}>
                     <Typography variant="body1" sx={{ mb: 3, fontStyle: 'italic' }}>
-                      "{testimonial.text}"
+                      &ldquo;{testimonial.text}&rdquo;
                     </Typography>
                     <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
                       {testimonial.name}
