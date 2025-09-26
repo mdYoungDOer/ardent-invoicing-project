@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { EmailService } from '@/lib/email';
 import { supabaseAdmin } from '@/lib/supabase';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

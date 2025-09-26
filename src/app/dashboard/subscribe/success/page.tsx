@@ -18,12 +18,12 @@ import {
   ArrowForward as ArrowForwardIcon,
   Home as HomeIcon
 } from '@mui/icons-material';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { motion } from 'framer-motion';
 
-export default function SubscriptionSuccessPage() {
+function SubscriptionSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const reference = searchParams.get('reference');
@@ -240,5 +240,20 @@ export default function SubscriptionSuccessPage() {
         </motion.div>
       </Container>
     </Box>
+  );
+}
+
+export default function SubscriptionSuccessPage() {
+  return (
+    <Suspense fallback={
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+        <Box sx={{ textAlign: 'center' }}>
+          <CircularProgress size={60} sx={{ mb: 2 }} />
+          <Typography variant="h6">Loading...</Typography>
+        </Box>
+      </Box>
+    }>
+      <SubscriptionSuccessContent />
+    </Suspense>
   );
 }

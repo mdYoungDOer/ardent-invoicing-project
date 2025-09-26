@@ -6,7 +6,7 @@ const nextConfig = {
   },
 
   // External packages for server components
-  serverExternalPackages: ['@supabase/supabase-js'],
+  serverExternalPackages: ['@supabase/supabase-js', '@sendgrid/mail'],
 
   // Image optimization
   images: {

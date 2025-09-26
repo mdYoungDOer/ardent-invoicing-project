@@ -3,6 +3,8 @@ import { PaystackService } from '@/lib/paystack';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getExchangeRate } from '@/lib/exchange-rates';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

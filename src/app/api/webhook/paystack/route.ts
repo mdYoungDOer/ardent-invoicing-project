@@ -4,6 +4,8 @@ import { EmailService } from '@/lib/email';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getPlanById } from '@/lib/subscription-plans';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text();
