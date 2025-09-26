@@ -93,7 +93,9 @@ export default function Footer() {
                   style={{ 
                     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
                     transition: 'transform 0.3s ease',
-                    objectFit: 'contain'
+                    objectFit: 'contain',
+                    width: '80px',
+                    height: '80px'
                   }}
                 />
               </Box>

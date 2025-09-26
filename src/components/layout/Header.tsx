@@ -49,7 +49,10 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
       setScrolled(isScrolled);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    // Initial check
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -83,7 +86,9 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
                 marginRight: 8,
                 cursor: 'pointer',
                 transition: 'transform 0.3s ease',
-                objectFit: 'contain'
+                objectFit: 'contain',
+                width: '60px',
+                height: '60px'
               }}
             />
           </Link>
@@ -169,7 +174,10 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
             ? (nextTheme === 'dark' ? 'rgba(18, 18, 18, 0.95)' : 'rgba(255, 255, 255, 0.95)')
             : 'transparent',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 1100
+          zIndex: 1100,
+          top: 0,
+          left: 0,
+          right: 0
         }}
       >
         <Toolbar sx={{ 
@@ -189,7 +197,9 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   cursor: 'pointer',
-                  objectFit: 'contain'
+                  objectFit: 'contain',
+                  width: scrolled ? '60px' : '80px',
+                  height: scrolled ? '60px' : '80px'
                 }}
               />
             </Link>
