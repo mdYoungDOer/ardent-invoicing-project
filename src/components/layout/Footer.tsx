@@ -86,7 +86,9 @@ export default function Footer() {
                   height={40}
                   style={{ marginRight: 12 }}
                 />
-          
+                <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                  Ardent Invoicing
+                </Typography>
               </Box>
               <Typography variant="body1" sx={{ mb: 3, opacity: 0.9, lineHeight: 1.6 }}>
                 Empowering Ghanaian SMEs with professional invoicing and expense management solutions. 
