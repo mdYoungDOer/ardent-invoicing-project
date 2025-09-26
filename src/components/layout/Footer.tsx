@@ -78,20 +78,20 @@ export default function Footer() {
   ];
 
   return (
-    <Box sx={{ bgcolor: 'grey.900', color: 'white', py: 8 }}>
+    <Box sx={{ bgcolor: 'grey.900', color: 'white', py: 4 }}>
       <Container maxWidth="lg">
-        <Grid container spacing={6}>
+        <Grid container spacing={4}>
           {/* Company Info */}
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box sx={{ mb: 4 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <Box
                   component="img"
                   src="/logo.png"
                   alt="Ardent Invoicing"
                   sx={{
-                    width: 120,
-                    height: 120,
+                    width: 80,
+                    height: 80,
                     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
                     transition: 'transform 0.3s ease',
                     objectFit: 'contain',
@@ -149,7 +149,7 @@ export default function Footer() {
           ))}
         </Grid>
 
-        <Divider sx={{ my: 6, bgcolor: 'grey.700' }} />
+        <Divider sx={{ my: 4, bgcolor: 'grey.700' }} />
 
             {/* Bottom Section */}
             <Box sx={{ 
