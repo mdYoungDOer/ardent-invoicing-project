@@ -69,6 +69,13 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
+  console.log('🔍 Middleware: Processing request for', pathname);
+  console.log('🔍 Middleware: Session status:', { 
+    hasSession: !!session, 
+    userId: session?.user?.id,
+    userEmail: session?.user?.email 
+  });
+
   // Protected routes that require authentication (exclude login/signup pages)
   const protectedRoutes = ['/dashboard', '/admin'];
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route)) &&
@@ -76,6 +83,12 @@ export async function middleware(req: NextRequest) {
                           !pathname.startsWith('/admin/signup') &&
                           !pathname.startsWith('/sme/login') && 
                           !pathname.startsWith('/sme/signup');
+
+  console.log('🔍 Middleware: Route analysis:', {
+    pathname,
+    isProtectedRoute,
+    isDashboard: pathname.startsWith('/dashboard')
+  });
 
   // Admin routes that require super admin role (exclude login/signup)
   const adminRoutes = ['/admin'];
@@ -91,6 +104,7 @@ export async function middleware(req: NextRequest) {
 
   // If user is not authenticated and trying to access protected route
   if (!session && isProtectedRoute) {
+    console.log('❌ Middleware: No session found for protected route, redirecting to login');
     const redirectUrl = req.nextUrl.clone();
     // Redirect to appropriate login based on route
     if (pathname.startsWith('/admin')) {
@@ -102,6 +116,7 @@ export async function middleware(req: NextRequest) {
       redirectUrl.pathname = '/sme/login';
     }
     redirectUrl.searchParams.set('redirectTo', pathname);
+    console.log('🔍 Middleware: Redirecting to:', redirectUrl.pathname);
     return NextResponse.redirect(redirectUrl);
   }
 

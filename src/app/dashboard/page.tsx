@@ -119,30 +119,41 @@ export default function Dashboard() {
 
     const fetchUserData = async () => {
       try {
-        console.log('🔍 Dashboard: Checking session...');
+        console.log('🔍 Dashboard: Starting authentication check...');
         
-        // Wait a moment for session to be available
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Multiple attempts to get session with increasing delays
+        let session = null;
+        let attempts = 0;
+        const maxAttempts = 5;
         
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        console.log('🔍 Dashboard: Session result:', { session: !!session, userId: session?.user?.id });
+        while (!session && attempts < maxAttempts) {
+          attempts++;
+          console.log(`🔍 Dashboard: Session attempt ${attempts}/${maxAttempts}...`);
+          
+          // Wait with increasing delay
+          await new Promise(resolve => setTimeout(resolve, attempts * 200));
+          
+          const { data: { session: currentSession } } = await supabase.auth.getSession();
+          session = currentSession;
+          
+          if (session) {
+            console.log('✅ Dashboard: Session found on attempt', attempts);
+            break;
+          } else {
+            console.log(`❌ Dashboard: No session on attempt ${attempts}`);
+          }
+        }
         
         if (!session) {
-          console.log('❌ Dashboard: No session found, waiting and retrying...');
-          
-          // Wait a bit more and try again
-          await new Promise(resolve => setTimeout(resolve, 500));
-          const { data: { session: retrySession } } = await supabase.auth.getSession();
-          
-          if (!retrySession) {
-            console.log('❌ Dashboard: Still no session after retry, redirecting to login');
-            router.push('/sme/login');
-            return;
-          }
-          
-          console.log('✅ Dashboard: Session found on retry');
+          console.log('❌ Dashboard: No session found after all attempts, redirecting to login');
+          router.push('/sme/login');
+          return;
         }
+        
+        console.log('🔍 Dashboard: Session confirmed:', { 
+          userId: session.user.id, 
+          email: session.user.email 
+        });
 
         // Fetch user data
         const { data: userData, error: userError } = await supabase
