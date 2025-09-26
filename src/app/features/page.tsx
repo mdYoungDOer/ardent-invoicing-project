@@ -297,7 +297,7 @@ export default function FeaturesPage() {
 
           <Grid container spacing={4}>
             {additionalFeatures.map((feature, index) => (
-              <Grid size={{ xs: 12, sm: 6 }} , md: 4 }} key={index}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 

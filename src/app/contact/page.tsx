@@ -247,7 +247,7 @@ export default function ContactPage() {
                         disabled={loading}
                       />
                     </Grid>
-                    <Grid size={{ xs: 12 }}
+                    <Grid size={{ xs: 12 }}>
                       <TextField
                         fullWidth
                         label="Inquiry Type"
@@ -264,7 +264,7 @@ export default function ContactPage() {
                         ))}
                       </TextField>
                     </Grid>
-                    <Grid size={{ xs: 12 }}
+                    <Grid size={{ xs: 12 }}>
                       <TextField
                         fullWidth
                         label="Subject"
@@ -274,7 +274,7 @@ export default function ContactPage() {
                         disabled={loading}
                       />
                     </Grid>
-                    <Grid size={{ xs: 12 }}
+                    <Grid size={{ xs: 12 }}>
                       <TextField
                         fullWidth
                         label="Message"
@@ -296,7 +296,7 @@ export default function ContactPage() {
                         }}
                       />
                     </Grid>
-                    <Grid size={{ xs: 12 }}
+                    <Grid size={{ xs: 12 }}>
                       <Button
                         type="submit"
                         variant="contained"

@@ -222,7 +222,7 @@ export default function PricingPage() {
         <Container maxWidth="lg">
           <Grid container spacing={3} justifyContent="center">
             {pricingPlans.map((plan, index) => (
-              <Grid size={{ xs: 12, sm: 6 }} , md: 3 }} key={index}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                 <Card 
                   elevation={plan.popular ? 8 : 2}
                   sx={{ 
