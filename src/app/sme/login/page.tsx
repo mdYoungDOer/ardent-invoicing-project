@@ -97,10 +97,37 @@ export default function SmeLogin() {
 
       console.log('✅ SME role confirmed, redirecting...');
       
-      // Step 4: Small delay to ensure session is properly set, then redirect
-      setTimeout(() => {
+      // Step 4: Wait for session to be properly set, then redirect
+      // Try multiple approaches to ensure redirect works
+      try {
+        // First try: Wait a bit longer for session to propagate
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Verify session is still there before redirecting
+        const { data: { session: verifySession } } = await supabase.auth.getSession();
+        console.log('🔍 Session verification before redirect:', { 
+          hasSession: !!verifySession, 
+          userId: verifySession?.user?.id 
+        });
+        
+        if (verifySession) {
+          console.log('✅ Session verified, redirecting to dashboard');
+          window.location.href = '/dashboard';
+        } else {
+          console.log('❌ Session lost, retrying login...');
+          // If session is lost, try to get it again
+          const { data: { session: retrySession } } = await supabase.auth.getSession();
+          if (retrySession) {
+            window.location.href = '/dashboard';
+          } else {
+            throw new Error('Session lost during redirect');
+          }
+        }
+      } catch (redirectError) {
+        console.error('❌ Redirect error:', redirectError);
+        // Fallback: Force redirect anyway
         window.location.href = '/dashboard';
-      }, 100);
+      }
       
     } catch (error: any) {
       console.error('❌ SME login error:', error);

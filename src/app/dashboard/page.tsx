@@ -107,17 +107,41 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔍 Dashboard: Auth state change:', { event, hasSession: !!session });
+      
+      if (event === 'SIGNED_OUT' || !session) {
+        console.log('❌ Dashboard: User signed out, redirecting to login');
+        router.push('/sme/login');
+      }
+    });
+
     const fetchUserData = async () => {
       try {
         console.log('🔍 Dashboard: Checking session...');
+        
+        // Wait a moment for session to be available
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const { data: { session } } = await supabase.auth.getSession();
         
         console.log('🔍 Dashboard: Session result:', { session: !!session, userId: session?.user?.id });
         
         if (!session) {
-          console.log('❌ Dashboard: No session found, redirecting to login');
-          router.push('/sme/login');
-          return;
+          console.log('❌ Dashboard: No session found, waiting and retrying...');
+          
+          // Wait a bit more and try again
+          await new Promise(resolve => setTimeout(resolve, 500));
+          const { data: { session: retrySession } } = await supabase.auth.getSession();
+          
+          if (!retrySession) {
+            console.log('❌ Dashboard: Still no session after retry, redirecting to login');
+            router.push('/sme/login');
+            return;
+          }
+          
+          console.log('✅ Dashboard: Session found on retry');
         }
 
         // Fetch user data
@@ -157,6 +181,11 @@ export default function Dashboard() {
     };
 
     fetchUserData();
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, [router]);
 
   useEffect(() => {
