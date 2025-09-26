@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   title: "Ardent Invoicing - Invoice & Expense Management for Ghanaian SMEs",
   description: "Empower your Ghanaian SME with professional invoicing, expense tracking, and financial management. Invoice in GHS, track expenses seamlessly, and get paid faster.",
   keywords: "invoicing, expense management, Ghana, SME, GHS, accounting, business",
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

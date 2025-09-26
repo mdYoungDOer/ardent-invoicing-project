@@ -4,150 +4,215 @@ import {
   Box, 
   Container, 
   Typography, 
-  Grid, 
-  Card, 
-  CardContent,
+  Button, 
   AppBar,
   Toolbar,
   IconButton,
+  Grid,
+  Card,
+  CardContent,
+  Paper,
+  useTheme,
+  useMediaQuery,
+  Stack,
+  Divider,
   Avatar,
-  Button
+  Chip
 } from '@mui/material';
 import { 
   Brightness4 as DarkModeIcon, 
   Brightness7 as LightModeIcon,
-  ArrowBack as ArrowBackIcon,
+  ArrowForward as ArrowForwardIcon,
   Business as BusinessIcon,
-  TrendingUp as TrendingUpIcon,
-  Public as PublicIcon
+  People as PeopleIcon,
+  Security as SecurityIcon,
+  Speed as SpeedIcon,
+  Support as SupportIcon,
+  CheckCircle as CheckIcon,
+  Star as StarIcon,
+  Phone as PhoneIcon,
+  Email as EmailIcon,
+  LocationOn as LocationIcon
 } from '@mui/icons-material';
 import { useTheme as useNextTheme } from 'next-themes';
+import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
-export default function About() {
+export default function AboutPage() {
   const { theme: nextTheme, setTheme } = useNextTheme();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
     setTheme(nextTheme === 'dark' ? 'light' : 'dark');
   };
 
-  const team = [
-    {
-      name: 'Kwame Asante',
-      role: 'Founder & CEO',
-      bio: 'Former accountant with 10+ years experience in Ghanaian SME finance and tax compliance.',
-      avatar: 'KA'
-    },
-    {
-      name: 'Ama Serwaa',
-      role: 'CTO',
-      bio: 'Full-stack developer passionate about building solutions for African businesses.',
-      avatar: 'AS'
-    },
-    {
-      name: 'Kofi Mensah',
-      role: 'Head of Product',
-      bio: 'Product manager with deep understanding of SME challenges in Ghana.',
-      avatar: 'KM'
-    }
-  ];
-
   const values = [
     {
-      icon: <BusinessIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'SME-First Approach',
-      description: 'We build features that matter most to Ghanaian small and medium enterprises.'
+      icon: <BusinessIcon sx={{ fontSize: 60, color: 'primary.main' }} />,
+      title: "Empowering Ghanaian SMEs",
+      description: "We believe in the power of Ghanaian businesses and are committed to providing tools that help them thrive in the digital economy."
     },
     {
-      icon: <TrendingUpIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Growth-Oriented',
-      description: 'Our platform scales with your business, from startup to enterprise.'
+      icon: <SecurityIcon sx={{ fontSize: 60, color: 'primary.main' }} />,
+      title: "Security First",
+      description: "Your business data is precious. We implement bank-level security measures to protect your financial information and ensure compliance."
     },
     {
-      icon: <PublicIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Local Expertise',
-      description: 'Built by Ghanaians, for Ghanaians, with deep understanding of local business needs.'
+      icon: <SpeedIcon sx={{ fontSize: 60, color: 'primary.main' }} />,
+      title: "Innovation & Speed",
+      description: "We continuously innovate to provide the fastest, most efficient tools for managing your business finances."
+    },
+    {
+      icon: <SupportIcon sx={{ fontSize: 60, color: 'primary.main' }} />,
+      title: "Customer Success",
+      description: "Your success is our success. We provide dedicated support to ensure you get the most out of our platform."
     }
   ];
 
+  const team = [
+    {
+      name: "Kwame Asante",
+      role: "CEO & Founder",
+      description: "Former fintech executive with 10+ years experience in African markets",
+      avatar: "/images/black-businessman-using-computer-laptop.jpg"
+    },
+    {
+      name: "Ama Serwaa",
+      role: "CTO",
+      description: "Software engineer specializing in financial technology and security",
+      avatar: "/images/shoulder-view-blackwoman-sitting-table-with-bills-calculator-reading-receipt.jpg"
+    },
+    {
+      name: "Kofi Mensah",
+      role: "Head of Product",
+      description: "Product strategist with deep understanding of SME needs in Ghana",
+      avatar: "/images/male-manager-reviewing-data-clipboard.jpg"
+    }
+  ];
+
+  const stats = [
+    { number: "500+", label: "Ghanaian SMEs" },
+    { number: "₵2M+", label: "Invoices Processed" },
+    { number: "99.9%", label: "Uptime" },
+    { number: "24/7", label: "Support" }
+  ];
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <Box>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       {/* Header */}
-      <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider' }}>
+      <AppBar 
+        position="sticky" 
+        elevation={0} 
+        sx={{ 
+          bgcolor: 'background.paper', 
+          borderBottom: 1, 
+          borderColor: 'divider',
+          backdropFilter: 'blur(10px)',
+          background: 'rgba(255, 255, 255, 0.8)',
+          '&.MuiAppBar-root': {
+            background: nextTheme === 'dark' ? 'rgba(18, 18, 18, 0.8)' : 'rgba(255, 255, 255, 0.8)'
+          }
+        }}
+      >
         <Toolbar>
-          <IconButton component={Link} href="/" sx={{ mr: 2 }}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700, color: 'primary.main' }}>
-            Ardent Invoicing
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit" component={Link} href="/" sx={{ color: 'text.primary' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <Image 
+              src="/logo.png" 
+              alt="Ardent Invoicing" 
+              width={40} 
+              height={40}
+              style={{ marginRight: 12 }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+              Ardent Invoicing
+            </Typography>
+          </Box>
+          
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2, mr: 3 }}>
+            <Button component={Link} href="/" color="inherit">
               Home
             </Button>
-            <Button color="inherit" component={Link} href="/features" sx={{ color: 'text.primary' }}>
+            <Button component={Link} href="/features" color="inherit">
               Features
             </Button>
-            <Button color="inherit" component={Link} href="/pricing" sx={{ color: 'text.primary' }}>
+            <Button component={Link} href="/pricing" color="inherit">
               Pricing
             </Button>
-            <Button variant="outlined" component={Link} href="/login" sx={{ color: 'primary.main', borderColor: 'primary.main' }}>
-              Login
-            </Button>
-            <Button variant="contained" component={Link} href="/signup" sx={{ bgcolor: 'primary.main' }}>
-              Get Started
-            </Button>
-            <IconButton onClick={toggleTheme} color="inherit">
-              {nextTheme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-            </IconButton>
           </Box>
+
+          <IconButton onClick={toggleTheme} color="inherit" sx={{ mr: 2 }}>
+            {nextTheme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
+
+          <Button 
+            component={Link} 
+            href="/sme/login" 
+            variant="outlined" 
+            sx={{ mr: 1 }}
+          >
+            Sign In
+          </Button>
+          <Button 
+            component={Link} 
+            href="/sme/signup" 
+            variant="contained"
+            sx={{ 
+              bgcolor: 'primary.main',
+              '&:hover': { bgcolor: 'primary.dark' }
+            }}
+          >
+            Get Started
+          </Button>
         </Toolbar>
       </AppBar>
 
       {/* Hero Section */}
-      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.paper' }}>
+      <Box 
+        sx={{ 
+          background: 'linear-gradient(135deg, #a67c00 0%, #746354 100%)',
+          color: 'white',
+          py: { xs: 8, md: 12 },
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 8 }}>
-            <Typography
-              variant="h1"
-              component="h1"
-              sx={{
-                fontSize: { xs: '2.5rem', md: '3.5rem' },
-                fontWeight: 700,
-                color: 'text.primary',
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography 
+              variant="h2" 
+              component="h1" 
+              sx={{ 
+                fontWeight: 800, 
                 mb: 3,
+                fontSize: { xs: '2.5rem', md: '3.5rem' },
                 lineHeight: 1.2
               }}
             >
-              About{' '}
-              <Typography
-                component="span"
-                variant="h1"
-                sx={{
-                  fontSize: { xs: '2.5rem', md: '3.5rem' },
-                  fontWeight: 700,
-                  background: 'linear-gradient(135deg, #a67c00 0%, #746354 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}
-              >
-                Ardent Invoicing
-              </Typography>
+              About Ardent Invoicing
             </Typography>
-            <Typography
-              variant="h5"
-              component="p"
-              sx={{
-                color: 'text.secondary',
-                mb: 4,
-                fontSize: { xs: '1.1rem', md: '1.3rem' },
-                lineHeight: 1.6,
-                maxWidth: 700,
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                mb: 4, 
+                opacity: 0.9,
+                fontSize: { xs: '1.1rem', md: '1.25rem' },
+                maxWidth: 600,
                 mx: 'auto'
               }}
             >
-              Empowering Ghanaian SMEs with professional invoicing and expense management solutions.
+              We're on a mission to empower Ghanaian SMEs with professional 
+              financial management tools that are built for the local market.
             </Typography>
           </Box>
         </Container>
@@ -158,41 +223,54 @@ export default function About() {
         <Container maxWidth="lg">
           <Grid container spacing={6} alignItems="center">
             <Grid item xs={12} md={6}>
-              <Typography
-                variant="h2"
-                component="h2"
-                sx={{
-                  mb: 3,
-                  fontSize: { xs: '2rem', md: '2.5rem' }
-                }}
-              >
-                Our Mission
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 3, lineHeight: 1.8 }}>
-                At Ardent Invoicing, we believe that every Ghanaian SME deserves access to professional-grade 
-                financial management tools. We're on a mission to simplify invoicing and expense tracking, 
-                helping businesses focus on what they do best – growing their operations.
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
-                Founded in 2024 by a team of Ghanaian entrepreneurs and developers, we understand the unique 
-                challenges faced by SMEs in Ghana. From tax compliance to multi-currency transactions, 
-                we've built our platform with these local needs in mind.
-              </Typography>
+              <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+                <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
+                  Our Mission
+                </Typography>
+                <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
+                  To democratize financial management for Ghanaian SMEs by providing 
+                  accessible, professional, and locally-relevant tools that help businesses 
+                  grow and succeed in the digital economy.
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 4 }}>
+                  Founded in 2024, Ardent Invoicing was born from a simple observation: 
+                  Ghanaian SMEs were struggling with outdated, expensive, or foreign 
+                  financial management tools that didn't understand local business needs.
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 4 }}>
+                  We set out to change that by building a platform specifically designed 
+                  for Ghanaian businesses, with GHS support, local tax compliance, and 
+                  features that matter to our market.
+                </Typography>
+                <Button 
+                  component={Link} 
+                  href="/sme/signup" 
+                  variant="contained"
+                  size="large"
+                  endIcon={<ArrowForwardIcon />}
+                  sx={{ 
+                    bgcolor: 'primary.main',
+                    '&:hover': { bgcolor: 'primary.dark' }
+                  }}
+                >
+                  Join Our Mission
+                </Button>
+              </Box>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  height: { xs: 300, md: 400 },
-                  bgcolor: 'rgba(166, 124, 0, 0.1)',
-                  borderRadius: 4,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <Typography variant="h6" color="text.secondary" sx={{ textAlign: 'center' }}>
-                  Mission Image Coming Soon
-                </Typography>
+              <Box sx={{ position: 'relative' }}>
+                <Image
+                  src="/images/night-man-home-office-with-documents-laptop-paperwork-desk-deadline-overtime-as-accountant-male-person-remote-work-entrepreneur-with-company-financial-report-statement.jpg"
+                  alt="Our mission in action"
+                  width={600}
+                  height={400}
+                  style={{
+                    borderRadius: '16px',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                    width: '100%',
+                    height: 'auto'
+                  }}
+                />
               </Box>
             </Grid>
           </Grid>
@@ -200,37 +278,37 @@ export default function About() {
       </Box>
 
       {/* Values Section */}
-      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.paper' }}>
+      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'grey.50' }}>
         <Container maxWidth="lg">
-          <Typography
-            variant="h2"
-            component="h2"
-            sx={{
-              textAlign: 'center',
-              mb: 6,
-              fontSize: { xs: '2rem', md: '2.5rem' }
-            }}
-          >
-            Our Values
-          </Typography>
+          <Box sx={{ textAlign: 'center', mb: 8 }}>
+            <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
+              Our Values
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
+              The principles that guide everything we do at Ardent Invoicing
+            </Typography>
+          </Box>
+
           <Grid container spacing={4}>
             {values.map((value, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Card
-                  sx={{
+              <Grid item xs={12} md={6} key={index}>
+                <Card 
+                  elevation={2}
+                  sx={{ 
                     height: '100%',
-                    textAlign: 'center',
-                    transition: 'transform 0.3s ease-in-out',
+                    p: 4,
+                    transition: 'all 0.3s ease',
                     '&:hover': {
-                      transform: 'translateY(-4px)'
+                      transform: 'translateY(-4px)',
+                      boxShadow: 4
                     }
                   }}
                 >
-                  <CardContent sx={{ p: 4 }}>
+                  <CardContent sx={{ textAlign: 'center' }}>
                     <Box sx={{ mb: 3 }}>
                       {value.icon}
                     </Box>
-                    <Typography variant="h5" component="h3" sx={{ mb: 2, fontWeight: 600 }}>
+                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 2 }}>
                       {value.title}
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
@@ -244,55 +322,86 @@ export default function About() {
         </Container>
       </Box>
 
-      {/* Team Section */}
+      {/* Stats Section */}
       <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' }}>
         <Container maxWidth="lg">
-          <Typography
-            variant="h2"
-            component="h2"
-            sx={{
-              textAlign: 'center',
-              mb: 6,
-              fontSize: { xs: '2rem', md: '2.5rem' }
-            }}
-          >
-            Meet Our Team
-          </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            {team.map((member, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card
-                  sx={{
-                    height: '100%',
+          <Box sx={{ textAlign: 'center', mb: 8 }}>
+            <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
+              Our Impact
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
+              Numbers that show our commitment to Ghanaian SMEs
+            </Typography>
+          </Box>
+
+          <Grid container spacing={4}>
+            {stats.map((stat, index) => (
+              <Grid item xs={6} md={3} key={index}>
+                <Paper 
+                  elevation={2}
+                  sx={{ 
+                    p: 4, 
                     textAlign: 'center',
-                    transition: 'transform 0.3s ease-in-out',
+                    transition: 'all 0.3s ease',
                     '&:hover': {
-                      transform: 'translateY(-4px)'
+                      transform: 'translateY(-4px)',
+                      boxShadow: 4
                     }
                   }}
                 >
-                  <CardContent sx={{ p: 4 }}>
-                    <Avatar
-                      sx={{
-                        width: 80,
-                        height: 80,
-                        bgcolor: 'primary.main',
-                        mx: 'auto',
-                        mb: 3,
-                        fontSize: '1.5rem',
-                        fontWeight: 600
-                      }}
-                    >
-                      {member.avatar}
-                    </Avatar>
-                    <Typography variant="h5" component="h3" sx={{ mb: 1, fontWeight: 600 }}>
+                  <Typography variant="h3" component="div" sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}>
+                    {stat.number}
+                  </Typography>
+                  <Typography variant="h6" color="text.secondary">
+                    {stat.label}
+                  </Typography>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Team Section */}
+      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'grey.50' }}>
+        <Container maxWidth="lg">
+          <Box sx={{ textAlign: 'center', mb: 8 }}>
+            <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
+              Meet Our Team
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
+              The passionate people behind Ardent Invoicing
+            </Typography>
+          </Box>
+
+          <Grid container spacing={4}>
+            {team.map((member, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <Card 
+                  elevation={2}
+                  sx={{ 
+                    height: '100%',
+                    p: 3,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: 4
+                    }
+                  }}
+                >
+                  <CardContent sx={{ textAlign: 'center' }}>
+                    <Avatar 
+                      src={member.avatar}
+                      sx={{ width: 120, height: 120, mx: 'auto', mb: 3 }}
+                    />
+                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 1 }}>
                       {member.name}
                     </Typography>
                     <Typography variant="h6" color="primary.main" sx={{ mb: 2 }}>
                       {member.role}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {member.bio}
+                    <Typography variant="body1" color="text.secondary">
+                      {member.description}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -302,92 +411,194 @@ export default function About() {
         </Container>
       </Box>
 
+      {/* Contact Section */}
+      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' }}>
+        <Container maxWidth="lg">
+          <Box sx={{ textAlign: 'center', mb: 8 }}>
+            <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
+              Get in Touch
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
+              Have questions or want to learn more? We'd love to hear from you.
+            </Typography>
+          </Box>
+
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={4}>
+              <Card elevation={2} sx={{ p: 3, textAlign: 'center' }}>
+                <PhoneIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                  Phone
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  +233 20 123 4567
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Card elevation={2} sx={{ p: 3, textAlign: 'center' }}>
+                <EmailIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                  Email
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  hello@ardentinvoicing.com
+                </Typography>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Card elevation={2} sx={{ p: 3, textAlign: 'center' }}>
+                <LocationIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                  Location
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Accra, Ghana
+                </Typography>
+              </Card>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+
       {/* CTA Section */}
-      <Box
-        sx={{
-          background: 'linear-gradient(135deg, #746354 0%, #9a8577 100%)',
-          py: { xs: 8, md: 12 },
-          color: 'white'
+      <Box 
+        sx={{ 
+          background: 'linear-gradient(135deg, #a67c00 0%, #746354 100%)',
+          color: 'white',
+          py: { xs: 8, md: 12 }
         }}
       >
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center' }}>
-            <Typography
-              variant="h2"
-              component="h2"
-              sx={{
-                mb: 3,
-                fontSize: { xs: '2rem', md: '2.5rem' },
-                color: 'white'
-              }}
-            >
-              Ready to Join Us?
+            <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
+              Ready to Join Our Mission?
             </Typography>
-            <Typography
-              variant="h6"
-              component="p"
-              sx={{
-                mb: 4,
-                color: 'rgba(255, 255, 255, 0.9)',
-                maxWidth: 500,
-                mx: 'auto'
-              }}
-            >
-              Start your journey with Ardent Invoicing today and experience the difference 
-              professional financial management can make.
+            <Typography variant="h6" sx={{ mb: 4, opacity: 0.9 }}>
+              Start your free trial today and experience the difference of locally-built financial tools
             </Typography>
-            <Button
+            <Button 
+              component={Link} 
+              href="/sme/signup" 
               variant="contained"
               size="large"
-              component={Link}
-              href="/signup"
-              sx={{
-                bgcolor: 'white',
+              endIcon={<ArrowForwardIcon />}
+              sx={{ 
+                bgcolor: 'white', 
                 color: 'primary.main',
                 px: 6,
                 py: 2,
                 fontSize: '1.1rem',
-                fontWeight: 600,
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.9)'
-                }
+                '&:hover': { 
+                  bgcolor: 'grey.100',
+                  transform: 'translateY(-2px)',
+                  boxShadow: 4
+                },
+                transition: 'all 0.3s ease'
               }}
             >
-              Get Started Free
+              Start Your Free Trial
             </Button>
           </Box>
         </Container>
       </Box>
 
       {/* Footer */}
-      <Box sx={{ py: 6, bgcolor: 'background.paper', borderTop: 1, borderColor: 'divider' }}>
+      <Box sx={{ bgcolor: 'grey.900', color: 'white', py: 8 }}>
         <Container maxWidth="lg">
           <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" component="div" sx={{ fontWeight: 700, color: 'primary.main', mb: 2 }}>
-                Ardent Invoicing
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+            <Grid item xs={12} md={4}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Image 
+                  src="/logo.png" 
+                  alt="Ardent Invoicing" 
+                  width={32} 
+                  height={32}
+                  style={{ marginRight: 12 }}
+                />
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  Ardent Invoicing
+                </Typography>
+              </Box>
+              <Typography variant="body2" sx={{ mb: 3, opacity: 0.8 }}>
                 Empowering Ghanaian SMEs with professional invoicing and expense management solutions.
               </Typography>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', md: 'flex-end' }, gap: 4 }}>
-                <Button color="inherit" component={Link} href="/" sx={{ color: 'text.primary' }}>
-                  Home
-                </Button>
-                <Button color="inherit" component={Link} href="/features" sx={{ color: 'text.primary' }}>
-                  Features
-                </Button>
-                <Button color="inherit" component={Link} href="/pricing" sx={{ color: 'text.primary' }}>
-                  Pricing
-                </Button>
-              </Box>
+            
+            <Grid item xs={12} md={2}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                Product
+              </Typography>
+              <Stack spacing={1}>
+                <Link href="/features" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Features</Typography>
+                </Link>
+                <Link href="/pricing" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Pricing</Typography>
+                </Link>
+                <Link href="/security" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Security</Typography>
+                </Link>
+              </Stack>
+            </Grid>
+            
+            <Grid item xs={12} md={2}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                Company
+              </Typography>
+              <Stack spacing={1}>
+                <Link href="/about" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">About</Typography>
+                </Link>
+                <Link href="/contact" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Contact</Typography>
+                </Link>
+                <Link href="/careers" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Careers</Typography>
+                </Link>
+              </Stack>
+            </Grid>
+            
+            <Grid item xs={12} md={2}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                Support
+              </Typography>
+              <Stack spacing={1}>
+                <Link href="/help" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Help Center</Typography>
+                </Link>
+                <Link href="/docs" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Documentation</Typography>
+                </Link>
+                <Link href="/status" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Status</Typography>
+                </Link>
+              </Stack>
+            </Grid>
+            
+            <Grid item xs={12} md={2}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                Legal
+              </Typography>
+              <Stack spacing={1}>
+                <Link href="/privacy" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Privacy</Typography>
+                </Link>
+                <Link href="/terms" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Terms</Typography>
+                </Link>
+                <Link href="/cookies" style={{ color: 'white', textDecoration: 'none' }}>
+                  <Typography variant="body2">Cookies</Typography>
+                </Link>
+              </Stack>
             </Grid>
           </Grid>
-          <Box sx={{ mt: 4, pt: 4, borderTop: 1, borderColor: 'divider', textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-              © 2024 Ardent Invoicing. All rights reserved.
+          
+          <Divider sx={{ my: 4, bgcolor: 'grey.700' }} />
+          
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              © 2025 Ardent Invoicing. All rights reserved. Powered by Mega Web Services
             </Typography>
           </Box>
         </Container>
