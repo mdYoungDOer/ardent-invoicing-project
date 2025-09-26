@@ -267,11 +267,13 @@ export default function HomePage() {
 
           <Grid container spacing={4}>
             {features.map((feature, index) => (
-              <Grid item xs={12} md={6} key={index}>
+              <Grid item xs={12} sm={6} md={3} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 
                     height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
                     p: 3,
                     transition: 'all 0.3s ease',
                     '&:hover': {
@@ -280,14 +282,44 @@ export default function HomePage() {
                     }
                   }}
                 >
-                  <CardContent sx={{ textAlign: 'center' }}>
-                    <Box sx={{ mb: 2 }}>
+                  <CardContent sx={{ 
+                    textAlign: 'center', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    flexGrow: 1,
+                    p: 0
+                  }}>
+                    <Box sx={{ mb: 2, minHeight: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {feature.icon}
                     </Box>
-                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 2 }}>
+                    <Typography 
+                      variant="h6" 
+                      component="h3" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        mb: 2,
+                        minHeight: '2.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
                       {feature.title}
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary"
+                      sx={{ 
+                        flexGrow: 1,
+                        lineHeight: 1.6,
+                        wordBreak: 'break-word',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: 'vertical'
+                      }}
+                    >
                       {feature.description}
                     </Typography>
                   </CardContent>
@@ -317,6 +349,8 @@ export default function HomePage() {
                   elevation={plan.popular ? 8 : 2}
                   sx={{ 
                     height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
                     position: 'relative',
                     border: plan.popular ? 2 : 0,
                     borderColor: 'primary.main',
@@ -336,29 +370,62 @@ export default function HomePage() {
                         top: -12, 
                         left: '50%', 
                         transform: 'translateX(-50%)',
-                        fontWeight: 600
+                        fontWeight: 600,
+                        zIndex: 1
                       }} 
                     />
                   )}
-                  <CardContent sx={{ p: 4, textAlign: 'center' }}>
-                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 1 }}>
-                      {plan.name}
-                    </Typography>
-                    <Typography variant="h3" component="div" sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}>
-                      {plan.price}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      {plan.period}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      {plan.description}
-                    </Typography>
+                  <CardContent sx={{ 
+                    p: 4, 
+                    textAlign: 'center', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    flexGrow: 1,
+                    height: '100%'
+                  }}>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 1 }}>
+                        {plan.name}
+                      </Typography>
+                      <Typography variant="h3" component="div" sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}>
+                        {plan.price}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {plan.period}
+                      </Typography>
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary" 
+                        sx={{ 
+                          mb: 3,
+                          minHeight: '2.5rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {plan.description}
+                      </Typography>
+                    </Box>
                     
-                    <Box sx={{ mb: 3 }}>
+                    <Box sx={{ mb: 3, flexGrow: 1 }}>
                       {plan.features.map((feature, featureIndex) => (
-                        <Box key={featureIndex} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                          <CheckIcon sx={{ color: 'success.main', mr: 1, fontSize: 20 }} />
-                          <Typography variant="body2">{feature}</Typography>
+                        <Box key={featureIndex} sx={{ 
+                          display: 'flex', 
+                          alignItems: 'flex-start', 
+                          mb: 1.5,
+                          textAlign: 'left'
+                        }}>
+                          <CheckIcon sx={{ color: 'success.main', mr: 1, fontSize: 20, mt: 0.2, flexShrink: 0 }} />
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              lineHeight: 1.4,
+                              wordBreak: 'break-word'
+                            }}
+                          >
+                            {feature}
+                          </Typography>
                         </Box>
                       ))}
                     </Box>
@@ -370,7 +437,7 @@ export default function HomePage() {
                       fullWidth
                       size="large"
                       sx={{ 
-                        mt: 2,
+                        mt: 'auto',
                         ...(plan.popular && {
                           bgcolor: 'primary.main',
                           '&:hover': { bgcolor: 'primary.dark' }
@@ -402,26 +469,72 @@ export default function HomePage() {
           <Grid container spacing={4}>
             {testimonials.map((testimonial, index) => (
               <Grid item xs={12} md={4} key={index}>
-                <Card elevation={2} sx={{ height: '100%', p: 3 }}>
-                  <CardContent>
+                <Card 
+                  elevation={2} 
+                  sx={{ 
+                    height: '100%', 
+                    display: 'flex',
+                    flexDirection: 'column',
+                    p: 3,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: 4
+                    }
+                  }}
+                >
+                  <CardContent sx={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    flexGrow: 1,
+                    p: 0
+                  }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                       <Avatar 
                         src={testimonial.avatar}
-                        sx={{ width: 56, height: 56, mr: 2 }}
+                        sx={{ width: 56, height: 56, mr: 2, flexShrink: 0 }}
                       />
-                      <Box>
-                        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      <Box sx={{ minWidth: 0, flexGrow: 1 }}>
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            fontWeight: 600,
+                            lineHeight: 1.2,
+                            wordBreak: 'break-word'
+                          }}
+                        >
                           {testimonial.name}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography 
+                          variant="body2" 
+                          color="text.secondary"
+                          sx={{ 
+                            lineHeight: 1.3,
+                            wordBreak: 'break-word'
+                          }}
+                        >
                           {testimonial.role}
                         </Typography>
                       </Box>
                     </Box>
-                    <Typography variant="body1" sx={{ fontStyle: 'italic', mb: 2 }}>
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        fontStyle: 'italic', 
+                        mb: 2,
+                        flexGrow: 1,
+                        lineHeight: 1.6,
+                        wordBreak: 'break-word',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: 'vertical'
+                      }}
+                    >
                       "{testimonial.content}"
                     </Typography>
-                    <Box sx={{ display: 'flex' }}>
+                    <Box sx={{ display: 'flex', mt: 'auto' }}>
                       {[...Array(5)].map((_, i) => (
                         <StarIcon key={i} sx={{ color: 'warning.main', fontSize: 20 }} />
                       ))}

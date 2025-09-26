@@ -279,6 +279,7 @@ export default function FAQPage() {
                     elevation={2}
                     sx={{ 
                       mb: 2,
+                      borderRadius: 2,
                       '&:before': { display: 'none' },
                       '&.Mui-expanded': {
                         margin: '0 0 16px 0'
@@ -293,15 +294,32 @@ export default function FAQPage() {
                         },
                         '& .MuiAccordionSummary-content': {
                           margin: '16px 0'
-                        }
+                        },
+                        borderRadius: 2
                       }}
                     >
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          fontWeight: 600,
+                          lineHeight: 1.4,
+                          wordBreak: 'break-word',
+                          pr: 2
+                        }}
+                      >
                         {faq.question}
                       </Typography>
                     </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography variant="body1" color="text.secondary">
+                    <AccordionDetails sx={{ pt: 0 }}>
+                      <Typography 
+                        variant="body1" 
+                        color="text.secondary" 
+                        sx={{ 
+                          lineHeight: 1.6,
+                          wordBreak: 'break-word',
+                          whiteSpace: 'pre-line'
+                        }}
+                      >
                         {faq.answer}
                       </Typography>
                     </AccordionDetails>

@@ -285,6 +285,15 @@ export default function ContactPage() {
                         required
                         disabled={loading}
                         placeholder="Tell us how we can help you..."
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 2
+                          },
+                          '& .MuiInputBase-input': {
+                            resize: 'vertical',
+                            minHeight: '120px'
+                          }
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -298,7 +307,13 @@ export default function ContactPage() {
                           bgcolor: 'primary.main',
                           px: 4,
                           py: 1.5,
-                          '&:hover': { bgcolor: 'primary.dark' }
+                          borderRadius: 2,
+                          '&:hover': { 
+                            bgcolor: 'primary.dark',
+                            transform: 'translateY(-2px)',
+                            boxShadow: 4
+                          },
+                          transition: 'all 0.3s ease'
                         }}
                       >
                         {loading ? 'Sending...' : 'Send Message'}

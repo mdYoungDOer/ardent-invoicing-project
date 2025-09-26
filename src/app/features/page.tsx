@@ -302,6 +302,8 @@ export default function FeaturesPage() {
                   elevation={2}
                   sx={{ 
                     height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
                     p: 3,
                     transition: 'all 0.3s ease',
                     '&:hover': {
@@ -310,14 +312,44 @@ export default function FeaturesPage() {
                     }
                   }}
                 >
-                  <CardContent sx={{ textAlign: 'center' }}>
-                    <Box sx={{ mb: 2 }}>
+                  <CardContent sx={{ 
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flexGrow: 1,
+                    p: 0
+                  }}>
+                    <Box sx={{ mb: 2, minHeight: 60, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {feature.icon}
                     </Box>
-                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 2 }}>
+                    <Typography 
+                      variant="h6" 
+                      component="h3" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        mb: 2,
+                        minHeight: '2.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
                       {feature.title}
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary"
+                      sx={{ 
+                        flexGrow: 1,
+                        lineHeight: 1.6,
+                        wordBreak: 'break-word',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical'
+                      }}
+                    >
                       {feature.description}
                     </Typography>
                   </CardContent>

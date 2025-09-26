@@ -227,6 +227,8 @@ export default function PricingPage() {
                   elevation={plan.popular ? 8 : 2}
                   sx={{ 
                     height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
                     position: 'relative',
                     border: plan.popular ? 2 : 0,
                     borderColor: 'primary.main',
@@ -246,25 +248,53 @@ export default function PricingPage() {
                         top: -12, 
                         left: '50%', 
                         transform: 'translateX(-50%)',
-                        fontWeight: 600
+                        fontWeight: 600,
+                        zIndex: 1
                       }} 
                     />
                   )}
-                  <CardContent sx={{ p: 4, textAlign: 'center' }}>
-                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 1 }}>
-                      {plan.name}
-                    </Typography>
-                    <Typography variant="h3" component="div" sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}>
-                      {plan.price}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      {plan.period}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      {plan.description}
-                    </Typography>
+                  <CardContent sx={{ 
+                    p: 4, 
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flexGrow: 1,
+                    height: '100%'
+                  }}>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 1 }}>
+                        {plan.name}
+                      </Typography>
+                      <Typography variant="h3" component="div" sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}>
+                        {plan.price}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {plan.period}
+                      </Typography>
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary" 
+                        sx={{ 
+                          mb: 3,
+                          minHeight: '2.5rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {plan.description}
+                      </Typography>
+                    </Box>
                     
-                    <List sx={{ textAlign: 'left', mb: 3 }}>
+                    <List sx={{ 
+                      textAlign: 'left', 
+                      mb: 3, 
+                      flexGrow: 1,
+                      '& .MuiListItem-root': {
+                        px: 0,
+                        py: 0.5
+                      }
+                    }}>
                       {plan.features.map((feature, featureIndex) => (
                         <ListItem key={featureIndex} sx={{ px: 0, py: 0.5 }}>
                           <ListItemIcon sx={{ minWidth: 32 }}>
@@ -272,7 +302,13 @@ export default function PricingPage() {
                           </ListItemIcon>
                           <ListItemText 
                             primary={feature}
-                            primaryTypographyProps={{ variant: 'body2' }}
+                            primaryTypographyProps={{ 
+                              variant: 'body2',
+                              sx: {
+                                lineHeight: 1.4,
+                                wordBreak: 'break-word'
+                              }
+                            }}
                           />
                         </ListItem>
                       ))}
@@ -285,7 +321,7 @@ export default function PricingPage() {
                       fullWidth
                       size="large"
                       sx={{ 
-                        mt: 2,
+                        mt: 'auto',
                         ...(plan.popular && {
                           bgcolor: 'primary.main',
                           '&:hover': { bgcolor: 'primary.dark' }

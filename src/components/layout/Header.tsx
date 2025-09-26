@@ -70,9 +70,6 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
             height={32}
             style={{ marginRight: 8 }}
           />
-          <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-            Ardent Invoicing
-          </Typography>
         </Box>
         <IconButton onClick={handleDrawerToggle}>
           <CloseIcon />

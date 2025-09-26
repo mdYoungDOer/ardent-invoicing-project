@@ -86,9 +86,7 @@ export default function Footer() {
                   height={40}
                   style={{ marginRight: 12 }}
                 />
-                <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                  Ardent Invoicing
-                </Typography>
+          
               </Box>
               <Typography variant="body1" sx={{ mb: 3, opacity: 0.9, lineHeight: 1.6 }}>
                 Empowering Ghanaian SMEs with professional invoicing and expense management solutions. 
@@ -99,7 +97,7 @@ export default function Footer() {
               <Stack spacing={2}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <PhoneIcon sx={{ mr: 2, fontSize: 20, color: 'primary.main' }} />
-                  <Typography variant="body2">+233 20 123 4567</Typography>
+                  <Typography variant="body2">+233 54 832 7906</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <EmailIcon sx={{ mr: 2, fontSize: 20, color: 'primary.main' }} />
@@ -107,7 +105,7 @@ export default function Footer() {
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <LocationIcon sx={{ mr: 2, fontSize: 20, color: 'primary.main' }} />
-                  <Typography variant="body2">123 Business District, Accra, Ghana</Typography>
+                  <Typography variant="body2">10A Mega Street, Adenta Municipality, Accra, Ghana</Typography>
                 </Box>
               </Stack>
             </Box>
@@ -155,7 +153,7 @@ export default function Footer() {
               © {currentYear} Ardent Invoicing. All rights reserved.
             </Typography>
             <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              Powered by Mega Web Services
+              Powered by <a href="tel:+233548327906" target="_blank" rel="noopener noreferrer">Mega Web Services</a>
             </Typography>
           </Box>
 

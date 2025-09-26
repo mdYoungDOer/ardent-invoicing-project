@@ -218,11 +218,13 @@ export default function AboutPage() {
 
           <Grid container spacing={4}>
             {values.map((value, index) => (
-              <Grid item xs={12} md={6} key={index}>
+              <Grid item xs={12} sm={6} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 
                     height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
                     p: 4,
                     transition: 'all 0.3s ease',
                     '&:hover': {
@@ -231,14 +233,44 @@ export default function AboutPage() {
                     }
                   }}
                 >
-                  <CardContent sx={{ textAlign: 'center' }}>
-                    <Box sx={{ mb: 3 }}>
+                  <CardContent sx={{ 
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flexGrow: 1,
+                    p: 0
+                  }}>
+                    <Box sx={{ mb: 3, minHeight: 80, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {value.icon}
                     </Box>
-                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 2 }}>
+                    <Typography 
+                      variant="h6" 
+                      component="h3" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        mb: 2,
+                        minHeight: '2.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
                       {value.title}
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary"
+                      sx={{ 
+                        flexGrow: 1,
+                        lineHeight: 1.6,
+                        wordBreak: 'break-word',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: 'vertical'
+                      }}
+                    >
                       {value.description}
                     </Typography>
                   </CardContent>
