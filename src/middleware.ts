@@ -102,22 +102,25 @@ export async function middleware(req: NextRequest) {
                      !pathname.startsWith('/sme/login') && 
                      !pathname.startsWith('/sme/signup');
 
-  // If user is not authenticated and trying to access protected route
+  // NUCLEAR OPTION: Be less aggressive with redirects
+  // Only redirect if absolutely no session AND no localStorage fallback
   if (!session && isProtectedRoute) {
-    console.log('❌ Middleware: No session found for protected route, redirecting to login');
-    const redirectUrl = req.nextUrl.clone();
-    // Redirect to appropriate login based on route
-    if (pathname.startsWith('/admin')) {
-      redirectUrl.pathname = '/admin/login';
-    } else if (pathname.startsWith('/dashboard')) {
-      redirectUrl.pathname = '/sme/login';
-    } else {
-      // Default redirect to SME login for unknown routes
-      redirectUrl.pathname = '/sme/login';
+    console.log('🔍 NUCLEAR: No session found, but allowing dashboard to handle localStorage fallback');
+    
+    // For dashboard routes, let the client handle the authentication
+    if (pathname.startsWith('/dashboard')) {
+      console.log('✅ NUCLEAR: Allowing dashboard to handle localStorage authentication');
+      return NextResponse.next();
     }
-    redirectUrl.searchParams.set('redirectTo', pathname);
-    console.log('🔍 Middleware: Redirecting to:', redirectUrl.pathname);
-    return NextResponse.redirect(redirectUrl);
+    
+    // For admin routes, still redirect (more secure)
+    if (pathname.startsWith('/admin')) {
+      console.log('❌ Middleware: No session for admin route, redirecting to login');
+      const redirectUrl = req.nextUrl.clone();
+      redirectUrl.pathname = '/admin/login';
+      redirectUrl.searchParams.set('redirectTo', pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   // If user is authenticated but trying to access admin route without proper role

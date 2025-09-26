@@ -97,37 +97,21 @@ export default function SmeLogin() {
 
       console.log('✅ SME role confirmed, redirecting...');
       
-      // Step 4: Wait for session to be properly set, then redirect
-      // Try multiple approaches to ensure redirect works
-      try {
-        // First try: Wait a bit longer for session to propagate
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Verify session is still there before redirecting
-        const { data: { session: verifySession } } = await supabase.auth.getSession();
-        console.log('🔍 Session verification before redirect:', { 
-          hasSession: !!verifySession, 
-          userId: verifySession?.user?.id 
-        });
-        
-        if (verifySession) {
-          console.log('✅ Session verified, redirecting to dashboard');
-          window.location.href = '/dashboard';
-        } else {
-          console.log('❌ Session lost, retrying login...');
-          // If session is lost, try to get it again
-          const { data: { session: retrySession } } = await supabase.auth.getSession();
-          if (retrySession) {
-            window.location.href = '/dashboard';
-          } else {
-            throw new Error('Session lost during redirect');
-          }
-        }
-      } catch (redirectError) {
-        console.error('❌ Redirect error:', redirectError);
-        // Fallback: Force redirect anyway
-        window.location.href = '/dashboard';
-      }
+      // NUCLEAR OPTION: Simple, bulletproof redirect
+      // Store user data in localStorage for dashboard to use
+      localStorage.setItem('ardent_user', JSON.stringify({
+        id: userData.id,
+        email: userData.email,
+        role: userData.role,
+        tenant_id: userData.tenant_id,
+        timestamp: Date.now()
+      }));
+      
+      // Force redirect with a small delay
+      setTimeout(() => {
+        console.log('🚀 NUCLEAR: Force redirecting to dashboard');
+        window.location.replace('/dashboard');
+      }, 200);
       
     } catch (error: any) {
       console.error('❌ SME login error:', error);

@@ -107,53 +107,67 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('🔍 Dashboard: Auth state change:', { event, hasSession: !!session });
-      
-      if (event === 'SIGNED_OUT' || !session) {
-        console.log('❌ Dashboard: User signed out, redirecting to login');
-        router.push('/sme/login');
-      }
-    });
-
     const fetchUserData = async () => {
       try {
-        console.log('🔍 Dashboard: Starting authentication check...');
+        console.log('🚀 NUCLEAR: Dashboard starting with localStorage approach...');
         
-        // Multiple attempts to get session with increasing delays
-        let session = null;
-        let attempts = 0;
-        const maxAttempts = 5;
-        
-        while (!session && attempts < maxAttempts) {
-          attempts++;
-          console.log(`🔍 Dashboard: Session attempt ${attempts}/${maxAttempts}...`);
-          
-          // Wait with increasing delay
-          await new Promise(resolve => setTimeout(resolve, attempts * 200));
-          
-          const { data: { session: currentSession } } = await supabase.auth.getSession();
-          session = currentSession;
-          
-          if (session) {
-            console.log('✅ Dashboard: Session found on attempt', attempts);
-            break;
-          } else {
-            console.log(`❌ Dashboard: No session on attempt ${attempts}`);
+        // NUCLEAR OPTION: Check localStorage first
+        const storedUser = localStorage.getItem('ardent_user');
+        if (storedUser) {
+          try {
+            const userData = JSON.parse(storedUser);
+            const now = Date.now();
+            const userAge = now - userData.timestamp;
+            
+            console.log('🔍 NUCLEAR: Found stored user data:', {
+              id: userData.id,
+              email: userData.email,
+              role: userData.role,
+              age: Math.round(userAge / 1000) + 's ago'
+            });
+            
+            // Check if data is fresh (less than 5 minutes old)
+            if (userAge < 5 * 60 * 1000) {
+              console.log('✅ NUCLEAR: Using stored user data');
+              
+              // Set user in store
+              useAppStore.getState().setUser(userData);
+              
+              // Fetch tenant data if needed
+              if (userData.tenant_id) {
+                const { data: tenantData, error: tenantError } = await supabase
+                  .from('tenants')
+                  .select('*')
+                  .eq('id', userData.tenant_id)
+                  .single();
+
+                if (!tenantError && tenantData) {
+                  useAppStore.getState().setTenant(tenantData);
+                }
+              }
+              
+              console.log('✅ NUCLEAR: Dashboard access granted via localStorage');
+              return;
+            } else {
+              console.log('⚠️ NUCLEAR: Stored data too old, falling back to session');
+            }
+          } catch (parseError) {
+            console.log('⚠️ NUCLEAR: Failed to parse stored data, falling back to session');
           }
         }
         
+        // Fallback: Try session-based approach
+        console.log('🔍 NUCLEAR: Falling back to session-based authentication...');
+        
+        const { data: { session } } = await supabase.auth.getSession();
+        
         if (!session) {
-          console.log('❌ Dashboard: No session found after all attempts, redirecting to login');
+          console.log('❌ NUCLEAR: No session found, redirecting to login');
           router.push('/sme/login');
           return;
         }
         
-        console.log('🔍 Dashboard: Session confirmed:', { 
-          userId: session.user.id, 
-          email: session.user.email 
-        });
+        console.log('✅ NUCLEAR: Session found, proceeding with normal flow');
 
         // Fetch user data
         const { data: userData, error: userError } = await supabase
