@@ -108,12 +108,52 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
+        console.log('🚀 NUCLEAR: Admin dashboard starting with localStorage approach...');
+        
+        // NUCLEAR OPTION: Check localStorage first for admin data
+        const storedAdmin = localStorage.getItem('ardent_admin');
+        if (storedAdmin) {
+          try {
+            const adminData = JSON.parse(storedAdmin);
+            const now = Date.now();
+            const adminAge = now - adminData.timestamp;
+            
+            console.log('🔍 NUCLEAR: Found stored admin data:', {
+              id: adminData.id,
+              email: adminData.email,
+              role: adminData.role,
+              age: Math.round(adminAge / 1000) + 's ago'
+            });
+            
+            // Check if data is fresh (less than 5 minutes old)
+            if (adminAge < 5 * 60 * 1000) {
+              console.log('✅ NUCLEAR: Using stored admin data');
+              
+              // Set admin in store
+              useAppStore.getState().setUser(adminData);
+              
+              console.log('✅ NUCLEAR: Admin dashboard access granted via localStorage');
+              return;
+            } else {
+              console.log('⚠️ NUCLEAR: Stored admin data too old, falling back to session');
+            }
+          } catch (parseError) {
+            console.log('⚠️ NUCLEAR: Failed to parse stored admin data, falling back to session');
+          }
+        }
+        
+        // Fallback: Try session-based approach
+        console.log('🔍 NUCLEAR: Falling back to session-based authentication...');
+        
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
+          console.log('❌ NUCLEAR: No session found, redirecting to admin login');
           router.push('/admin/login');
           return;
         }
+        
+        console.log('✅ NUCLEAR: Session found, proceeding with normal flow');
 
         // Fetch user data
         const { data: userData, error: userError } = await supabase
@@ -125,6 +165,7 @@ export default function AdminDashboard() {
         if (userError) throw userError;
 
         if (userData.role !== 'super') {
+          console.log('❌ NUCLEAR: Invalid role for admin dashboard');
           router.push('/admin/login');
           return;
         }

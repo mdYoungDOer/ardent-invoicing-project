@@ -99,10 +99,20 @@ export default function AdminLogin() {
 
       console.log('✅ Admin role confirmed, redirecting...');
       
-      // Step 4: Small delay to ensure session is properly set, then redirect
+      // NUCLEAR OPTION: Simple, bulletproof redirect for Super Admin
+      // Store user data in localStorage for dashboard to use
+      localStorage.setItem('ardent_admin', JSON.stringify({
+        id: userData.id,
+        email: userData.email,
+        role: userData.role,
+        timestamp: Date.now()
+      }));
+      
+      // Force redirect with a small delay
       setTimeout(() => {
-        window.location.href = '/admin/dashboard';
-      }, 100);
+        console.log('🚀 NUCLEAR: Force redirecting to admin dashboard');
+        window.location.replace('/admin/dashboard');
+      }, 200);
       
     } catch (error: any) {
       console.error('❌ Admin login error:', error);
