@@ -15,6 +15,7 @@ import {
   Divider
 } from '@mui/material';
 import { Grid } from '@mui/material';
+import { motion } from 'framer-motion';
 import { 
   Receipt as ReceiptIcon,
   Analytics as AnalyticsIcon,
@@ -166,19 +167,24 @@ export default function HomePage() {
       >
         <Container maxWidth="lg">
           <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <Typography 
-                variant="h2" 
-                component="h1" 
-                sx={{ 
-                  fontWeight: 800, 
-                  mb: 3,
-                  fontSize: { xs: '2.5rem', md: '3.5rem' },
-                  lineHeight: 1.2
-                }}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                Invoice & Expense Management for Ghanaian SMEs
-              </Typography>
+                <Typography 
+                  variant="h2" 
+                  component="h1" 
+                  sx={{ 
+                    fontWeight: 800, 
+                    mb: 3,
+                    fontSize: { xs: '2.5rem', md: '3.5rem' },
+                    lineHeight: 1.2
+                  }}
+                >
+                  Invoice & Expense Management for Ghanaian SMEs
+                </Typography>
               <Typography 
                 variant="h6" 
                 sx={{ 
@@ -190,63 +196,80 @@ export default function HomePage() {
                 Streamline your business finances with professional invoicing, 
                 expense tracking, and payment management. Built specifically for Ghanaian businesses.
               </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <Button 
-                  component={Link} 
-                  href="/sme/signup" 
-                  variant="contained"
-                  size="large"
-                  endIcon={<ArrowForwardIcon />}
-                  sx={{ 
-                    bgcolor: 'white', 
-                    color: 'primary.main',
-                    px: 4,
-                    py: 1.5,
-                    '&:hover': { 
-                      bgcolor: 'grey.100',
-                      transform: 'translateY(-2px)',
-                      boxShadow: 4
-                    },
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                  Start Free Trial
-                </Button>
-                <Button 
-                  component={Link} 
-                  href="/features" 
-                  variant="outlined"
-                  size="large"
-                  sx={{ 
-                    borderColor: 'white', 
-                    color: 'white',
-                    px: 4,
-                    py: 1.5,
-                    '&:hover': { 
-                      bgcolor: 'rgba(255,255,255,0.1)',
-                      borderColor: 'white'
-                    }
-                  }}
-                >
-                  Learn More
-                </Button>
-              </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button 
+                      component={Link} 
+                      href="/sme/signup" 
+                      variant="contained"
+                      size="large"
+                      endIcon={<ArrowForwardIcon />}
+                      sx={{ 
+                        bgcolor: 'white', 
+                        color: 'primary.main',
+                        px: 4,
+                        py: 1.5,
+                        '&:hover': { 
+                          bgcolor: 'grey.100',
+                          transform: 'translateY(-2px)',
+                          boxShadow: 4
+                        },
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
+                      Start Free Trial
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button 
+                      component={Link} 
+                      href="/features" 
+                      variant="outlined"
+                      size="large"
+                      sx={{ 
+                        borderColor: 'white', 
+                        color: 'white',
+                        px: 4,
+                        py: 1.5,
+                        '&:hover': { 
+                          bgcolor: 'rgba(255,255,255,0.1)',
+                          borderColor: 'white'
+                        }
+                      }}
+                    >
+                      Learn More
+                    </Button>
+                  </motion.div>
+                </Stack>
+              </motion.div>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Box sx={{ position: 'relative' }}>
-                <Image
-                  src="/images/night-man-home-office-with-documents-laptop-paperwork-desk-deadline-overtime-as-accountant-male-person-remote-work-entrepreneur-with-company-financial-report-statement.jpg"
-                  alt="Professional invoicing dashboard"
-                  width={600}
-                  height={400}
-                  style={{
-                    borderRadius: '16px',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-                    width: '100%',
-                    height: 'auto'
-                  }}
-                />
-              </Box>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              >
+                <Box sx={{ position: 'relative' }}>
+                  <Image
+                    src="/images/night-man-home-office-with-documents-laptop-paperwork-desk-deadline-overtime-as-accountant-male-person-remote-work-entrepreneur-with-company-financial-report-statement.jpg"
+                    alt="Professional invoicing dashboard"
+                    width={600}
+                    height={400}
+                    style={{
+                      borderRadius: '16px',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                      width: '100%',
+                      height: 'auto'
+                    }}
+                  />
+                </Box>
+              </motion.div>
             </Grid>
           </Grid>
         </Container>

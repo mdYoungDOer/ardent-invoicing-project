@@ -82,13 +82,13 @@ export default function Footer() {
                 <Image 
                   src="/logo.png" 
                   alt="Ardent Invoicing" 
-                  width={40} 
-                  height={40}
-                  style={{ marginRight: 12 }}
+                  width={48} 
+                  height={48}
+                  style={{ 
+                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+                    transition: 'transform 0.3s ease'
+                  }}
                 />
-                <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-                  Ardent Invoicing
-                </Typography>
               </Box>
               <Typography variant="body1" sx={{ mb: 3, opacity: 0.9, lineHeight: 1.6 }}>
                 Empowering Ghanaian SMEs with professional invoicing and expense management solutions. 
@@ -142,46 +142,59 @@ export default function Footer() {
 
         <Divider sx={{ my: 6, bgcolor: 'grey.700' }} />
 
-        {/* Bottom Section */}
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: { xs: 'column', md: 'row' }, 
-          alignItems: { xs: 'center', md: 'space-between' },
-          gap: 3
-        }}>
-          {/* Copyright */}
-          <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-            <Typography variant="body2" sx={{ opacity: 0.8, mb: 1 }}>
-              © {currentYear} Ardent Invoicing. All rights reserved.
-            </Typography>
-            <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              Powered by <a href="tel:+233548327906" target="_blank" rel="noopener noreferrer">Mega Web Services</a>
-            </Typography>
-          </Box>
+            {/* Bottom Section */}
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', md: 'row' }, 
+              alignItems: { xs: 'center', md: 'space-between' },
+              justifyContent: 'space-between',
+              gap: 3,
+              width: '100%'
+            }}>
+              {/* Copyright */}
+              <Box sx={{ 
+                textAlign: { xs: 'center', md: 'left' },
+                flex: 1,
+                minWidth: 0
+              }}>
+                <Typography variant="body2" sx={{ opacity: 0.8, mb: 1 }}>
+                  © {currentYear} Ardent Invoicing. All rights reserved.
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.6 }}>
+                  Powered by <a href="tel:+233548327906" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>Mega Web Services</a>
+                </Typography>
+              </Box>
 
-          {/* Social Links */}
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            {socialLinks.map((social, index) => (
-              <IconButton
-                key={index}
-                component="a"
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                sx={{
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  '&:hover': {
-                    color: 'primary.main',
-                    bgcolor: 'rgba(166, 124, 0, 0.1)'
-                  }
-                }}
-              >
-                {social.icon}
-              </IconButton>
-            ))}
-          </Box>
-        </Box>
+              {/* Social Links */}
+              <Box sx={{ 
+                display: 'flex', 
+                gap: 1,
+                flexShrink: 0,
+                justifyContent: { xs: 'center', md: 'flex-end' }
+              }}>
+                {socialLinks.map((social, index) => (
+                  <IconButton
+                    key={index}
+                    component="a"
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    sx={{
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: 'primary.main',
+                        bgcolor: 'rgba(166, 124, 0, 0.1)',
+                        transform: 'translateY(-2px)'
+                      }
+                    }}
+                  >
+                    {social.icon}
+                  </IconButton>
+                ))}
+              </Box>
+            </Box>
 
         {/* Additional Info */}
         <Box sx={{ mt: 4, textAlign: 'center' }}>

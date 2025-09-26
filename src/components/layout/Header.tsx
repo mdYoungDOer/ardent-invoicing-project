@@ -137,19 +137,19 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
           }
         }}
       >
-        <Toolbar>
-          {/* Logo */}
+        <Toolbar sx={{ py: 2, px: { xs: 2, md: 4 } }}>
+          {/* Logo - Standalone */}
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <Image 
               src="/logo.png" 
               alt="Ardent Invoicing" 
-              width={40} 
-              height={40}
-              style={{ marginRight: 12 }}
+              width={48} 
+              height={48}
+              style={{ 
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
+                transition: 'transform 0.3s ease'
+              }}
             />
-            <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-              Ardent Invoicing
-            </Typography>
           </Box>
           
           {/* Desktop Navigation */}

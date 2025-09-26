@@ -279,7 +279,7 @@ export default function ContactPage() {
                         fullWidth
                         label="Message"
                         multiline
-                        rows={6}
+                        rows={4}
                         value={formData.message}
                         onChange={handleInputChange('message')}
                         required
@@ -291,7 +291,7 @@ export default function ContactPage() {
                           },
                           '& .MuiInputBase-input': {
                             resize: 'vertical',
-                            minHeight: '120px'
+                            minHeight: '80px'
                           }
                         }}
                       />
