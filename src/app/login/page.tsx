@@ -124,46 +124,54 @@ export default function Login() {
     setError('');
 
     try {
-      console.log('Starting super admin login...');
+      console.log('🔍 Starting super admin login...');
+      console.log('Email:', formData.email);
       
-      const { data, error } = await supabase.auth.signInWithPassword({
+      // Step 1: Sign in with Supabase
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
 
-      if (error) {
-        console.error('Supabase auth error:', error);
-        throw error;
+      if (authError) {
+        console.error('❌ Supabase auth error:', authError);
+        throw authError;
       }
 
-      console.log('Auth successful, checking user role...');
+      console.log('✅ Auth successful, user ID:', authData.user?.id);
 
-      // Check if user has super admin role
+      // Step 2: Wait a moment for auth state to update
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Step 3: Check user role
+      console.log('🔍 Checking user role...');
       const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('role')
-        .eq('id', data.user.id)
+        .select('role, id, email')
+        .eq('id', authData.user.id)
         .single();
 
       if (userError) {
-        console.error('User data fetch error:', userError);
-        throw userError;
+        console.error('❌ User data fetch error:', userError);
+        throw new Error('Unable to verify user permissions. Please try again.');
       }
 
-      console.log('User role:', userData.role);
+      console.log('✅ User data:', userData);
 
       if (userData.role !== 'super') {
         throw new Error('Access denied. This account is not authorized for super admin access.');
       }
 
-      console.log('Login successful, redirecting to admin dashboard...');
+      console.log('✅ Super admin role confirmed, redirecting...');
       
-      // Force a page refresh to ensure auth state is updated
-      window.location.href = '/admin/dashboard';
+      // Step 4: Force redirect with full page reload
+      setTimeout(() => {
+        window.location.replace('/admin/dashboard');
+      }, 500);
+      
     } catch (error: any) {
-      console.error('Login error:', error);
+      console.error('❌ Login error:', error);
       setError(error.message || 'An error occurred during login');
-    } finally {
       setLoading(false);
     }
   };
