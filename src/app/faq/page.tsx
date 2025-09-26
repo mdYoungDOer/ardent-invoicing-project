@@ -345,7 +345,7 @@ export default function FAQPage() {
 
           <Grid container spacing={4}>
             {contactInfo.map((contact, index) => (
-              <Grid xs={12} md={4} key={index}>
+              <Grid size={{ xs: 12, md: 4 }} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 

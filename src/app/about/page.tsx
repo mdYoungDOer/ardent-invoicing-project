@@ -149,7 +149,7 @@ export default function AboutPage() {
       <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' }}>
         <Container maxWidth="lg">
           <Grid container spacing={6} alignItems="center">
-            <Grid xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
                 <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
                   Our Mission
@@ -184,7 +184,7 @@ export default function AboutPage() {
                 </Button>
               </Box>
             </Grid>
-            <Grid xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Box sx={{ position: 'relative' }}>
                 <Image
                   src="/images/night-man-home-office-with-documents-laptop-paperwork-desk-deadline-overtime-as-accountant-male-person-remote-work-entrepreneur-with-company-financial-report-statement.jpg"
@@ -218,7 +218,7 @@ export default function AboutPage() {
 
           <Grid container spacing={4}>
             {values.map((value, index) => (
-              <Grid xs={12} sm={6} key={index}>
+              <Grid size={{ xs: 12, sm: 6 }} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 
@@ -295,7 +295,7 @@ export default function AboutPage() {
 
           <Grid container spacing={4}>
             {stats.map((stat, index) => (
-              <Grid xs={6} md={3} key={index}>
+              <Grid size={{ xs: 6, md: 3 }} key={index}>
                 <Paper 
                   elevation={2}
                   sx={{ 

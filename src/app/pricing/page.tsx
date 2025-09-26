@@ -222,7 +222,7 @@ export default function PricingPage() {
         <Container maxWidth="lg">
           <Grid container spacing={3} justifyContent="center">
             {pricingPlans.map((plan, index) => (
-              <Grid xs={12} sm={6} md={3} key={index}>
+              <Grid size={{ xs: 12, sm: 6 }} , md: 3 }} key={index}>
                 <Card 
                   elevation={plan.popular ? 8 : 2}
                   sx={{ 
@@ -352,7 +352,7 @@ export default function PricingPage() {
 
           <Grid container spacing={4}>
             {features.map((feature, index) => (
-              <Grid xs={12} md={6} key={index}>
+              <Grid size={{ xs: 12, md: 6 }} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 
@@ -396,7 +396,7 @@ export default function PricingPage() {
           </Box>
 
           <Grid container spacing={4}>
-            <Grid xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
                   Can I change plans anytime?
@@ -406,7 +406,7 @@ export default function PricingPage() {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
                   Is there a free trial?
@@ -416,7 +416,7 @@ export default function PricingPage() {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
                   Do you support GHS currency?
@@ -426,7 +426,7 @@ export default function PricingPage() {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
                   What payment methods do you accept?
