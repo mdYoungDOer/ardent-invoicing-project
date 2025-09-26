@@ -377,7 +377,7 @@ GROUP BY s.plan_id, s.interval;
 CREATE VIEW invoice_analytics AS
 SELECT 
     t.business_name,
-    t.subscription_tier,
+    u.subscription_tier,
     COUNT(i.id) as total_invoices,
     COUNT(CASE WHEN i.status = 'paid' THEN 1 END) as paid_invoices,
     COUNT(CASE WHEN i.status = 'overdue' THEN 1 END) as overdue_invoices,
@@ -388,7 +388,8 @@ SELECT
     MAX(i.created_at) as latest_invoice
 FROM invoices i
 JOIN tenants t ON t.id = i.tenant_id
-GROUP BY t.business_name, t.subscription_tier;
+JOIN users u ON u.tenant_id = t.id AND u.role = 'sme'
+GROUP BY t.business_name, u.subscription_tier;
 
 -- Grant necessary permissions
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
