@@ -7,10 +7,42 @@
   --font-inter: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }
 
+/* CRITICAL FIX: Prevent Tailwind reset from interfering with MUI components */
 * {
   box-sizing: border-box;
-  padding: 0;
+}
+
+/* Only apply reset to non-MUI elements */
+html, body {
   margin: 0;
+  padding: 0;
+}
+
+/* Preserve MUI component spacing */
+.MuiBox-root,
+.MuiContainer-root,
+.MuiGrid-root,
+.MuiCard-root,
+.MuiButton-root,
+.MuiTypography-root,
+.MuiAppBar-root,
+.MuiToolbar-root {
+  /* Let MUI handle its own spacing */
+}
+
+/* CRITICAL: Override Tailwind reset for MUI components */
+@layer base {
+  .MuiBox-root *,
+  .MuiContainer-root *,
+  .MuiGrid-root *,
+  .MuiCard-root *,
+  .MuiButton-root *,
+  .MuiTypography-root *,
+  .MuiAppBar-root *,
+  .MuiToolbar-root * {
+    margin: revert;
+    padding: revert;
+  }
 }
 
 html,
