@@ -88,8 +88,8 @@ export default function Footer() {
                 <Image 
                   src="/logo.png" 
                   alt="Ardent Invoicing" 
-                  width={48} 
-                  height={48}
+                  width={80} 
+                  height={80}
                   style={{ 
                     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
                     transition: 'transform 0.3s ease',

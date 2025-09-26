@@ -77,8 +77,8 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
             <Image 
               src="/logo.png" 
               alt="Ardent Invoicing" 
-              width={40} 
-              height={40}
+              width={60} 
+              height={60}
               style={{ 
                 marginRight: 8,
                 cursor: 'pointer',
@@ -161,13 +161,13 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
         position="sticky" 
         elevation={scrolled ? 4 : 0} 
         sx={{ 
-          bgcolor: 'background.paper',
-          borderBottom: 1, 
+          bgcolor: scrolled ? 'background.paper' : 'transparent',
+          borderBottom: scrolled ? 1 : 0, 
           borderColor: 'divider',
           backdropFilter: scrolled ? 'blur(20px)' : 'blur(10px)',
-          background: nextTheme === 'dark' 
-            ? 'rgba(18, 18, 18, 0.95)' 
-            : 'rgba(255, 255, 255, 0.95)',
+          background: scrolled 
+            ? (nextTheme === 'dark' ? 'rgba(18, 18, 18, 0.95)' : 'rgba(255, 255, 255, 0.95)')
+            : 'transparent',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           zIndex: 1100
         }}
@@ -183,8 +183,8 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
               <Image 
                 src="/logo.png" 
                 alt="Ardent Invoicing" 
-                width={scrolled ? 40 : 48} 
-                height={scrolled ? 40 : 48}
+                width={scrolled ? 60 : 80} 
+                height={scrolled ? 60 : 80}
                 style={{ 
                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
