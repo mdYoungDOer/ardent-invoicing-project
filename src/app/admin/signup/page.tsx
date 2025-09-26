@@ -236,7 +236,7 @@ export default function AdminSignup() {
         <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">
-              © 2024 Ardent Invoicing. All rights reserved.
+              © 2025 Ardent Invoicing. All rights reserved. Powered by Mega Web Services
             </Typography>
           </Box>
         </Container>

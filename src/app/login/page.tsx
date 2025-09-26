@@ -7,13 +7,10 @@ import {
   Container, 
   Typography, 
   Button,
-  Card,
-  CardContent,
   AppBar,
   Toolbar,
   IconButton,
-  Paper,
-  Grid
+  Paper
 } from '@mui/material';
 import { 
   Brightness4 as DarkModeIcon, 
@@ -60,9 +57,9 @@ export default function LoginPortal() {
           </Typography>
         </Box>
 
-        <Grid container spacing={4} justifyContent="center">
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4, justifyContent: 'center', maxWidth: 1000, mx: 'auto' }}>
           {/* SME Portal */}
-          <Grid item xs={12} sm={6} md={5}>
+          <Box sx={{ flex: 1, maxWidth: 500 }}>
             <Paper elevation={3} sx={{ p: 4, borderRadius: 2, height: '100%' }}>
               <Box sx={{ textAlign: 'center', mb: 4 }}>
                 <BusinessIcon sx={{ fontSize: 80, color: 'primary.main', mb: 3 }} />
@@ -107,10 +104,10 @@ export default function LoginPortal() {
                 </Typography>
               </Box>
             </Paper>
-          </Grid>
+          </Box>
 
           {/* Admin Portal */}
-          <Grid item xs={12} sm={6} md={5}>
+          <Box sx={{ flex: 1, maxWidth: 500 }}>
             <Paper elevation={3} sx={{ p: 4, borderRadius: 2, height: '100%' }}>
               <Box sx={{ textAlign: 'center', mb: 4 }}>
                 <SecurityIcon sx={{ fontSize: 80, color: 'error.main', mb: 3 }} />
@@ -163,8 +160,8 @@ export default function LoginPortal() {
                 </Typography>
               </Box>
             </Paper>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
         {/* Security Notice */}
         <Box sx={{ mt: 6, p: 3, bgcolor: 'warning.light', borderRadius: 2, textAlign: 'center' }}>
