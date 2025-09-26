@@ -191,7 +191,7 @@ export default function AdminLogin() {
           <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Typography variant="body2" color="text.secondary">
               Need SME access?{' '}
-              <Link href="/login" style={{ color: '#a67c00', textDecoration: 'none', fontWeight: 600 }}>
+              <Link href="/sme/login" style={{ color: '#a67c00', textDecoration: 'none', fontWeight: 600 }}>
                 SME Login
               </Link>
             </Typography>

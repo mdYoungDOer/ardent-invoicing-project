@@ -112,7 +112,7 @@ export default function Dashboard() {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
-          router.push('/login');
+          router.push('/sme/login');
           return;
         }
 
@@ -126,7 +126,7 @@ export default function Dashboard() {
         if (userError) throw userError;
 
         if (userData.role !== 'sme') {
-          router.push('/login');
+          router.push('/sme/login');
           return;
         }
 

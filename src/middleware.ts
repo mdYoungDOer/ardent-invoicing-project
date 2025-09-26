@@ -122,7 +122,7 @@ export async function middleware(req: NextRequest) {
       if (userError) {
         console.error('❌ Error fetching user role:', userError);
         const redirectUrl = req.nextUrl.clone();
-        redirectUrl.pathname = '/login';
+        redirectUrl.pathname = '/admin/login';
         return NextResponse.redirect(redirectUrl);
       }
 
@@ -166,7 +166,7 @@ export async function middleware(req: NextRequest) {
       if (!user || user.role !== 'sme') {
         console.log('❌ User not authorized for SME access. Role:', user?.role);
         const redirectUrl = req.nextUrl.clone();
-        redirectUrl.pathname = '/login';
+        redirectUrl.pathname = '/sme/login';
         return NextResponse.redirect(redirectUrl);
       }
 

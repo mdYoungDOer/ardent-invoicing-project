@@ -111,7 +111,7 @@ export default function AdminDashboard() {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
-          router.push('/login');
+          router.push('/admin/login');
           return;
         }
 
@@ -125,7 +125,7 @@ export default function AdminDashboard() {
         if (userError) throw userError;
 
         if (userData.role !== 'super') {
-          router.push('/login');
+          router.push('/admin/login');
           return;
         }
 
