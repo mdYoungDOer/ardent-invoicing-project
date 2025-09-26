@@ -10,12 +10,33 @@ const nextConfig = {
 
   // Image optimization
   images: {
-    domains: [
-      'localhost',
-      'ardentinvoicing.com',
-      'supabase.co',
-      'images.unsplash.com',
-      'via.placeholder.com'
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'ardentinvoicing.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080',
+      },
     ],
     formats: ['image/webp', 'image/avif'],
   },
@@ -116,7 +137,7 @@ const nextConfig = {
   },
 
   // Output configuration for deployment
-  output: 'standalone',
+  // output: 'standalone', // Removed for DigitalOcean App Platform compatibility
 
   // Compression
   compress: true,
