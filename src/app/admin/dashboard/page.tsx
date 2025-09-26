@@ -551,7 +551,7 @@ export default function AdminDashboard() {
                   </Avatar>
                   <Box>
                     <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                      {formatCurrency(totalStats.totalRevenue)}
+                      {formatCurrency(totalStats.totalRevenue, 'GHS')}
                     </Typography>
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
                       Platform Revenue
@@ -761,7 +761,7 @@ export default function AdminDashboard() {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {formatCurrency(tenantStats[tenant.id]?.total_revenue || 0)}
+                          {formatCurrency(tenantStats[tenant.id]?.total_revenue || 0, 'GHS')}
                         </Typography>
                       </TableCell>
                       <TableCell>

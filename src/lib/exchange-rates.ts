@@ -105,15 +105,24 @@ export async function getMultipleExchangeRates(
   return results;
 }
 
-export function formatCurrency(amount: number, currency: string, locale: string = 'en-GH'): string {
-  const formatter = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+export function formatCurrency(amount: number, currency: string = 'GHS', locale: string = 'en-GH'): string {
+  // Ensure currency is valid, default to GHS if not
+  const validCurrency = currency && currency.length === 3 ? currency : 'GHS';
+  
+  try {
+    const formatter = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: validCurrency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 
-  return formatter.format(amount);
+    return formatter.format(amount);
+  } catch (error) {
+    // Fallback to simple formatting if currency is not supported
+    console.warn(`Currency ${validCurrency} not supported, using fallback formatting`);
+    return `${getCurrencySymbol(validCurrency)}${amount.toFixed(2)}`;
+  }
 }
 
 export function getCurrencySymbol(currency: string): string {
