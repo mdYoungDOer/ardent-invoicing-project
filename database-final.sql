@@ -186,9 +186,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Create triggers for updated_at
+DROP TRIGGER IF EXISTS update_subscriptions_updated_at ON subscriptions;
 CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON subscriptions
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_invoice_templates_updated_at ON invoice_templates;
 CREATE TRIGGER update_invoice_templates_updated_at BEFORE UPDATE ON invoice_templates
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
