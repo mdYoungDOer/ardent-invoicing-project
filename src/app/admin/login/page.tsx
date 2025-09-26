@@ -99,8 +99,10 @@ export default function AdminLogin() {
 
       console.log('✅ Admin role confirmed, redirecting...');
       
-      // Step 4: Redirect to admin dashboard
-      router.push('/admin/dashboard');
+      // Step 4: Small delay to ensure session is properly set, then redirect
+      setTimeout(() => {
+        window.location.href = '/admin/dashboard';
+      }, 100);
       
     } catch (error: any) {
       console.error('❌ Admin login error:', error);

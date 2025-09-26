@@ -109,9 +109,13 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        console.log('🔍 Dashboard: Checking session...');
         const { data: { session } } = await supabase.auth.getSession();
         
+        console.log('🔍 Dashboard: Session result:', { session: !!session, userId: session?.user?.id });
+        
         if (!session) {
+          console.log('❌ Dashboard: No session found, redirecting to login');
           router.push('/sme/login');
           return;
         }
