@@ -26,7 +26,7 @@ import {
   Business as BusinessIcon,
   Payment as PaymentIcon,
   CloudUpload as CloudUploadIcon,
-  Mobile as MobileIcon,
+  PhoneAndroid as MobileIcon,
   CheckCircle as CheckIcon,
   Star as StarIcon
 } from '@mui/icons-material';
