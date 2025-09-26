@@ -52,8 +52,16 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
     // Initial check
     handleScroll();
 
+    // Add scroll listener with proper options
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    // Also listen for resize events to handle mobile scroll issues
+    window.addEventListener('resize', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -77,18 +85,18 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
       <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" style={{ textDecoration: 'none' }}>
-            <Image 
-              src="/logo.png" 
-              alt="Ardent Invoicing" 
-              width={60} 
-              height={60}
-              style={{ 
-                marginRight: 8,
+            <Box
+              component="img"
+              src="/logo.png"
+              alt="Ardent Invoicing"
+              sx={{
+                width: 60,
+                height: 60,
+                marginRight: 1,
                 cursor: 'pointer',
                 transition: 'transform 0.3s ease',
                 objectFit: 'contain',
-                width: '60px',
-                height: '60px'
+                display: 'block'
               }}
             />
           </Link>
@@ -188,18 +196,18 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
           {/* Logo - Clickable Link to Homepage */}
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <Link href="/" style={{ textDecoration: 'none' }}>
-              <Image 
-                src="/logo.png" 
-                alt="Ardent Invoicing" 
-                width={scrolled ? 60 : 80} 
-                height={scrolled ? 60 : 80}
-                style={{ 
+              <Box
+                component="img"
+                src="/logo.png"
+                alt="Ardent Invoicing"
+                sx={{
+                  width: scrolled ? 60 : 80,
+                  height: scrolled ? 60 : 80,
                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   cursor: 'pointer',
                   objectFit: 'contain',
-                  width: scrolled ? '60px' : '80px',
-                  height: scrolled ? '60px' : '80px'
+                  display: 'block'
                 }}
               />
             </Link>

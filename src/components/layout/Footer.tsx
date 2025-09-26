@@ -85,17 +85,17 @@ export default function Footer() {
           <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Image 
-                  src="/logo.png" 
-                  alt="Ardent Invoicing" 
-                  width={80} 
-                  height={80}
-                  style={{ 
+                <Box
+                  component="img"
+                  src="/logo.png"
+                  alt="Ardent Invoicing"
+                  sx={{
+                    width: 80,
+                    height: 80,
                     filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
                     transition: 'transform 0.3s ease',
                     objectFit: 'contain',
-                    width: '80px',
-                    height: '80px'
+                    display: 'block'
                   }}
                 />
               </Box>
