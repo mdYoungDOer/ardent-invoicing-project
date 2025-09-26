@@ -42,7 +42,7 @@ ALTER TABLE expenses ADD COLUMN IF NOT EXISTS ocr_text TEXT;
 ALTER TABLE expenses ADD COLUMN IF NOT EXISTS mileage_distance DECIMAL(8,2);
 ALTER TABLE expenses ADD COLUMN IF NOT EXISTS location TEXT;
 ALTER TABLE expenses ADD COLUMN IF NOT EXISTS tags TEXT[];
-ALTER TABLE expenses ADD COLUMN IF COLUMN NOT EXISTS is_business BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE expenses ADD COLUMN IF NOT EXISTS is_business BOOLEAN NOT NULL DEFAULT true;
 
 -- Create invoice templates table
 CREATE TABLE invoice_templates (

@@ -26,7 +26,7 @@ import {
   CameraAlt as CameraIcon,
   AttachFile as AttachFileIcon,
   MyLocation as LocationIcon,
-  Scan as ScanIcon,
+  QrCodeScanner as ScanIcon,
   Delete as DeleteIcon
 } from '@mui/icons-material';
 import { useState, useRef } from 'react';
