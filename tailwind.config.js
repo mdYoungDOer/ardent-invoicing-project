@@ -5,6 +5,10 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  corePlugins: {
+    preflight: false, // CRITICAL: Disable Tailwind's preflight to prevent MUI conflicts
+  },
+  important: '#__next', // Ensure Tailwind utilities take precedence
   theme: {
     extend: {
       colors: {

@@ -118,6 +118,32 @@ export const lightTheme = createTheme({
         },
       },
     },
+    // CRITICAL: Set container props for components that render outside DOM hierarchy
+    MuiPopover: {
+      defaultProps: {
+        container: () => document.getElementById('__next'),
+      },
+    },
+    MuiPopper: {
+      defaultProps: {
+        container: () => document.getElementById('__next'),
+      },
+    },
+    MuiDialog: {
+      defaultProps: {
+        container: () => document.getElementById('__next'),
+      },
+    },
+    MuiModal: {
+      defaultProps: {
+        container: () => document.getElementById('__next'),
+      },
+    },
+    MuiDrawer: {
+      defaultProps: {
+        container: () => document.getElementById('__next'),
+      },
+    },
   },
 });
 
