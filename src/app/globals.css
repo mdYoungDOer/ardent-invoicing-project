@@ -1,4 +1,7 @@
 /* Global styles for Ardent Invoicing */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --font-inter: 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
