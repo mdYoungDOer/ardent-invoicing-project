@@ -5,7 +5,6 @@ import {
   Container, 
   Typography, 
   Button, 
-  Grid,
   Card,
   CardContent,
   Paper,
@@ -18,6 +17,7 @@ import {
   AccordionDetails,
   Chip
 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { 
   ArrowForward as ArrowForwardIcon,
   ExpandMore as ExpandMoreIcon,
@@ -345,7 +345,7 @@ export default function FAQPage() {
 
           <Grid container spacing={4}>
             {contactInfo.map((contact, index) => (
-              <Grid item xs={12} md={4} key={index}>
+              <Grid xs={12} md={4} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 

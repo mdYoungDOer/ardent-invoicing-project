@@ -4,12 +4,12 @@ import {
   Box, 
   Container, 
   Typography, 
-  Grid,
   Stack,
   Divider,
   IconButton,
   Link as MuiLink
 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { 
   Phone as PhoneIcon,
   Email as EmailIcon,
@@ -76,7 +76,7 @@ export default function Footer() {
       <Container maxWidth="lg">
         <Grid container spacing={6}>
           {/* Company Info */}
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <Image 
@@ -115,7 +115,7 @@ export default function Footer() {
 
           {/* Navigation Links */}
           {footerSections.map((section, index) => (
-            <Grid item xs={12} sm={6} md={2} key={index}>
+            <Grid size={{ xs: 12, sm: 6, md: 2 }} key={index}>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, color: 'white' }}>
                 {section.title}
               </Typography>

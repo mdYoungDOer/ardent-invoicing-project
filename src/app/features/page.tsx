@@ -5,7 +5,6 @@ import {
   Container, 
   Typography, 
   Button, 
-  Grid,
   Card,
   CardContent,
   Paper,
@@ -16,6 +15,7 @@ import {
   Avatar,
   Chip
 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { 
   ArrowForward as ArrowForwardIcon,
   Receipt as ReceiptIcon,
@@ -238,7 +238,7 @@ export default function FeaturesPage() {
           {mainFeatures.map((feature, index) => (
             <Box key={index} sx={{ mb: { xs: 8, md: 12 } }}>
               <Grid container spacing={6} alignItems="center">
-                <Grid item xs={12} md={6} order={{ xs: index % 2 === 0 ? 1 : 2, md: index % 2 === 0 ? 1 : 2 }}>
+                <Grid xs={12} md={6} order={{ xs: index % 2 === 0 ? 1 : 2, md: index % 2 === 0 ? 1 : 2 }}>
                   <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
                     <Box sx={{ mb: 3 }}>
                       {feature.icon}
@@ -251,7 +251,7 @@ export default function FeaturesPage() {
                     </Typography>
                     <Grid container spacing={2}>
                       {feature.features.map((item, featureIndex) => (
-                        <Grid item xs={12} sm={6} key={featureIndex}>
+                        <Grid xs={12} sm={6} key={featureIndex}>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <CheckIcon sx={{ color: 'success.main', mr: 1, fontSize: 20 }} />
                             <Typography variant="body2">{item}</Typography>
@@ -261,7 +261,7 @@ export default function FeaturesPage() {
                     </Grid>
                   </Box>
                 </Grid>
-                <Grid item xs={12} md={6} order={{ xs: index % 2 === 0 ? 2 : 1, md: index % 2 === 0 ? 2 : 1 }}>
+                <Grid xs={12} md={6} order={{ xs: index % 2 === 0 ? 2 : 1, md: index % 2 === 0 ? 2 : 1 }}>
                   <Box sx={{ position: 'relative' }}>
                     <Image
                       src={feature.image}
@@ -297,7 +297,7 @@ export default function FeaturesPage() {
 
           <Grid container spacing={4}>
             {additionalFeatures.map((feature, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
+              <Grid xs={12} sm={6} md={4} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 
@@ -374,7 +374,7 @@ export default function FeaturesPage() {
 
           <Grid container spacing={4}>
             {testimonials.map((testimonial, index) => (
-              <Grid item xs={12} md={4} key={index}>
+              <Grid xs={12} md={4} key={index}>
                 <Card elevation={2} sx={{ height: '100%', p: 3 }}>
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>

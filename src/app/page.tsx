@@ -5,7 +5,6 @@ import {
   Container, 
   Typography, 
   Button, 
-  Grid,
   Card,
   CardContent,
   Chip,
@@ -15,6 +14,7 @@ import {
   Stack,
   Divider
 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { 
   Receipt as ReceiptIcon,
   Analytics as AnalyticsIcon,
@@ -267,7 +267,7 @@ export default function HomePage() {
 
           <Grid container spacing={4}>
             {features.map((feature, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                 <Card 
                   elevation={2}
                   sx={{ 
@@ -344,7 +344,7 @@ export default function HomePage() {
 
           <Grid container spacing={3} justifyContent="center">
             {pricingPlans.map((plan, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                 <Card 
                   elevation={plan.popular ? 8 : 2}
                   sx={{ 
@@ -468,7 +468,7 @@ export default function HomePage() {
 
           <Grid container spacing={4}>
             {testimonials.map((testimonial, index) => (
-              <Grid item xs={12} md={4} key={index}>
+              <Grid size={{ xs: 12, md: 4 }} key={index}>
                 <Card 
                   elevation={2} 
                   sx={{ 
