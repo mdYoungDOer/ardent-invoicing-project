@@ -364,9 +364,9 @@ export default function AdminDashboard() {
 
   const filteredTenants = tenants.filter(tenant => {
     const matchesSearch = searchTerm === '' || 
-      tenant.business_name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTier = tierFilter === '' || tenant.subscription_tier === tierFilter;
-    const matchesStatus = statusFilter === '' || tenant.subscription_status === statusFilter;
+      (tenant.business_name || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTier = tierFilter === '' || (tenant.subscription_tier || 'free') === tierFilter;
+    const matchesStatus = statusFilter === '' || (tenant.subscription_status || 'inactive') === statusFilter;
     
     return matchesSearch && matchesTier && matchesStatus;
   });
@@ -395,7 +395,8 @@ export default function AdminDashboard() {
 
   const tierDistributionData = Object.entries(
     tenants.reduce((acc, tenant) => {
-      acc[tenant.subscription_tier] = (acc[tenant.subscription_tier] || 0) + 1;
+      const tier = tenant.subscription_tier || 'free';
+      acc[tier] = (acc[tier] || 0) + 1;
       return acc;
     }, {} as Record<string, number>)
   ).map(([tier, count]) => ({ tier, count }));
@@ -740,17 +741,17 @@ export default function AdminDashboard() {
                       <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
-                            {tenant.business_name.charAt(0).toUpperCase()}
+                            {(tenant.business_name || 'N/A').charAt(0).toUpperCase()}
                           </Avatar>
                           <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            {tenant.business_name}
+                            {tenant.business_name || 'N/A'}
                           </Typography>
                         </Box>
                       </TableCell>
                       <TableCell>
                         <Chip 
-                          label={tenant.subscription_tier.toUpperCase()} 
-                          color={getSubscriptionTierColor(tenant.subscription_tier) as any}
+                          label={(tenant.subscription_tier || 'free').toUpperCase()} 
+                          color={getSubscriptionTierColor(tenant.subscription_tier || 'free') as any}
                           size="small"
                         />
                       </TableCell>
@@ -776,12 +777,12 @@ export default function AdminDashboard() {
                       </TableCell>
                       <TableCell>
                         <Chip 
-                          label={tenant.subscription_status.toUpperCase()} 
-                          color={getStatusColor(tenant.subscription_status) as any}
+                          label={(tenant.subscription_status || 'inactive').toUpperCase()} 
+                          color={getStatusColor(tenant.subscription_status || 'inactive') as any}
                           size="small"
-                          icon={tenant.subscription_status === 'active' ? <CheckCircleIcon /> : 
-                                tenant.subscription_status === 'inactive' ? <CancelIcon /> : 
-                                tenant.subscription_status === 'suspended' ? <WarningIcon /> : <InfoIcon />}
+                          icon={(tenant.subscription_status || 'inactive') === 'active' ? <CheckCircleIcon /> : 
+                                (tenant.subscription_status || 'inactive') === 'inactive' ? <CancelIcon /> : 
+                                (tenant.subscription_status || 'inactive') === 'suspended' ? <WarningIcon /> : <InfoIcon />}
                         />
                       </TableCell>
                       <TableCell align="center">
