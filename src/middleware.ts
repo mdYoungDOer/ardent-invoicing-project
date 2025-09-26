@@ -3,6 +3,16 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  
+  // Skip middleware for login/signup pages to prevent redirect loops
+  if (pathname.startsWith('/admin/login') || 
+      pathname.startsWith('/admin/signup') ||
+      pathname.startsWith('/sme/login') || 
+      pathname.startsWith('/sme/signup')) {
+    return NextResponse.next();
+  }
+
   let res = NextResponse.next({
     request: {
       headers: req.headers,
@@ -59,11 +69,13 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const { pathname } = req.nextUrl;
-
-  // Protected routes that require authentication
+  // Protected routes that require authentication (exclude login/signup pages)
   const protectedRoutes = ['/dashboard', '/admin'];
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route)) &&
+                          !pathname.startsWith('/admin/login') && 
+                          !pathname.startsWith('/admin/signup') &&
+                          !pathname.startsWith('/sme/login') && 
+                          !pathname.startsWith('/sme/signup');
 
   // Admin routes that require super admin role (exclude login/signup)
   const adminRoutes = ['/admin'];
@@ -167,53 +179,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // If user is authenticated and trying to access login/signup pages, redirect based on role
-  if (session && (
-    pathname.startsWith('/sme/login') ||
-    pathname.startsWith('/sme/signup') ||
-    pathname.startsWith('/admin/login') ||
-    pathname.startsWith('/admin/signup')
-  )) {
-    try {
-      console.log('🔍 Middleware: User authenticated, checking role for redirect');
-      console.log('User ID:', session.user.id);
-      
-      const { data: user, error: userError } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
-
-      console.log('User role for redirect:', { user, userError });
-
-      const redirectUrl = req.nextUrl.clone();
-      
-      if (userError) {
-        console.error('❌ Error fetching user role for redirect:', userError);
-        redirectUrl.pathname = '/dashboard';
-        return NextResponse.redirect(redirectUrl);
-      }
-      
-      if (user?.role === 'super') {
-        console.log('✅ Redirecting super admin to admin dashboard');
-        redirectUrl.pathname = '/admin/dashboard';
-      } else if (user?.role === 'sme') {
-        console.log('✅ Redirecting SME user to dashboard');
-        redirectUrl.pathname = '/dashboard';
-      } else {
-        console.log('✅ Redirecting unknown role to SME login');
-        redirectUrl.pathname = '/sme/login';
-      }
-      
-      return NextResponse.redirect(redirectUrl);
-    } catch (error) {
-      console.error('❌ Error in login redirect logic:', error);
-      // If we can't determine role, redirect to SME login
-      const redirectUrl = req.nextUrl.clone();
-      redirectUrl.pathname = '/sme/login';
-      return NextResponse.redirect(redirectUrl);
-    }
-  }
+  // Note: Login/signup pages are excluded from middleware to prevent redirect loops
 
   return res;
 }
