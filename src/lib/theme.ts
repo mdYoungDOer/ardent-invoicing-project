@@ -27,47 +27,85 @@ export const lightTheme = createTheme({
     divider: 'rgba(44, 44, 44, 0.12)',
   },
   typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Inter", "SF Pro Display", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", sans-serif',
     h1: {
-      fontWeight: 700,
-      fontSize: '2.5rem',
-      lineHeight: 1.2,
+      fontWeight: 800,
+      fontSize: '3.5rem',
+      lineHeight: 1.1,
+      letterSpacing: '-0.02em',
     },
     h2: {
-      fontWeight: 600,
-      fontSize: '2rem',
-      lineHeight: 1.3,
+      fontWeight: 700,
+      fontSize: '2.75rem',
+      lineHeight: 1.2,
+      letterSpacing: '-0.01em',
     },
     h3: {
-      fontWeight: 600,
-      fontSize: '1.5rem',
-      lineHeight: 1.4,
+      fontWeight: 700,
+      fontSize: '2rem',
+      lineHeight: 1.3,
+      letterSpacing: '-0.01em',
     },
     h4: {
       fontWeight: 600,
-      fontSize: '1.25rem',
+      fontSize: '1.5rem',
       lineHeight: 1.4,
+      letterSpacing: '0em',
     },
     h5: {
       fontWeight: 600,
-      fontSize: '1.125rem',
+      fontSize: '1.25rem',
       lineHeight: 1.4,
+      letterSpacing: '0em',
     },
     h6: {
       fontWeight: 600,
-      fontSize: '1rem',
+      fontSize: '1.125rem',
       lineHeight: 1.4,
+      letterSpacing: '0em',
+    },
+    subtitle1: {
+      fontWeight: 500,
+      fontSize: '1rem',
+      lineHeight: 1.5,
+      letterSpacing: '0.01em',
+    },
+    subtitle2: {
+      fontWeight: 500,
+      fontSize: '0.875rem',
+      lineHeight: 1.5,
+      letterSpacing: '0.01em',
     },
     body1: {
+      fontWeight: 400,
       fontSize: '1rem',
       lineHeight: 1.6,
+      letterSpacing: '0.01em',
     },
     body2: {
+      fontWeight: 400,
       fontSize: '0.875rem',
       lineHeight: 1.6,
+      letterSpacing: '0.01em',
+    },
+    caption: {
+      fontWeight: 400,
+      fontSize: '0.75rem',
+      lineHeight: 1.5,
+      letterSpacing: '0.02em',
+    },
+    overline: {
+      fontWeight: 600,
+      fontSize: '0.75rem',
+      lineHeight: 1.5,
+      letterSpacing: '0.08em',
+      textTransform: 'uppercase',
     },
     button: {
       fontWeight: 600,
+      fontSize: '0.875rem',
+      lineHeight: 1.4,
+      letterSpacing: '0.02em',
       textTransform: 'none',
     },
   },
@@ -87,15 +125,28 @@ export const lightTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
-          padding: '10px 24px',
-          fontSize: '1rem',
+          borderRadius: 12,
+          padding: '12px 32px',
+          fontSize: '0.875rem',
           fontWeight: 600,
+          letterSpacing: '0.02em',
+          textTransform: 'none',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          '&:hover': {
+            transform: 'translateY(-2px)',
+          },
         },
         contained: {
-          boxShadow: '0 2px 8px rgba(166, 124, 0, 0.3)',
+          boxShadow: '0 4px 16px rgba(166, 124, 0, 0.25)',
           '&:hover': {
-            boxShadow: '0 4px 12px rgba(166, 124, 0, 0.4)',
+            boxShadow: '0 8px 24px rgba(166, 124, 0, 0.35)',
+          },
+        },
+        outlined: {
+          borderWidth: '2px',
+          '&:hover': {
+            borderWidth: '2px',
+            backgroundColor: 'rgba(166, 124, 0, 0.04)',
           },
         },
       },
@@ -103,10 +154,13 @@ export const lightTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
-          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+          borderRadius: 16,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.06)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.12)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+            transform: 'translateY(-4px)',
           },
         },
       },
@@ -115,6 +169,40 @@ export const lightTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
+          borderRadius: 12,
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 12,
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#a67c00',
+              borderWidth: '2px',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#a67c00',
+              borderWidth: '2px',
+            },
+          },
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          fontWeight: 500,
+          fontSize: '0.75rem',
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          boxShadow: '0 2px 20px rgba(0, 0, 0, 0.08)',
         },
       },
     },
@@ -178,10 +266,30 @@ export const darkTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
-          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.3)',
+          borderRadius: 16,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+            transform: 'translateY(-4px)',
+          },
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 12,
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#d4a853',
+              borderWidth: '2px',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#d4a853',
+              borderWidth: '2px',
+            },
           },
         },
       },

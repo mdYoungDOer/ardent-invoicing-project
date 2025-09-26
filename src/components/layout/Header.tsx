@@ -37,9 +37,20 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      setScrolled(isScrolled);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleTheme = () => {
@@ -51,7 +62,6 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
   };
 
   const navigationItems = [
-    { label: 'Home', href: '/' },
     { label: 'Features', href: '/features' },
     { label: 'Pricing', href: '/pricing' },
     { label: 'About', href: '/about' },
@@ -63,13 +73,19 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
     <Box sx={{ width: 250 }}>
       <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Image 
-            src="/logo.png" 
-            alt="Ardent Invoicing" 
-            width={32} 
-            height={32}
-            style={{ marginRight: 8 }}
-          />
+          <Link href="/" style={{ textDecoration: 'none' }}>
+            <Image 
+              src="/logo.png" 
+              alt="Ardent Invoicing" 
+              width={48} 
+              height={48}
+              style={{ 
+                marginRight: 8,
+                cursor: 'pointer',
+                transition: 'transform 0.3s ease'
+              }}
+            />
+          </Link>
         </Box>
         <IconButton onClick={handleDrawerToggle}>
           <CloseIcon />
@@ -113,6 +129,23 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
         >
           Get Started
         </Button>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
+          <IconButton 
+            onClick={toggleTheme} 
+            sx={{ 
+              color: 'text.primary',
+              bgcolor: 'rgba(166, 124, 0, 0.1)',
+              '&:hover': {
+                bgcolor: 'rgba(166, 124, 0, 0.2)',
+                transform: 'scale(1.05)'
+              },
+              transition: 'all 0.3s ease'
+            }}
+            aria-label="Toggle theme"
+          >
+            {nextTheme === 'dark' ? <LightModeIcon sx={{ color: '#ffd700' }} /> : <DarkModeIcon sx={{ color: '#2c2c2c' }} />}
+          </IconButton>
+        </Box>
       </Box>
     </Box>
   );
@@ -124,32 +157,41 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
   return (
     <>
       <AppBar 
-        position="sticky" 
-        elevation={0} 
+        position="fixed" 
+        elevation={scrolled ? 4 : 0} 
         sx={{ 
-          bgcolor: 'background.paper', 
-          borderBottom: 1, 
+          bgcolor: scrolled ? 'background.paper' : 'transparent',
+          borderBottom: scrolled ? 1 : 0, 
           borderColor: 'divider',
-          backdropFilter: 'blur(10px)',
-          background: 'rgba(255, 255, 255, 0.8)',
-          '&.MuiAppBar-root': {
-            background: nextTheme === 'dark' ? 'rgba(18, 18, 18, 0.8)' : 'rgba(255, 255, 255, 0.8)'
-          }
+          backdropFilter: scrolled ? 'blur(20px)' : 'none',
+          background: scrolled 
+            ? (nextTheme === 'dark' ? 'rgba(18, 18, 18, 0.95)' : 'rgba(255, 255, 255, 0.95)')
+            : 'transparent',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: scrolled ? 'translateY(0)' : 'translateY(0)',
+          zIndex: 1100
         }}
       >
-        <Toolbar sx={{ py: 2, px: { xs: 2, md: 4 } }}>
-          {/* Logo - Standalone */}
+        <Toolbar sx={{ 
+          py: scrolled ? 1.5 : 2, 
+          px: { xs: 2, md: 4 },
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}>
+          {/* Logo - Clickable Link to Homepage */}
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <Image 
-              src="/logo.png" 
-              alt="Ardent Invoicing" 
-              width={48} 
-              height={48}
-              style={{ 
-                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
-                transition: 'transform 0.3s ease'
-              }}
-            />
+            <Link href="/" style={{ textDecoration: 'none' }}>
+              <Image 
+                src="/logo.png" 
+                alt="Ardent Invoicing" 
+                width={scrolled ? 80 : 112} 
+                height={scrolled ? 48 : 64}
+                style={{ 
+                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  cursor: 'pointer'
+                }}
+              />
+            </Link>
           </Box>
           
           {/* Desktop Navigation */}
@@ -177,11 +219,19 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
           {/* Theme Toggle */}
           <IconButton 
             onClick={toggleTheme} 
-            color="inherit" 
-            sx={{ mr: 2 }}
+            sx={{ 
+              mr: 2,
+              color: 'text.primary',
+              bgcolor: 'rgba(166, 124, 0, 0.1)',
+              '&:hover': {
+                bgcolor: 'rgba(166, 124, 0, 0.2)',
+                transform: 'scale(1.05)'
+              },
+              transition: 'all 0.3s ease'
+            }}
             aria-label="Toggle theme"
           >
-            {nextTheme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+            {nextTheme === 'dark' ? <LightModeIcon sx={{ color: '#ffd700' }} /> : <DarkModeIcon sx={{ color: '#2c2c2c' }} />}
           </IconButton>
 
           {/* Desktop Auth Buttons */}
