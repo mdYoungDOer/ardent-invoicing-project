@@ -28,8 +28,6 @@ export const metadata: Metadata = {
     ]
   },
   manifest: '/manifest.json',
-  themeColor: '#a67c00',
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
   openGraph: {
     title: 'Ardent Invoicing - Professional Invoicing for Ghanaian SMEs',
@@ -54,6 +52,12 @@ export const metadata: Metadata = {
   }
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#a67c00'
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -66,7 +70,6 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#a67c00" />
         <meta name="msapplication-TileColor" content="#a67c00" />
         <meta name="msapplication-TileImage" content="/favicon.png" />
       </head>

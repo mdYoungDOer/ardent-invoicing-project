@@ -15,12 +15,12 @@ import {
 } from '@mui/material';
 import { Grid } from '@mui/material';
 import {
-  Privacy as PrivacyIcon,
   Security as SecurityIcon,
   DataUsage as DataUsageIcon,
   Shield as ShieldIcon,
   Person as PersonIcon,
-  Business as BusinessIcon
+  Business as BusinessIcon,
+  Lock as PrivacyIcon
 } from '@mui/icons-material';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
