@@ -321,54 +321,6 @@ export default function AboutPage() {
         </Container>
       </Box>
 
-      {/* Team Section */}
-      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'grey.50' }}>
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 8 }}>
-            <Typography variant="h3" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
-              Meet Our Team
-            </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
-              The passionate people behind Ardent Invoicing
-            </Typography>
-          </Box>
-
-          <Grid container spacing={4}>
-            {team.map((member, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Card 
-                  elevation={2}
-                  sx={{ 
-                    height: '100%',
-                    p: 3,
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: 4
-                    }
-                  }}
-                >
-                  <CardContent sx={{ textAlign: 'center' }}>
-                    <Avatar 
-                      src={member.avatar}
-                      sx={{ width: 120, height: 120, mx: 'auto', mb: 3 }}
-                    />
-                    <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 1 }}>
-                      {member.name}
-                    </Typography>
-                    <Typography variant="h6" color="primary.main" sx={{ mb: 2 }}>
-                      {member.role}
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                      {member.description}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
 
       {/* Contact Section */}
       <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' }}>
@@ -390,7 +342,7 @@ export default function AboutPage() {
                   Phone
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  +233 20 123 4567
+                  +233 54 832 7906
                 </Typography>
               </Card>
             </Grid>

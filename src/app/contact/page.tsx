@@ -94,7 +94,7 @@ export default function ContactPage() {
       icon: <PhoneIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
       title: "Phone Support",
       description: "Call us for immediate assistance",
-      details: "+233 20 123 4567",
+      details: "+233 54 832 7906",
       availability: "Mon-Fri: 8AM-6PM GMT",
       action: "Call Now"
     },
@@ -102,7 +102,7 @@ export default function ContactPage() {
       icon: <EmailIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
       title: "Email Support",
       description: "Send us your questions anytime",
-      details: "support@ardentinvoicing.com",
+      details: "hello@ardentinvoicing.com",
       availability: "24/7 response within 24 hours",
       action: "Send Email"
     },
@@ -110,7 +110,7 @@ export default function ContactPage() {
       icon: <LocationIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
       title: "Office Location",
       description: "Visit us in Accra",
-      details: "123 Business District, Accra, Ghana",
+      details: "10A Mega Street, Adenta Municipality, Accra, Ghana",
       availability: "Mon-Fri: 9AM-5PM GMT",
       action: "Get Directions"
     }
