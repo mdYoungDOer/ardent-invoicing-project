@@ -36,6 +36,7 @@ export default function AdminSignup() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [formData, setFormData] = useState({
+    fullName: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -66,6 +67,13 @@ export default function AdminSignup() {
       return;
     }
 
+    // Validate full name
+    if (!formData.fullName.trim()) {
+      setError('Full name is required');
+      setLoading(false);
+      return;
+    }
+
     // Validate password strength
     if (formData.password.length < 8) {
       setError('Admin password must be at least 8 characters long');
@@ -80,6 +88,11 @@ export default function AdminSignup() {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          data: {
+            full_name: formData.fullName
+          }
+        }
       });
 
       if (authError) throw authError;
@@ -96,6 +109,7 @@ export default function AdminSignup() {
         .insert({
           id: authData.user.id,
           email: formData.email,
+          full_name: formData.fullName,
           role: 'super'
           // Super admins don't need subscription_tier, is_unlimited_free, etc.
           // They have platform-wide access by default
@@ -168,6 +182,16 @@ export default function AdminSignup() {
           <Box component="form" onSubmit={handleAdminSignup}>
             <TextField
               fullWidth
+              label="Full Name"
+              value={formData.fullName}
+              onChange={handleInputChange('fullName')}
+              margin="normal"
+              required
+              autoFocus
+              disabled={loading}
+            />
+            <TextField
+              fullWidth
               label="Admin Email"
               type="email"
               value={formData.email}
@@ -175,7 +199,6 @@ export default function AdminSignup() {
               margin="normal"
               required
               autoComplete="email"
-              autoFocus
               disabled={loading}
             />
             <TextField

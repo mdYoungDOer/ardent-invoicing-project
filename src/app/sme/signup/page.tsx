@@ -34,6 +34,7 @@ export default function SmeSignup() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [formData, setFormData] = useState({
+    fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -72,6 +73,13 @@ export default function SmeSignup() {
       return;
     }
 
+    // Validate full name
+    if (!formData.fullName.trim()) {
+      setError('Full name is required');
+      setLoading(false);
+      return;
+    }
+
     // Validate business name
     if (!formData.businessName.trim()) {
       setError('Business name is required');
@@ -88,6 +96,12 @@ export default function SmeSignup() {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          data: {
+            full_name: formData.fullName,
+            business_name: formData.businessName
+          }
+        }
       });
 
       if (authError) throw authError;
@@ -121,6 +135,7 @@ export default function SmeSignup() {
         .insert({
           id: authData.user.id,
           email: formData.email,
+          full_name: formData.fullName,
           role: 'sme',
           tenant_id: tenantData.id,
           subscription_tier: 'free'
@@ -193,12 +208,21 @@ export default function SmeSignup() {
           <Box component="form" onSubmit={handleSmeSignup}>
             <TextField
               fullWidth
+              label="Full Name"
+              value={formData.fullName}
+              onChange={handleInputChange('fullName')}
+              margin="normal"
+              required
+              autoFocus
+              disabled={loading}
+            />
+            <TextField
+              fullWidth
               label="Business Name"
               value={formData.businessName}
               onChange={handleInputChange('businessName')}
               margin="normal"
               required
-              autoFocus
               disabled={loading}
             />
             <TextField
