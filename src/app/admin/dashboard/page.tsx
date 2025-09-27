@@ -447,6 +447,7 @@ export default function AdminDashboard() {
             </Typography>
           </Box>
         </Box>
+        </motion.div>
 
       {/* Key Metrics Cards */}
       <motion.div

@@ -275,6 +275,7 @@ export default function NewExpensePage() {
             {isSubmitting ? <CircularProgress size={20} /> : 'Save Expense'}
           </Button>
         </Box>
+        </motion.div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={4}>

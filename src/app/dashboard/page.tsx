@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Box, Typography, Alert } from '@mui/material';
 import { useAppStore } from '@/lib/store';
@@ -13,7 +13,7 @@ import GuidedTour, { dashboardTourSteps } from '@/components/onboarding/GuidedTo
 export const dynamic = 'force-dynamic';
 
 
-export default function Dashboard() {
+function DashboardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, tenant } = useAppStore();
@@ -193,5 +193,19 @@ export default function Dashboard() {
         context="dashboard"
       />
     </>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={
+      <SMELayout title="Dashboard">
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <Typography>Loading...</Typography>
+        </Box>
+      </SMELayout>
+    }>
+      <DashboardPage />
+    </Suspense>
   );
 }

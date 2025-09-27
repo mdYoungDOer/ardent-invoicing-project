@@ -353,6 +353,7 @@ export default function DashboardContent() {
           </Button>
         </Box>
       </Box>
+      </motion.div>
 
       {/* Quick Actions */}
       <motion.div
