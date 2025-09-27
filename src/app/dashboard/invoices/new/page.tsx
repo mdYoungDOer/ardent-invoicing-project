@@ -100,7 +100,7 @@ export default function NewInvoicePage() {
   const watchedCurrency = watch('currency');
 
   // Calculate totals
-  const subtotal = watchedLineItems.reduce((sum, item) => sum + (item.total_amount || 0), 0);
+  const subtotal = watchedLineItems?.reduce((sum, item) => sum + (item.total_amount || 0), 0) || 0;
   const taxAmount = (subtotal * (watch('tax_rate') || 0)) / 100;
   const discountAmount = watch('discount_amount') || 0;
   const total = subtotal + taxAmount - discountAmount;
@@ -514,7 +514,7 @@ export default function NewInvoicePage() {
                                 type="number"
                                 onChange={(e) => {
                                   const quantity = parseFloat(e.target.value) || 0;
-                                  const unitPrice = watchedLineItems[index]?.unit_price || 0;
+                                  const unitPrice = watchedLineItems?.[index]?.unit_price || 0;
                                   const total = calculateLineTotal(quantity, unitPrice);
                                   setValue(`line_items.${index}.quantity`, quantity);
                                   setValue(`line_items.${index}.total_amount`, total);
@@ -537,7 +537,7 @@ export default function NewInvoicePage() {
                                 type="number"
                                 onChange={(e) => {
                                   const unitPrice = parseFloat(e.target.value) || 0;
-                                  const quantity = watchedLineItems[index]?.quantity || 0;
+                                  const quantity = watchedLineItems?.[index]?.quantity || 0;
                                   const total = calculateLineTotal(quantity, unitPrice);
                                   setValue(`line_items.${index}.unit_price`, unitPrice);
                                   setValue(`line_items.${index}.total_amount`, total);
@@ -559,7 +559,7 @@ export default function NewInvoicePage() {
                                 label="Total"
                                 type="number"
                                 InputProps={{
-                                  startAdornment: getCurrencyFlag(watchedCurrency) + ' ',
+                                  startAdornment: getCurrencyFlag(watchedCurrency || 'GHS') + ' ',
                                 }}
                                 disabled
                               />
