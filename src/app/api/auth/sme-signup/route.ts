@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     // Initialize Supabase admin client
     const supabaseAdmin = getSupabaseAdmin();
     
-    const { email, password, fullName, businessName } = await request.json();
+    const { email, password, fullName, businessName, preferredPlan } = await request.json();
 
     // Validate input
     if (!email || !password || !fullName || !businessName) {
@@ -43,6 +43,10 @@ export async function POST(request: NextRequest) {
     console.log('🏢 SME Signup API: Creating business account...');
     console.log('Email:', email);
     console.log('Business:', businessName);
+    console.log('Preferred Plan:', preferredPlan || 'free');
+    
+    // Always start with FREE trial - no paid plans during signup
+    const initialPlan = 'free';
 
     // Create user with Supabase Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
@@ -103,7 +107,10 @@ export async function POST(request: NextRequest) {
         full_name: fullName,
         role: 'sme',
         tenant_id: tenantData.id,
-        subscription_tier: 'free'
+        subscription_tier: initialPlan,
+        preferred_plan: preferredPlan || null, // Store preferred plan for later upgrade
+        subscription_status: 'trial',
+        trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() // 14-day trial
       });
 
     if (userError) {
@@ -139,9 +146,11 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Business account created successfully! Please check your email to verify your account.',
+      message: 'Business account created successfully! You have a 14-day free trial. Please check your email to verify your account.',
       userId: authData.user.id,
-      tenantId: tenantData.id
+      tenantId: tenantData.id,
+      trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+      preferredPlan: preferredPlan || null
     });
 
   } catch (error) {

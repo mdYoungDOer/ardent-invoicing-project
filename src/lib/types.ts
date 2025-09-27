@@ -3,10 +3,13 @@
 export interface User {
   id: string;
   email: string;
+  full_name?: string;
   role: 'sme' | 'super' | 'client';
   tenant_id?: string;
   subscription_tier: 'free' | 'starter' | 'pro' | 'enterprise';
-  subscription_status: 'active' | 'cancelled' | 'past_due' | 'pending';
+  subscription_status: 'trial' | 'active' | 'cancelled' | 'past_due' | 'pending';
+  preferred_plan?: string;
+  trial_ends_at?: string;
   invoice_quota_used: number;
   is_unlimited_free: boolean;
   created_at: string;
@@ -173,7 +176,7 @@ export type UserRole = 'sme' | 'super' | 'client';
 
 export type SubscriptionTier = 'free' | 'starter' | 'pro' | 'enterprise';
 
-export type SubscriptionStatus = 'active' | 'cancelled' | 'past_due' | 'pending';
+export type SubscriptionStatus = 'trial' | 'active' | 'cancelled' | 'past_due' | 'pending';
 
 export type BillingInterval = 'monthly' | 'quarterly' | 'biannual' | 'annual';
 

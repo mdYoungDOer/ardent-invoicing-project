@@ -318,13 +318,14 @@ export default function PricingPage() {
                     </List>
 
                     <Button 
-                      onClick={() => {
-                        if (plan.name === 'Enterprise') {
-                          router.push('/contact');
-                        } else {
-                          router.push(`/sme/signup?plan=${plan.name.toLowerCase()}&first_visit=true`);
-                        }
-                      }}
+                                onClick={() => {
+                                  if (plan.name === 'Enterprise') {
+                                    router.push('/contact');
+                                  } else {
+                                    // Always redirect to SME signup with plan parameter for trial + upgrade flow
+                                    router.push(`/sme/signup?plan=${plan.id}&first_visit=true`);
+                                  }
+                                }}
                       variant={plan.popular ? 'contained' : 'outlined'}
                       fullWidth
                       size="large"

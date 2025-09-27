@@ -102,7 +102,8 @@ export default function SmeSignup() {
           email: formData.email,
           password: formData.password,
           fullName: formData.fullName,
-          businessName: formData.businessName
+          businessName: formData.businessName,
+          preferredPlan: searchParams.get('plan') || null
         }),
       });
 
@@ -116,9 +117,10 @@ export default function SmeSignup() {
 
       setSuccess(result.message);
       
-      // Redirect to SME login after 3 seconds
+      // Redirect to SME login with upgrade hint if preferred plan was selected
       setTimeout(() => {
-        router.push('/sme/login');
+        const upgradeParam = result.preferredPlan && result.preferredPlan !== 'free' ? `?upgrade=${result.preferredPlan}` : '';
+        router.push(`/sme/login${upgradeParam}`);
       }, 3000);
 
     } catch (error: unknown) {

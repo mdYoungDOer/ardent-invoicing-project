@@ -41,6 +41,7 @@ import { supabase } from '@/lib/supabase';
 import { formatCurrency } from '@/lib/exchange-rates';
 import { getInvoiceStats, getExpenseStats, fetchInvoices, fetchExpenses } from '@/lib/supabase-queries';
 import EmptyState from '@/components/ui/EmptyState';
+import TrialBanner from '@/components/sme/TrialBanner';
 import { motion } from 'framer-motion';
 
 interface DashboardStats {
@@ -316,6 +317,9 @@ export default function DashboardContent() {
 
   return (
     <Box sx={{ p: 4 }}>
+      {/* Trial Banner */}
+      <TrialBanner />
+      
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
