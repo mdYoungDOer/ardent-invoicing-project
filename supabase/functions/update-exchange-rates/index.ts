@@ -64,7 +64,7 @@ serve(async (req) => {
           const analyticsRecord = {
             tenant_id: null, // Global exchange rates
             metric_type: 'exchange_rate',
-            period: 'realtime',
+            period: 'daily',
             data: {
               from: exchangeRate.from,
               to: exchangeRate.to,
@@ -129,7 +129,7 @@ serve(async (req) => {
           const analyticsRecord = {
             tenant_id: null,
             metric_type: 'exchange_rate',
-            period: 'realtime',
+            period: 'daily',
             data: {
               from: exchangeRate.from,
               to: exchangeRate.to,
