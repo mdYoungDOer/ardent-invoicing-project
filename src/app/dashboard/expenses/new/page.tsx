@@ -2,7 +2,6 @@
 
 import { 
   Box, 
-  Container, 
   Typography, 
   Button, 
   Grid, 
@@ -11,8 +10,6 @@ import {
   TextField,
   MenuItem,
   IconButton,
-  AppBar,
-  Toolbar,
   Divider,
   Paper,
   Alert,
@@ -37,6 +34,7 @@ import { useAppStore } from '@/lib/store';
 import { createExpense, uploadReceipt } from '@/lib/supabase-queries';
 import { createExpenseSchema, type CreateExpenseData } from '@/lib/validations';
 import { getCurrencyFlag } from '@/lib/exchange-rates';
+import SMELayout from '@/components/sme/SMELayout';
 
 const CURRENCIES = [
   { value: 'GHS', label: '🇬🇭 Ghana Cedis (GHS)', default: true },
@@ -249,16 +247,18 @@ export default function NewExpensePage() {
   };
 
   return (
-    <Box>
-      {/* Header */}
-      <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider' }}>
-        <Toolbar>
-          <IconButton component="div" onClick={() => router.back()} sx={{ mr: 2 }}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700, color: 'primary.main' }}>
-            Add New Expense
-          </Typography>
+    <SMELayout title="Add New Expense">
+      <Box sx={{ p: 4 }}>
+        {/* Header Actions */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton onClick={() => router.back()}>
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h4" sx={{ fontWeight: 700 }}>
+              Add New Expense
+            </Typography>
+          </Box>
           <Button
             variant="contained"
             startIcon={<SaveIcon />}
@@ -268,10 +268,8 @@ export default function NewExpensePage() {
           >
             {isSubmitting ? <CircularProgress size={20} /> : 'Save Expense'}
           </Button>
-        </Toolbar>
-      </AppBar>
+        </Box>
 
-      <Container maxWidth="md" sx={{ py: 4 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={4}>
             {/* Receipt Upload */}
@@ -588,7 +586,7 @@ export default function NewExpensePage() {
             </Grid>
           </Grid>
         </form>
-      </Container>
-    </Box>
+      </Box>
+    </SMELayout>
   );
 }
