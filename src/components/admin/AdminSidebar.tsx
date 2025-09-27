@@ -89,6 +89,13 @@ export default function AdminSidebar({ user, onNotificationClick, unreadCount }:
 
   const handleNavigation = (path: string) => {
     router.push(path);
+    // Fallback navigation method
+    setTimeout(() => {
+      if (window.location.pathname !== path) {
+        window.location.href = path;
+      }
+    }, 100);
+    
     if (isMobile) {
       setMobileOpen(false);
     }

@@ -108,10 +108,10 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
       active: title === 'Dashboard'
     },
     {
-      title: 'Payment',
-      icon: <PaymentIcon />,
-      path: '/dashboard/payments',
-      active: false
+      title: 'Invoices',
+      icon: <InvoiceIcon />,
+      path: '/dashboard/invoices',
+      active: title === 'Invoices'
     },
     {
       title: 'Customers',
@@ -120,45 +120,25 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
       active: false
     },
     {
-      title: 'Message',
-      icon: <MessageIcon />,
-      path: '/dashboard/messages',
-      active: false,
-      badge: 8
-    },
-  ];
-
-  const toolsItems = [
-    {
-      title: 'Product',
-      icon: <ProductIcon />,
-      path: '/dashboard/products',
-      active: false
-    },
-    {
-      title: 'Invoice',
-      icon: <InvoiceIcon />,
-      path: '/dashboard/invoices',
-      active: title === 'Invoices'
-    },
-    {
       title: 'Expenses',
       icon: <ReceiptIcon />,
       path: '/dashboard/expenses',
       active: title === 'Expenses'
     },
+  ];
+
+  const toolsItems = [
+    {
+      title: 'Products',
+      icon: <ProductIcon />,
+      path: '/dashboard/products',
+      active: title === 'Products'
+    },
     {
       title: 'Analytics',
       icon: <AnalyticsIcon />,
       path: '/dashboard/analytics',
-      active: false
-    },
-    {
-      title: 'Automation',
-      icon: <SettingsIcon />,
-      path: '/dashboard/automation',
-      active: false,
-      badge: 'BETA'
+      active: title === 'Analytics'
     },
   ];
 
@@ -167,19 +147,7 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
       title: 'Settings',
       icon: <SettingsIcon />,
       path: '/dashboard/settings',
-      active: false
-    },
-    {
-      title: 'Security',
-      icon: <SecurityIcon />,
-      path: '/dashboard/security',
-      active: false
-    },
-    {
-      title: 'Help',
-      icon: <HelpIcon />,
-      path: '/dashboard/help',
-      active: false
+      active: title === 'Settings'
     },
   ];
 
@@ -218,7 +186,16 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
           {navigationItems.map((item) => (
             <ListItem key={item.title} disablePadding sx={{ mb: 0.5 }}>
               <ListItemButton
-                onClick={() => router.push(item.path)}
+                onClick={() => {
+                  // Test navigation with both methods
+                  router.push(item.path);
+                  // Fallback method
+                  setTimeout(() => {
+                    if (window.location.pathname !== item.path) {
+                      window.location.href = item.path;
+                    }
+                  }, 100);
+                }}
                 sx={{
                   borderRadius: 2,
                   bgcolor: item.active ? 'primary.main' : 'transparent',
@@ -268,7 +245,16 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
           {toolsItems.map((item) => (
             <ListItem key={item.title} disablePadding sx={{ mb: 0.5 }}>
               <ListItemButton
-                onClick={() => router.push(item.path)}
+                onClick={() => {
+                  // Test navigation with both methods
+                  router.push(item.path);
+                  // Fallback method
+                  setTimeout(() => {
+                    if (window.location.pathname !== item.path) {
+                      window.location.href = item.path;
+                    }
+                  }, 100);
+                }}
                 sx={{
                   borderRadius: 2,
                   bgcolor: item.active ? 'primary.main' : 'transparent',
@@ -311,7 +297,16 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
           {supportItems.map((item) => (
             <ListItem key={item.title} disablePadding sx={{ mb: 0.5 }}>
               <ListItemButton
-                onClick={() => router.push(item.path)}
+                onClick={() => {
+                  // Test navigation with both methods
+                  router.push(item.path);
+                  // Fallback method
+                  setTimeout(() => {
+                    if (window.location.pathname !== item.path) {
+                      window.location.href = item.path;
+                    }
+                  }, 100);
+                }}
                 sx={{
                   borderRadius: 2,
                   bgcolor: item.active ? 'primary.main' : 'transparent',
