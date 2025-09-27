@@ -60,6 +60,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { useAppStore } from '@/lib/store';
 import { formatCurrency } from '@/lib/exchange-rates';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 import { SUBSCRIPTION_PLANS } from '@/lib/subscription-plans';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 import AdminLayout from '@/components/admin/AdminLayout';
@@ -102,6 +103,20 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [tierFilter, setTierFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+
+  // Initialize admin real-time features
+  const { 
+    systemStats, 
+    realtimeMetrics, 
+    isConnected,
+    createSystemAlert 
+  } = useAdminRealtime({
+    enableSystemMonitoring: true,
+    enableNotifications: true,
+    onError: (error) => {
+      console.error('Admin realtime error:', error);
+    }
+  });
   const [newTenantDialog, setNewTenantDialog] = useState(false);
   const [editTenant, setEditTenant] = useState<Tenant | null>(null);
   const [newTenant, setNewTenant] = useState({
@@ -372,17 +387,43 @@ export default function AdminDashboard() {
   return (
     <AdminLayout title="Dashboard" user={user}>
       {/* Page Title */}
-      <Typography 
-        variant="h4" 
-        component="h1" 
-        sx={{ 
-          fontWeight: 700,
-          color: 'text.primary',
-          mb: 4,
-        }}
-      >
-        Dashboard
-      </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+          <Typography 
+            variant="h4" 
+            component="h1" 
+            sx={{ 
+              fontWeight: 700,
+              color: 'text.primary',
+            }}
+          >
+            Dashboard
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                bgcolor: isConnected ? 'success.main' : 'error.main',
+                animation: isConnected ? 'pulse 2s infinite' : 'none',
+                '@keyframes pulse': {
+                  '0%': {
+                    opacity: 1,
+                  },
+                  '50%': {
+                    opacity: 0.5,
+                  },
+                  '100%': {
+                    opacity: 1,
+                  },
+                },
+              }}
+            />
+            <Typography variant="caption" color="text.secondary">
+              {isConnected ? 'Real-time Connected' : 'Disconnected'}
+            </Typography>
+          </Box>
+        </Box>
 
       {/* Key Metrics Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -398,10 +439,13 @@ export default function AdminDashboard() {
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
                   <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-                    {dashboardStats.totalTenants.toLocaleString()}
+                    {systemStats.totalTenants.toLocaleString()}
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     Total Tenants
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
+                    +{realtimeMetrics.newTenantsToday} today
                   </Typography>
                 </Box>
                 <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 56, height: 56 }}>
@@ -424,10 +468,13 @@ export default function AdminDashboard() {
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
                   <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-                    {formatCurrency(dashboardStats.totalRevenue, 'GHS')}
+                    {formatCurrency(systemStats.totalRevenue, 'GHS')}
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     Total Revenue
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
+                    +{formatCurrency(realtimeMetrics.revenueToday, 'GHS')} today
                   </Typography>
                 </Box>
                 <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 56, height: 56 }}>

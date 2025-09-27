@@ -27,7 +27,8 @@ import {
   LocationOn as LocationIcon,
   DirectionsCar as CarIcon,
   MoreVert as MoreIcon,
-  AttachFile as AttachFileIcon
+  AttachFile as AttachFileIcon,
+  Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -118,6 +119,13 @@ export default function ExpensesPage() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setSelectedExpense(null);
+  };
+
+  const handleViewExpense = () => {
+    if (selectedExpense) {
+      router.push(`/dashboard/expenses/${selectedExpense.id}`);
+    }
+    handleMenuClose();
   };
 
   const handleEditExpense = () => {
@@ -415,6 +423,10 @@ export default function ExpensesPage() {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
+          <MenuItem onClick={handleViewExpense}>
+            <VisibilityIcon sx={{ mr: 1 }} />
+            View
+          </MenuItem>
           <MenuItem onClick={handleEditExpense}>
             <EditIcon sx={{ mr: 1 }} />
             Edit

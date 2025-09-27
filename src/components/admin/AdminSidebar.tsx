@@ -18,6 +18,7 @@ import {
   useMediaQuery,
   Switch,
   FormControlLabel,
+  Badge,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -29,6 +30,10 @@ import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
   Logout as LogoutIcon,
+  Storage as StorageIcon,
+  Notifications as NotificationsIcon,
+  Security as SecurityIcon,
+  TrendingUp as ExchangeRateIcon,
 } from '@mui/icons-material';
 import { useTheme as useNextTheme } from 'next-themes';
 
@@ -40,6 +45,8 @@ interface AdminSidebarProps {
     email: string;
     role: string;
   };
+  onNotificationClick?: () => void;
+  unreadCount?: number;
 }
 
 const navigationItems = [
@@ -60,13 +67,15 @@ const navigationItems = [
   {
     title: 'SYSTEM',
     items: [
+      { label: 'Storage Manager', icon: StorageIcon, path: '/admin/storage' },
+      { label: 'Exchange Rates', icon: ExchangeRateIcon, path: '/admin/exchange-rates' },
       { label: 'Settings', icon: SettingsIcon, path: '/admin/settings' },
       { label: 'Profile', icon: ProfileIcon, path: '/admin/profile' },
     ]
   }
 ];
 
-export default function AdminSidebar({ user }: AdminSidebarProps) {
+export default function AdminSidebar({ user, onNotificationClick, unreadCount }: AdminSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const theme = useTheme();
@@ -192,6 +201,45 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
             </List>
           </Box>
         ))}
+      </Box>
+
+      {/* Notifications Button */}
+      <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+        <ListItemButton
+          onClick={onNotificationClick}
+          sx={{
+            borderRadius: 2,
+            mb: 1,
+            position: 'relative',
+            '&:hover': {
+              bgcolor: 'action.hover',
+            },
+          }}
+        >
+          <ListItemIcon sx={{ color: 'text.secondary', minWidth: 40 }}>
+            <NotificationsIcon />
+          </ListItemIcon>
+          <ListItemText 
+            primary="System Notifications"
+            primaryTypographyProps={{ fontWeight: 500 }}
+          />
+          {unreadCount && unreadCount > 0 && (
+            <Badge 
+              badgeContent={unreadCount} 
+              color="error"
+              sx={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                '& .MuiBadge-badge': {
+                  fontSize: '0.75rem',
+                  height: 18,
+                  minWidth: 18,
+                }
+              }}
+            />
+          )}
+        </ListItemButton>
       </Box>
 
       {/* Dark Mode Toggle */}

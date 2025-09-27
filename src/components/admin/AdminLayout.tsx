@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
 } from '@mui/material';
 import AdminSidebar from './AdminSidebar';
+import AdminNotificationCenter from './AdminNotificationCenter';
+import { useAdminRealtime } from '@/hooks/useAdminRealtime';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -21,11 +23,25 @@ export default function AdminLayout({
   title, 
   user
 }: AdminLayoutProps) {
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  
+  // Initialize admin real-time features
+  const { unreadCount } = useAdminRealtime({
+    enableSystemMonitoring: true,
+    enableNotifications: true,
+    onError: (error) => {
+      console.error('Admin realtime error:', error);
+    }
+  });
 
   return (
     <Box sx={{ display: 'flex' }}>
       {/* Sidebar */}
-      <AdminSidebar user={user} />
+      <AdminSidebar 
+        user={user} 
+        onNotificationClick={() => setNotificationOpen(true)}
+        unreadCount={unreadCount}
+      />
 
       {/* Main Content */}
       <Box
@@ -49,6 +65,12 @@ export default function AdminLayout({
           {children}
         </Box>
       </Box>
+
+      {/* Admin Notification Center */}
+      <AdminNotificationCenter 
+        open={notificationOpen}
+        onClose={() => setNotificationOpen(false)}
+      />
     </Box>
   );
 }

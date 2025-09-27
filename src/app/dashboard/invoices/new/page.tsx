@@ -139,12 +139,20 @@ export default function NewInvoicePage() {
   };
 
   const fetchExchangeRate = async () => {
+    if (!watchedCurrency || watchedCurrency === 'GHS') {
+      setExchangeRate(null);
+      return;
+    }
+
     try {
+      console.log(`Fetching exchange rate: GHS to ${watchedCurrency}`);
       const rate = await getExchangeRate('GHS', watchedCurrency);
       setExchangeRate(rate.rate);
+      console.log(`Exchange rate set: 1 GHS = ${rate.rate} ${watchedCurrency}`);
     } catch (error) {
       console.error('Failed to fetch exchange rate:', error);
       setExchangeRate(null);
+      setError('Failed to fetch exchange rate. Please try again.');
     }
   };
 

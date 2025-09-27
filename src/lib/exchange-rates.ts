@@ -13,9 +13,39 @@ export interface ExchangeRateResult {
   timestamp: string;
 }
 
+export interface ExchangeRateError {
+  code: string;
+  message: string;
+  timestamp: string;
+}
+
 // Cache for exchange rates (in-memory, expires after 1 hour)
 const rateCache = new Map<string, { data: ExchangeRateResult; expires: number }>();
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+
+// Get API key from environment
+const getApiKey = (): string | null => {
+  if (typeof window !== 'undefined') {
+    // Client-side
+    return process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_KEY || null;
+  } else {
+    // Server-side
+    return process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_KEY || null;
+  }
+};
+
+// Build API URL with or without API key
+const buildApiUrl = (fromCurrency: string): string => {
+  const apiKey = getApiKey();
+  
+  if (apiKey) {
+    // Use API key for authenticated requests (higher rate limits)
+    return `${EXCHANGE_RATE_API_BASE}/latest/${fromCurrency}?access_key=${apiKey}`;
+  } else {
+    // Use free tier (limited requests)
+    return `${EXCHANGE_RATE_API_BASE}/latest/${fromCurrency}`;
+  }
+};
 
 export async function getExchangeRate(fromCurrency: string, toCurrency: string): Promise<ExchangeRateResult> {
   // If same currency, return rate of 1
@@ -37,13 +67,32 @@ export async function getExchangeRate(fromCurrency: string, toCurrency: string):
   }
 
   try {
-    const response = await fetch(`${EXCHANGE_RATE_API_BASE}/latest/${fromCurrency}`);
+    const apiUrl = buildApiUrl(fromCurrency);
+    const apiKey = getApiKey();
+    
+    console.log(`Fetching exchange rate: ${fromCurrency} to ${toCurrency}${apiKey ? ' (with API key)' : ' (free tier)'}`);
+    
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'ArdentInvoicing/1.0',
+      },
+    });
     
     if (!response.ok) {
-      throw new Error(`Exchange rate API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`Exchange rate API error: ${response.status} - ${errorText}`);
+      throw new Error(`Exchange rate API error: ${response.status} - ${response.statusText}`);
     }
 
     const data: ExchangeRateResponse = await response.json();
+    
+    // Validate response structure
+    if (!data.rates || typeof data.rates !== 'object') {
+      throw new Error('Invalid exchange rate response format');
+    }
+    
     const rate = data.rates[toCurrency];
 
     if (typeof rate !== 'number') {
@@ -63,6 +112,7 @@ export async function getExchangeRate(fromCurrency: string, toCurrency: string):
       expires: Date.now() + CACHE_DURATION,
     });
 
+    console.log(`Exchange rate cached: ${fromCurrency} to ${toCurrency} = ${rate}`);
     return result;
   } catch (error) {
     console.error('Error fetching exchange rate:', error);
@@ -149,4 +199,72 @@ export function getCurrencyFlag(currency: string): string {
   };
 
   return flags[currency] || '🌍';
+}
+
+// Utility function to convert amount between currencies
+export async function convertCurrency(
+  amount: number, 
+  fromCurrency: string, 
+  toCurrency: string
+): Promise<number> {
+  const rateData = await getExchangeRate(fromCurrency, toCurrency);
+  return amount * rateData.rate;
+}
+
+// Test exchange rate API connectivity
+export async function testExchangeRateAPI(): Promise<{
+  success: boolean;
+  apiKeyPresent: boolean;
+  testRate?: ExchangeRateResult;
+  error?: string;
+}> {
+  try {
+    const apiKey = getApiKey();
+    const testRate = await getExchangeRate('USD', 'GHS');
+    
+    return {
+      success: true,
+      apiKeyPresent: !!apiKey,
+      testRate,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      apiKeyPresent: !!getApiKey(),
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
+
+// Get available currencies
+export function getSupportedCurrencies(): string[] {
+  return ['GHS', 'USD', 'GBP', 'EUR', 'CAD', 'AUD'];
+}
+
+// Validate currency code
+export function isValidCurrency(currency: string): boolean {
+  return getSupportedCurrencies().includes(currency.toUpperCase());
+}
+
+// Clear exchange rate cache
+export function clearExchangeRateCache(): void {
+  rateCache.clear();
+  console.log('Exchange rate cache cleared');
+}
+
+// Get cache statistics
+export function getCacheStats(): {
+  size: number;
+  entries: Array<{ key: string; expires: number; isExpired: boolean }>;
+} {
+  const entries = Array.from(rateCache.entries()).map(([key, value]) => ({
+    key,
+    expires: value.expires,
+    isExpired: Date.now() > value.expires,
+  }));
+
+  return {
+    size: rateCache.size,
+    entries,
+  };
 }

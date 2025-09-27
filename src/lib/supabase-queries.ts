@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import type { Invoice, InvoiceLineItem, Expense } from './store';
+import { StorageService, uploadReceipt as storageUploadReceipt, uploadInvoicePDF as storageUploadInvoicePDF } from './storage';
 
 // Invoice queries
 export async function fetchInvoices(tenantId: string): Promise<Invoice[]> {
@@ -98,11 +99,12 @@ export async function fetchExpenses(tenantId: string): Promise<Expense[]> {
   return data || [];
 }
 
-export async function fetchExpenseById(id: string): Promise<Expense | null> {
+export async function fetchExpenseById(id: string, tenantId: string): Promise<Expense | null> {
   const { data, error } = await supabase
     .from('expenses')
     .select('*')
     .eq('id', id)
+    .eq('tenant_id', tenantId)
     .single();
 
   if (error) throw error;
@@ -120,11 +122,14 @@ export async function createExpense(expenseData: any): Promise<Expense> {
   return data;
 }
 
-export async function updateExpense(id: string, updates: Partial<Expense>): Promise<Expense> {
+export async function updateExpense(expenseData: any): Promise<Expense> {
+  const { id, tenant_id, ...updates } = expenseData;
+  
   const { data, error } = await supabase
     .from('expenses')
     .update(updates)
     .eq('id', id)
+    .eq('tenant_id', tenant_id)
     .select()
     .single();
 
@@ -141,33 +146,54 @@ export async function deleteExpense(id: string): Promise<void> {
   if (error) throw error;
 }
 
-// File upload queries
+// File upload queries - Updated to use new StorageService
+
 export async function uploadReceipt(file: File, path: string): Promise<string> {
-  const { data, error } = await supabase.storage
-    .from('receipts')
-    .upload(path, file);
+  // For backward compatibility, extract tenant ID from path or use current tenant
+  const pathParts = path.split('/');
+  const tenantId = pathParts[0]?.startsWith('tenant-') ? pathParts[0].replace('tenant-', '') : null;
+  
+  if (tenantId) {
+    const result = await storageUploadReceipt(file, tenantId);
+    return result.url;
+  } else {
+    // Fallback to old method for backward compatibility
+    const { data, error } = await supabase.storage
+      .from('receipts')
+      .upload(path, file);
 
-  if (error) throw error;
+    if (error) throw error;
 
-  const { data: { publicUrl } } = supabase.storage
-    .from('receipts')
-    .getPublicUrl(data.path);
+    const { data: { publicUrl } } = supabase.storage
+      .from('receipts')
+      .getPublicUrl(data.path);
 
-  return publicUrl;
+    return publicUrl;
+  }
 }
 
 export async function uploadInvoicePDF(file: File, path: string): Promise<string> {
-  const { data, error } = await supabase.storage
-    .from('invoices')
-    .upload(path, file);
+  // For backward compatibility, extract tenant ID from path or use current tenant
+  const pathParts = path.split('/');
+  const tenantId = pathParts[0]?.startsWith('tenant-') ? pathParts[0].replace('tenant-', '') : null;
+  
+  if (tenantId) {
+    const result = await storageUploadInvoicePDF(file, tenantId);
+    return result.url;
+  } else {
+    // Fallback to old method for backward compatibility
+    const { data, error } = await supabase.storage
+      .from('invoices')
+      .upload(path, file);
 
-  if (error) throw error;
+    if (error) throw error;
 
-  const { data: { publicUrl } } = supabase.storage
-    .from('invoices')
-    .getPublicUrl(data.path);
+    const { data: { publicUrl } } = supabase.storage
+      .from('invoices')
+      .getPublicUrl(data.path);
 
-  return publicUrl;
+    return publicUrl;
+  }
 }
 
 // Analytics queries

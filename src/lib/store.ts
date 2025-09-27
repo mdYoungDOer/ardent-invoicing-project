@@ -86,6 +86,8 @@ interface AppState {
   updateInvoice: (id: string, updates: Partial<Invoice>) => void;
   setExpenses: (expenses: Expense[]) => void;
   addExpense: (expense: Expense) => void;
+  updateExpenseInStore: (expense: Expense) => void;
+  removeExpenseFromStore: (id: string) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
@@ -119,6 +121,16 @@ export const useAppStore = create<AppState>()(
       
       addExpense: (expense) => set((state) => ({
         expenses: [expense, ...state.expenses]
+      })),
+      
+      updateExpenseInStore: (expense) => set((state) => ({
+        expenses: state.expenses.map(e =>
+          e.id === expense.id ? expense : e
+        )
+      })),
+      
+      removeExpenseFromStore: (id) => set((state) => ({
+        expenses: state.expenses.filter(e => e.id !== id)
       })),
       
       setLoading: (loading) => set({ isLoading: loading }),

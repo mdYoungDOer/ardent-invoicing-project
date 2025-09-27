@@ -49,6 +49,8 @@ import {
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAppStore } from '@/lib/store';
+import NotificationCenter from '@/components/notifications/NotificationCenter';
+import { useRealtime } from '@/hooks/useRealtime';
 
 const DRAWER_WIDTH = 280;
 
@@ -64,6 +66,15 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [teamMenuOpen, setTeamMenuOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  
+  // Initialize real-time features
+  const { unreadCount, requestNotificationPermission } = useRealtime({
+    enableNotifications: true,
+    onError: (error) => {
+      console.error('Realtime error:', error);
+    }
+  });
 
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -460,6 +471,7 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
             {/* Notifications */}
             <IconButton 
               color="inherit"
+              onClick={() => setNotificationOpen(true)}
               sx={{
                 position: 'relative',
                 '&:hover': {
@@ -467,7 +479,7 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
                 }
               }}
             >
-              <Badge badgeContent={3} color="error" sx={{
+              <Badge badgeContent={unreadCount} color="error" sx={{
                 '& .MuiBadge-badge': {
                   fontSize: '0.75rem',
                   height: 18,
@@ -636,6 +648,12 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
       >
         {children}
       </Box>
+
+      {/* Notification Center */}
+      <NotificationCenter 
+        open={notificationOpen}
+        onClose={() => setNotificationOpen(false)}
+      />
     </Box>
   );
 }
