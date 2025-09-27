@@ -41,15 +41,15 @@ export function useRealtime(options: UseRealtimeOptions = {}) {
 
   // Load initial notifications
   const loadNotifications = useCallback(async () => {
-    if (!userId) return;
+    if (!userId || !enableNotifications) return;
 
     try {
       const notifications = await RealtimeService.getUserNotifications(userId, {
         limit: 20,
         unreadOnly: false,
-      });
+      }).catch(() => []);
 
-      const unreadCount = await RealtimeService.getUnreadCount(userId);
+      const unreadCount = await RealtimeService.getUnreadCount(userId).catch(() => 0);
 
       setState(prev => ({
         ...prev,

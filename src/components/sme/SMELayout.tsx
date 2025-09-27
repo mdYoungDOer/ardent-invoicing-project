@@ -69,7 +69,7 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
   const [notificationOpen, setNotificationOpen] = useState(false);
   
   // Initialize real-time features
-  const { unreadCount, requestNotificationPermission } = useRealtime({
+  const { unreadCount = 0, requestNotificationPermission } = useRealtime({
     enableNotifications: true,
     onError: (error) => {
       console.error('Realtime error:', error);

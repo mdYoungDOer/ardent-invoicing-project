@@ -104,15 +104,32 @@ export default function AdminDashboard() {
   const [tierFilter, setTierFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  // Initialize admin real-time features
+  // Initialize admin real-time features (simplified for now)
   const { 
-    systemStats, 
-    realtimeMetrics, 
-    isConnected,
+    systemStats = {
+      totalUsers: 0,
+      totalTenants: 0,
+      totalInvoices: 0,
+      totalRevenue: 0,
+      activeUsers: 0,
+      storageUsage: {
+        totalFiles: 0,
+        totalSize: 0,
+        buckets: {},
+      },
+    }, 
+    realtimeMetrics = {
+      newUsersToday: 0,
+      newTenantsToday: 0,
+      invoicesCreatedToday: 0,
+      revenueToday: 0,
+      systemAlerts: 0,
+    }, 
+    isConnected = false,
     createSystemAlert 
   } = useAdminRealtime({
-    enableSystemMonitoring: true,
-    enableNotifications: true,
+    enableSystemMonitoring: false, // Disable for now to prevent loading issues
+    enableNotifications: false,    // Disable for now to prevent loading issues
     onError: (error) => {
       console.error('Admin realtime error:', error);
     }

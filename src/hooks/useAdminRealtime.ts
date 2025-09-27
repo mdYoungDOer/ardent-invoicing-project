@@ -86,6 +86,11 @@ export function useAdminRealtime(options: {
   // Load initial system statistics
   const loadSystemStats = useCallback(async () => {
     try {
+      // Check if monitoring is enabled
+      if (!enableSystemMonitoring) {
+        return;
+      }
+
       const [
         usersResult,
         tenantsResult,
@@ -93,11 +98,11 @@ export function useAdminRealtime(options: {
         storageStatsResult,
         activityResult,
       ] = await Promise.all([
-        supabase.from('users').select('id, created_at, subscription_tier', { count: 'exact' }),
-        supabase.from('tenants').select('id, created_at', { count: 'exact' }),
-        supabase.from('invoices').select('id, amount, created_at, status', { count: 'exact' }),
-        supabase.from('storage_files').select('bucket, size', { count: 'exact' }),
-        supabase.from('activity_log').select('*').order('created_at', { ascending: false }).limit(10),
+        supabase.from('users').select('id, created_at, subscription_tier', { count: 'exact' }).catch(() => ({ data: [], count: 0 })),
+        supabase.from('tenants').select('id, created_at', { count: 'exact' }).catch(() => ({ data: [], count: 0 })),
+        supabase.from('invoices').select('id, amount, created_at, status', { count: 'exact' }).catch(() => ({ data: [], count: 0 })),
+        supabase.from('storage_files').select('bucket, size', { count: 'exact' }).catch(() => ({ data: [], count: 0 })),
+        supabase.from('activity_log').select('*').order('created_at', { ascending: false }).limit(10).catch(() => ({ data: [] })),
       ]);
 
       const totalUsers = usersResult.count || 0;
@@ -161,12 +166,17 @@ export function useAdminRealtime(options: {
   // Load initial notifications
   const loadNotifications = useCallback(async () => {
     try {
+      // Check if notifications are enabled
+      if (!enableNotifications) {
+        return;
+      }
+
       const notifications = await RealtimeService.getUserNotifications('admin', {
         limit: 20,
         unreadOnly: false,
-      });
+      }).catch(() => []);
 
-      const unreadCount = await RealtimeService.getUnreadCount('admin');
+      const unreadCount = await RealtimeService.getUnreadCount('admin').catch(() => 0);
 
       setState(prev => ({
         ...prev,
@@ -177,7 +187,7 @@ export function useAdminRealtime(options: {
       console.error('Failed to load admin notifications:', error);
       onError?.(error as Error);
     }
-  }, [onError]);
+  }, [onError, enableNotifications]);
 
   // Handle new notification
   const handleNewNotification = useCallback((notification: NotificationData) => {

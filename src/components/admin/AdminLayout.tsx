@@ -26,8 +26,8 @@ export default function AdminLayout({
   const [notificationOpen, setNotificationOpen] = useState(false);
   
   // Initialize admin real-time features
-  const { unreadCount } = useAdminRealtime({
-    enableSystemMonitoring: true,
+  const { unreadCount = 0 } = useAdminRealtime({
+    enableSystemMonitoring: false,
     enableNotifications: true,
     onError: (error) => {
       console.error('Admin realtime error:', error);
