@@ -135,24 +135,39 @@ export default function SettingsPage() {
       setLoading(true);
       
       // Load business settings
-      const { data: businessData } = await supabase
-        .from('business_settings')
-        .select('*')
-        .eq('tenant_id', tenant.id)
-        .single();
+      try {
+        const { data: businessData } = await supabase
+          .from('business_settings')
+          .select('*')
+          .eq('tenant_id', tenant.id)
+          .single();
 
-      if (businessData) {
-        businessForm.reset({
-          business_name: businessData.business_name || '',
-          business_email: businessData.business_email || '',
-          business_phone: businessData.business_phone || '',
-          business_address: businessData.business_address || '',
-          business_registration_number: businessData.business_registration_number || '',
-          tax_id: businessData.tax_id || '',
-          website: businessData.website || '',
-          logo_url: businessData.logo_url || '',
-        });
-      } else {
+        if (businessData) {
+          businessForm.reset({
+            business_name: businessData.business_name || '',
+            business_email: businessData.business_email || '',
+            business_phone: businessData.business_phone || '',
+            business_address: businessData.business_address || '',
+            business_registration_number: businessData.business_registration_number || '',
+            tax_id: businessData.tax_id || '',
+            website: businessData.website || '',
+            logo_url: businessData.logo_url || '',
+          });
+        } else {
+          // Use tenant data as fallback
+          businessForm.reset({
+            business_name: tenant.business_name || '',
+            business_email: '',
+            business_phone: '',
+            business_address: '',
+            business_registration_number: '',
+            tax_id: '',
+            website: '',
+            logo_url: '',
+          });
+        }
+      } catch (error) {
+        console.warn('Business settings table not found, using tenant data:', error);
         // Use tenant data as fallback
         businessForm.reset({
           business_name: tenant.business_name || '',
@@ -167,25 +182,33 @@ export default function SettingsPage() {
       }
 
       // Load invoice settings
-      const { data: invoiceData } = await supabase
-        .from('invoice_settings')
-        .select('*')
-        .eq('tenant_id', tenant.id)
-        .single();
+      try {
+        const { data: invoiceData } = await supabase
+          .from('invoice_settings')
+          .select('*')
+          .eq('tenant_id', tenant.id)
+          .single();
 
-      if (invoiceData) {
-        invoiceForm.reset(invoiceData);
+        if (invoiceData) {
+          invoiceForm.reset(invoiceData);
+        }
+      } catch (error) {
+        console.warn('Invoice settings table not found, using defaults:', error);
       }
 
       // Load notification settings
-      const { data: notificationData } = await supabase
-        .from('notification_settings')
-        .select('*')
-        .eq('tenant_id', tenant.id)
-        .single();
+      try {
+        const { data: notificationData } = await supabase
+          .from('notification_settings')
+          .select('*')
+          .eq('tenant_id', tenant.id)
+          .single();
 
-      if (notificationData) {
-        notificationForm.reset(notificationData);
+        if (notificationData) {
+          notificationForm.reset(notificationData);
+        }
+      } catch (error) {
+        console.warn('Notification settings table not found, using defaults:', error);
       }
 
     } catch (error) {

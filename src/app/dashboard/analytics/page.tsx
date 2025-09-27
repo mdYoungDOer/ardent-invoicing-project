@@ -288,12 +288,14 @@ export default function AnalyticsPage() {
     setExpenseCategoryData(categoryData);
   };
 
-  const getGrowthIcon = (growth: number) => {
-    return growth >= 0 ? <TrendingUpIcon color="success" /> : <TrendingDownIcon color="error" />;
+  const getGrowthIcon = (growth: number | undefined) => {
+    const value = growth || 0;
+    return value >= 0 ? <TrendingUpIcon color="success" /> : <TrendingDownIcon color="error" />;
   };
 
-  const getGrowthColor = (growth: number) => {
-    return growth >= 0 ? 'success.main' : 'error.main';
+  const getGrowthColor = (growth: number | undefined) => {
+    const value = growth || 0;
+    return value >= 0 ? 'success.main' : 'error.main';
   };
 
   if (loading) {
@@ -346,7 +348,7 @@ export default function AnalyticsPage() {
                         color={getGrowthColor(analyticsData.revenueGrowth)}
                         sx={{ fontWeight: 600 }}
                       >
-                        {Math.abs(analyticsData.revenueGrowth).toFixed(1)}%
+                        {Math.abs(analyticsData.revenueGrowth || 0).toFixed(1)}%
                       </Typography>
                     </Box>
                   </Box>
@@ -376,7 +378,7 @@ export default function AnalyticsPage() {
                         color={getGrowthColor(analyticsData.expenseGrowth)}
                         sx={{ fontWeight: 600 }}
                       >
-                        {Math.abs(analyticsData.expenseGrowth).toFixed(1)}%
+                        {Math.abs(analyticsData.expenseGrowth || 0).toFixed(1)}%
                       </Typography>
                     </Box>
                   </Box>
@@ -406,7 +408,7 @@ export default function AnalyticsPage() {
                         color={getGrowthColor(analyticsData.profitGrowth)}
                         sx={{ fontWeight: 600 }}
                       >
-                        {Math.abs(analyticsData.profitGrowth).toFixed(1)}%
+                        {Math.abs(analyticsData.profitGrowth || 0).toFixed(1)}%
                       </Typography>
                     </Box>
                   </Box>
@@ -436,7 +438,7 @@ export default function AnalyticsPage() {
                         color={getGrowthColor(analyticsData.customerGrowth)}
                         sx={{ fontWeight: 600 }}
                       >
-                        {Math.abs(analyticsData.customerGrowth).toFixed(1)}%
+                        {Math.abs(analyticsData.customerGrowth || 0).toFixed(1)}%
                       </Typography>
                     </Box>
                   </Box>

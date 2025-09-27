@@ -111,16 +111,24 @@ export default function CustomersPage() {
     
     try {
       setLoading(true);
+      
+      // Try to load from customers table first
       const { data, error } = await supabase
         .from('customers')
         .select('*')
         .eq('tenant_id', tenant.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.warn('Customers table not found, using empty array:', error);
+        setCustomers([]);
+        return;
+      }
+      
       setCustomers(data || []);
     } catch (error) {
       console.error('Error loading customers:', error);
+      setCustomers([]);
     } finally {
       setLoading(false);
     }

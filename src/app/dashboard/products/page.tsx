@@ -20,7 +20,8 @@ import {
   DialogActions,
   Alert,
   CircularProgress,
-  Avatar
+  Avatar,
+  Select
 } from '@mui/material';
 import { 
   Add as AddIcon,
@@ -133,16 +134,24 @@ export default function ProductsPage() {
     
     try {
       setLoading(true);
+      
+      // Try to load from products table first
       const { data, error } = await supabase
         .from('products')
         .select('*')
         .eq('tenant_id', tenant.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.warn('Products table not found, using empty array:', error);
+        setProducts([]);
+        return;
+      }
+      
       setProducts(data || []);
     } catch (error) {
       console.error('Error loading products:', error);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
