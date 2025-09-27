@@ -30,6 +30,7 @@ import {
   Message as MessageIcon,
   Inventory as ProductIcon,
   Receipt as InvoiceIcon,
+  Receipt as ReceiptIcon,
   Analytics as AnalyticsIcon,
   Settings as SettingsIcon,
   Security as SecurityIcon,
@@ -127,6 +128,12 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
       icon: <InvoiceIcon />,
       path: '/dashboard/invoices',
       active: title === 'Invoices'
+    },
+    {
+      title: 'Expenses',
+      icon: <ReceiptIcon />,
+      path: '/dashboard/expenses',
+      active: title === 'Expenses'
     },
     {
       title: 'Analytics',

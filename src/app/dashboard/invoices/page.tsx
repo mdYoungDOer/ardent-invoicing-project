@@ -2,7 +2,6 @@
 
 import { 
   Box, 
-  Container, 
   Typography, 
   Button, 
   Grid, 
@@ -15,8 +14,6 @@ import {
   InputAdornment,
   Menu,
   MenuItem,
-  AppBar,
-  Toolbar,
   Fab
 } from '@mui/material';
 import { 
@@ -36,6 +33,7 @@ import { useAppStore } from '@/lib/store';
 import { fetchInvoices, searchInvoices } from '@/lib/supabase-queries';
 import { formatCurrency, getCurrencySymbol, getCurrencyFlag } from '@/lib/exchange-rates';
 import type { Invoice } from '@/lib/store';
+import SMELayout from '@/components/sme/SMELayout';
 
 export default function InvoicesPage() {
   const router = useRouter();
@@ -134,25 +132,8 @@ export default function InvoicesPage() {
   });
 
   return (
-    <Box>
-      {/* Header */}
-      <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700, color: 'primary.main' }}>
-            Invoices
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => router.push('/dashboard/invoices/new')}
-            sx={{ bgcolor: 'primary.main' }}
-          >
-            New Invoice
-          </Button>
-        </Toolbar>
-      </AppBar>
-
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+    <SMELayout title="Invoices">
+      <Box sx={{ p: 4 }}>
         {/* Search and Filters */}
         <Card sx={{ mb: 4 }}>
           <CardContent>
@@ -300,44 +281,29 @@ export default function InvoicesPage() {
             </Button>
           </Box>
         )}
-      </Container>
 
-      {/* Floating Action Button for Mobile */}
-      <Fab
-        color="primary"
-        aria-label="add invoice"
-        sx={{
-          position: 'fixed',
-          bottom: 16,
-          right: 16,
-          display: { xs: 'flex', md: 'none' },
-        }}
-        onClick={() => router.push('/dashboard/invoices/new')}
-      >
-        <AddIcon />
-      </Fab>
-
-      {/* Action Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleViewInvoice}>
-          <ViewIcon sx={{ mr: 1 }} />
-          View
-        </MenuItem>
-        <MenuItem onClick={handleEditInvoice}>
-          <EditIcon sx={{ mr: 1 }} />
-          Edit
-        </MenuItem>
-        {selectedInvoice?.pdf_url && (
-          <MenuItem onClick={handleDownloadPDF}>
-            <DownloadIcon sx={{ mr: 1 }} />
-            Download PDF
+        {/* Action Menu */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleViewInvoice}>
+            <ViewIcon sx={{ mr: 1 }} />
+            View
           </MenuItem>
-        )}
-      </Menu>
-    </Box>
+          <MenuItem onClick={handleEditInvoice}>
+            <EditIcon sx={{ mr: 1 }} />
+            Edit
+          </MenuItem>
+          {selectedInvoice?.pdf_url && (
+            <MenuItem onClick={handleDownloadPDF}>
+              <DownloadIcon sx={{ mr: 1 }} />
+              Download PDF
+            </MenuItem>
+          )}
+        </Menu>
+      </Box>
+    </SMELayout>
   );
 }

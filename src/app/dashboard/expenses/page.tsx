@@ -2,7 +2,6 @@
 
 import { 
   Box, 
-  Container, 
   Typography, 
   Button, 
   Grid, 
@@ -15,8 +14,6 @@ import {
   InputAdornment,
   Menu,
   MenuItem,
-  AppBar,
-  Toolbar,
   Fab,
   Avatar
 } from '@mui/material';
@@ -38,6 +35,7 @@ import { useAppStore } from '@/lib/store';
 import { fetchExpenses, searchExpenses } from '@/lib/supabase-queries';
 import { formatCurrency, getCurrencySymbol, getCurrencyFlag } from '@/lib/exchange-rates';
 import type { Expense } from '@/lib/store';
+import SMELayout from '@/components/sme/SMELayout';
 
 const EXPENSE_CATEGORIES = [
   'Office Supplies',
@@ -151,25 +149,8 @@ export default function ExpensesPage() {
     .reduce((sum, expense) => sum + expense.amount, 0);
 
   return (
-    <Box>
-      {/* Header */}
-      <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700, color: 'primary.main' }}>
-            Expenses
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => router.push('/dashboard/expenses/new')}
-            sx={{ bgcolor: 'primary.main' }}
-          >
-            Add Expense
-          </Button>
-        </Toolbar>
-      </AppBar>
-
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+    <SMELayout title="Expenses">
+      <Box sx={{ p: 4 }}>
         {/* Summary Cards */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
@@ -427,44 +408,29 @@ export default function ExpensesPage() {
             </Button>
           </Box>
         )}
-      </Container>
 
-      {/* Floating Action Button for Mobile */}
-      <Fab
-        color="primary"
-        aria-label="add expense"
-        sx={{
-          position: 'fixed',
-          bottom: 16,
-          right: 16,
-          display: { xs: 'flex', md: 'none' },
-        }}
-        onClick={() => router.push('/dashboard/expenses/new')}
-      >
-        <AddIcon />
-      </Fab>
-
-      {/* Action Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleEditExpense}>
-          <EditIcon sx={{ mr: 1 }} />
-          Edit
-        </MenuItem>
-        {selectedExpense?.receipt_url && (
-          <MenuItem onClick={handleViewReceipt}>
-            <ReceiptIcon sx={{ mr: 1 }} />
-            View Receipt
+        {/* Action Menu */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleEditExpense}>
+            <EditIcon sx={{ mr: 1 }} />
+            Edit
           </MenuItem>
-        )}
-        <MenuItem onClick={handleMenuClose} sx={{ color: 'error.main' }}>
-          <DeleteIcon sx={{ mr: 1 }} />
-          Delete
-        </MenuItem>
-      </Menu>
-    </Box>
+          {selectedExpense?.receipt_url && (
+            <MenuItem onClick={handleViewReceipt}>
+              <ReceiptIcon sx={{ mr: 1 }} />
+              View Receipt
+            </MenuItem>
+          )}
+          <MenuItem onClick={handleMenuClose} sx={{ color: 'error.main' }}>
+            <DeleteIcon sx={{ mr: 1 }} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </Box>
+    </SMELayout>
   );
 }

@@ -2,7 +2,6 @@
 
 import { 
   Box, 
-  Container, 
   Typography, 
   Button, 
   Grid, 
@@ -11,8 +10,6 @@ import {
   TextField,
   MenuItem,
   IconButton,
-  AppBar,
-  Toolbar,
   Divider,
   Paper,
   Alert,
@@ -35,6 +32,7 @@ import { createInvoice, createInvoiceLineItems, checkInvoiceQuota } from '@/lib/
 import { getExchangeRate } from '@/lib/exchange-rates';
 import { createInvoiceSchema, type CreateInvoiceData } from '@/lib/validations';
 import { getCurrencyFlag } from '@/lib/exchange-rates';
+import SMELayout from '@/components/sme/SMELayout';
 
 const CURRENCIES = [
   { value: 'GHS', label: '🇬🇭 Ghana Cedis (GHS)', default: true },
@@ -197,38 +195,37 @@ export default function NewInvoicePage() {
   };
 
   return (
-    <Box>
-      {/* Header */}
-      <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper', borderBottom: 1, borderColor: 'divider' }}>
-        <Toolbar>
-          <IconButton component="div" onClick={() => router.back()} sx={{ mr: 2 }}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700, color: 'primary.main' }}>
-            Create New Invoice
-          </Typography>
-          <Button
-            variant="outlined"
-            startIcon={<SaveIcon />}
-            onClick={handleSubmit(onSubmit)}
-            disabled={isSubmitting}
-            sx={{ mr: 2 }}
-          >
-            {isSubmitting ? <CircularProgress size={20} /> : 'Save Draft'}
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<SendIcon />}
-            onClick={handleSubmit((data) => onSubmit({ ...data, status: 'sent' as any }))}
-            disabled={isSubmitting}
-            sx={{ bgcolor: 'primary.main' }}
-          >
-            {isSubmitting ? <CircularProgress size={20} /> : 'Send Invoice'}
-          </Button>
-        </Toolbar>
-      </AppBar>
-
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+    <SMELayout title="Create New Invoice">
+      <Box sx={{ p: 4 }}>
+        {/* Header Actions */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton onClick={() => router.back()}>
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h4" sx={{ fontWeight: 700 }}>
+              Create New Invoice
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant="outlined"
+              startIcon={<SaveIcon />}
+              onClick={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? <CircularProgress size={20} /> : 'Save Draft'}
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<SendIcon />}
+              onClick={handleSubmit((data) => onSubmit({ ...data, status: 'sent' as any }))}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? <CircularProgress size={20} /> : 'Send Invoice'}
+            </Button>
+          </Box>
+        </Box>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={4}>
             {/* Client Information */}
@@ -579,7 +576,7 @@ export default function NewInvoicePage() {
             </Grid>
           </Grid>
         </form>
-      </Container>
-    </Box>
+      </Box>
+    </SMELayout>
   );
 }
