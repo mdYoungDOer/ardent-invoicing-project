@@ -52,7 +52,8 @@ CREATE TABLE IF NOT EXISTS analytics_cache (
     data JSONB NOT NULL,
     calculated_at TIMESTAMPTZ DEFAULT NOW(),
     expires_at TIMESTAMPTZ NOT NULL,
-    UNIQUE(tenant_id, metric_type, period, DATE(calculated_at))
+    calculated_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    UNIQUE(tenant_id, metric_type, period, calculated_date)
 );
 
 -- Email logs for tracking sent emails
@@ -67,6 +68,39 @@ CREATE TABLE IF NOT EXISTS email_logs (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Ensure all columns exist (for existing tables)
+ALTER TABLE email_logs ADD COLUMN IF NOT EXISTS recipient_email TEXT;
+ALTER TABLE email_logs ADD COLUMN IF NOT EXISTS subject TEXT;
+ALTER TABLE email_logs ADD COLUMN IF NOT EXISTS status TEXT;
+ALTER TABLE email_logs ADD COLUMN IF NOT EXISTS error_message TEXT;
+ALTER TABLE email_logs ADD COLUMN IF NOT EXISTS sent_at TIMESTAMPTZ;
+ALTER TABLE email_logs ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- Ensure system_health columns exist
+ALTER TABLE system_health ADD COLUMN IF NOT EXISTS metric_name TEXT;
+ALTER TABLE system_health ADD COLUMN IF NOT EXISTS metric_value NUMERIC;
+ALTER TABLE system_health ADD COLUMN IF NOT EXISTS status TEXT;
+ALTER TABLE system_health ADD COLUMN IF NOT EXISTS details JSONB;
+ALTER TABLE system_health ADD COLUMN IF NOT EXISTS recorded_at TIMESTAMPTZ DEFAULT NOW();
+
+-- Ensure backup_logs columns exist
+ALTER TABLE backup_logs ADD COLUMN IF NOT EXISTS backup_type TEXT;
+ALTER TABLE backup_logs ADD COLUMN IF NOT EXISTS status TEXT;
+ALTER TABLE backup_logs ADD COLUMN IF NOT EXISTS size_bytes BIGINT;
+ALTER TABLE backup_logs ADD COLUMN IF NOT EXISTS duration_seconds INTEGER;
+ALTER TABLE backup_logs ADD COLUMN IF NOT EXISTS error_message TEXT;
+ALTER TABLE backup_logs ADD COLUMN IF NOT EXISTS details JSONB;
+ALTER TABLE backup_logs ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- Ensure analytics_cache columns exist
+ALTER TABLE analytics_cache ADD COLUMN IF NOT EXISTS tenant_id UUID;
+ALTER TABLE analytics_cache ADD COLUMN IF NOT EXISTS metric_type TEXT;
+ALTER TABLE analytics_cache ADD COLUMN IF NOT EXISTS period TEXT;
+ALTER TABLE analytics_cache ADD COLUMN IF NOT EXISTS data JSONB;
+ALTER TABLE analytics_cache ADD COLUMN IF NOT EXISTS calculated_at TIMESTAMPTZ;
+ALTER TABLE analytics_cache ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
+ALTER TABLE analytics_cache ADD COLUMN IF NOT EXISTS calculated_date DATE;
+
 -- ==============================================
 -- UPDATES TO EXISTING TABLES
 -- ==============================================
@@ -77,10 +111,32 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS last_reminder_sent TIMESTAMPTZ;
 ALTER TABLE invoices ADD COLUMN IF NOT EXISTS is_recurring BOOLEAN DEFAULT FALSE;
 ALTER TABLE invoices ADD COLUMN IF NOT EXISTS parent_invoice_id UUID REFERENCES invoices(id);
 
+-- Ensure invoices table has all required columns
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS tenant_id UUID;
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS invoice_number TEXT;
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS client_name TEXT;
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS client_email TEXT;
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS amount DECIMAL(10,2);
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'GHS';
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'draft';
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS due_date DATE;
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
 -- Add columns to users table for subscription management
 ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_status TEXT DEFAULT 'active';
 ALTER TABLE users ADD COLUMN IF NOT EXISTS next_billing_date DATE;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS last_billing_date DATE;
+
+-- Ensure users table has all required columns
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'client';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS tenant_id UUID;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_tier TEXT DEFAULT 'free';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS invoice_quota_used INTEGER DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS is_unlimited_free BOOLEAN DEFAULT false;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 -- Add columns to subscriptions table if it doesn't exist
 CREATE TABLE IF NOT EXISTS subscriptions (
@@ -124,6 +180,7 @@ CREATE INDEX IF NOT EXISTS idx_backup_logs_created_at ON backup_logs(created_at)
 CREATE INDEX IF NOT EXISTS idx_analytics_cache_tenant_id ON analytics_cache(tenant_id);
 CREATE INDEX IF NOT EXISTS idx_analytics_cache_metric_type ON analytics_cache(metric_type);
 CREATE INDEX IF NOT EXISTS idx_analytics_cache_period ON analytics_cache(period);
+CREATE INDEX IF NOT EXISTS idx_analytics_cache_calculated_date ON analytics_cache(calculated_date);
 CREATE INDEX IF NOT EXISTS idx_analytics_cache_expires_at ON analytics_cache(expires_at);
 
 -- Email logs indexes
@@ -252,10 +309,14 @@ END;
 $$ language 'plpgsql';
 
 -- Triggers for updated_at
+-- Drop existing triggers if they exist, then recreate
+DROP TRIGGER IF EXISTS update_recurring_invoices_updated_at ON recurring_invoices;
 CREATE TRIGGER update_recurring_invoices_updated_at 
     BEFORE UPDATE ON recurring_invoices
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+-- Drop existing trigger if it exists, then recreate
+DROP TRIGGER IF EXISTS update_subscriptions_updated_at ON subscriptions;
 CREATE TRIGGER update_subscriptions_updated_at 
     BEFORE UPDATE ON subscriptions
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -332,6 +393,8 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+-- Drop existing trigger if it exists, then recreate
+DROP TRIGGER IF EXISTS trigger_update_invoice_quota ON invoices;
 CREATE TRIGGER trigger_update_invoice_quota
     AFTER INSERT ON invoices
     FOR EACH ROW EXECUTE FUNCTION update_invoice_quota_on_insert();
@@ -383,6 +446,7 @@ COMMENT ON TABLE recurring_invoices IS 'Manages recurring invoice schedules and 
 COMMENT ON TABLE system_health IS 'Stores system health metrics for monitoring';
 COMMENT ON TABLE backup_logs IS 'Logs backup operations and their status';
 COMMENT ON TABLE analytics_cache IS 'Caches calculated analytics for performance';
+COMMENT ON COLUMN analytics_cache.calculated_date IS 'Date field for unique constraint - set to DATE(calculated_at) for daily analytics grouping';
 COMMENT ON TABLE email_logs IS 'Logs all email communications for audit trail';
 COMMENT ON TABLE subscriptions IS 'Manages user subscription plans and billing';
 

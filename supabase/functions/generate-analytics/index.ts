@@ -288,14 +288,15 @@ async function generateTenantAnalytics(
       period: period,
       data: analyticsData,
       calculated_at: now.toISOString(),
-      expires_at: expiresAt.toISOString()
+      expires_at: expiresAt.toISOString(),
+      calculated_date: now.toISOString().split('T')[0] // YYYY-MM-DD format
     }
 
     // Upsert analytics cache
     const { error: upsertError } = await supabaseClient
       .from('analytics_cache')
       .upsert(analyticsRecord, {
-        onConflict: 'tenant_id,metric_type,period,calculated_at'
+        onConflict: 'tenant_id,metric_type,period,calculated_date'
       })
 
     if (!upsertError) {
@@ -398,7 +399,8 @@ async function generateSystemAnalytics(supabaseClient: any, results: any) {
       period: 'daily',
       data: analyticsData,
       calculated_at: now.toISOString(),
-      expires_at: expiresAt.toISOString()
+      expires_at: expiresAt.toISOString(),
+      calculated_date: now.toISOString().split('T')[0] // YYYY-MM-DD format
     }
 
     const { error: upsertError } = await supabaseClient

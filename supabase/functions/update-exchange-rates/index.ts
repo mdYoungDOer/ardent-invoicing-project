@@ -73,13 +73,14 @@ serve(async (req) => {
               currency_pair: `${exchangeRate.from}_${exchangeRate.to}`
             },
             calculated_at: new Date().toISOString(),
-            expires_at: expiresAt.toISOString()
+            expires_at: expiresAt.toISOString(),
+            calculated_date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
           }
 
           const { error: upsertError } = await supabaseClient
             .from('analytics_cache')
             .upsert(analyticsRecord, {
-              onConflict: 'tenant_id,metric_type,period,calculated_at'
+              onConflict: 'tenant_id,metric_type,period,calculated_date'
             })
 
           if (!upsertError) {
@@ -137,13 +138,14 @@ serve(async (req) => {
               currency_pair: `${exchangeRate.from}_${exchangeRate.to}`
             },
             calculated_at: new Date().toISOString(),
-            expires_at: expiresAt.toISOString()
+            expires_at: expiresAt.toISOString(),
+            calculated_date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
           }
 
           const { error: upsertError } = await supabaseClient
             .from('analytics_cache')
             .upsert(analyticsRecord, {
-              onConflict: 'tenant_id,metric_type,period,calculated_at'
+              onConflict: 'tenant_id,metric_type,period,calculated_date'
             })
 
           if (!upsertError) {
