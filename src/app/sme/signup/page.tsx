@@ -92,63 +92,29 @@ export default function SmeSignup() {
       console.log('Email:', formData.email);
       console.log('Business:', formData.businessName);
       
-      // Sign up with Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            full_name: formData.fullName,
-            business_name: formData.businessName
-          }
-        }
+      // Use API route to handle signup with service role permissions
+      const response = await fetch('/api/auth/sme-signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          fullName: formData.fullName,
+          businessName: formData.businessName
+        }),
       });
 
-      if (authError) throw authError;
+      const result = await response.json();
 
-      if (!authData.user) {
-        throw new Error('Failed to create user account');
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to create account');
       }
 
-      console.log('✅ Auth user created, ID:', authData.user.id);
+      console.log('✅ SME signup successful:', result);
 
-      // Create tenant first
-      const { data: tenantData, error: tenantError } = await supabase
-        .from('tenants')
-        .insert({
-          business_name: formData.businessName,
-          sme_user_id: authData.user.id
-        })
-        .select()
-        .single();
-
-      if (tenantError) {
-        console.error('❌ Tenant creation error:', tenantError);
-        throw tenantError;
-      }
-
-      console.log('✅ Tenant created, ID:', tenantData.id);
-
-      // Create user record
-      const { error: userError } = await supabase
-        .from('users')
-        .insert({
-          id: authData.user.id,
-          email: formData.email,
-          full_name: formData.fullName,
-          role: 'sme',
-          tenant_id: tenantData.id,
-          subscription_tier: 'free'
-        });
-
-      if (userError) {
-        console.error('❌ User creation error:', userError);
-        throw userError;
-      }
-
-      console.log('✅ SME user record created');
-
-      setSuccess('Business account created successfully! Please check your email to verify your account.');
+      setSuccess(result.message);
       
       // Redirect to SME login after 3 seconds
       setTimeout(() => {
