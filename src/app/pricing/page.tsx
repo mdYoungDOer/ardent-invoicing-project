@@ -34,6 +34,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { SUBSCRIPTION_PLANS, formatCurrency } from '@/lib/subscription-plans';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
@@ -49,6 +50,7 @@ export default function PricingPage() {
 
   const pricingPlans = [
     {
+      id: "free",
       name: "Free",
       price: "₵0",
       period: "forever",
@@ -66,6 +68,7 @@ export default function PricingPage() {
       color: "grey"
     },
     {
+      id: "starter",
       name: "Starter",
       price: "₵129",
       period: "per month",
@@ -85,6 +88,7 @@ export default function PricingPage() {
       color: "primary"
     },
     {
+      id: "pro",
       name: "Pro",
       price: "₵489",
       period: "per month",
@@ -105,6 +109,7 @@ export default function PricingPage() {
       color: "secondary"
     },
     {
+      id: "enterprise",
       name: "Enterprise",
       price: "₵999",
       period: "per month",
