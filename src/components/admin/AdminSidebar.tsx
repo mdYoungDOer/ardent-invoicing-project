@@ -100,7 +100,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
         p: 3, 
         display: 'flex', 
         alignItems: 'center', 
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         borderBottom: '1px solid',
         borderColor: 'divider'
       }}>
@@ -110,18 +110,22 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
             src="/logo.png"
             alt="Ardent Invoicing"
             sx={{
-              width: 32,
-              height: 32,
-              mr: 2,
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
+              width: 48,
+              height: 48,
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': {
+                transform: 'scale(1.05)',
+                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.2))',
+              }
             }}
           />
-          <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-            Ardent Admin
-          </Typography>
         </Box>
         {isMobile && (
-          <IconButton onClick={handleDrawerToggle}>
+          <IconButton 
+            onClick={handleDrawerToggle}
+            sx={{ position: 'absolute', right: 16 }}
+          >
             <ChevronLeftIcon />
           </IconButton>
         )}

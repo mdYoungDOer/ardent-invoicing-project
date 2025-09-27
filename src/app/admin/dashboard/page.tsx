@@ -67,9 +67,9 @@ import AdminLayout from '@/components/admin/AdminLayout';
 interface Tenant {
   id: string;
   business_name: string;
-  subscription_tier: string;
-  subscription_status: string;
   created_at: string;
+  subscription_tier?: string;
+  subscription_status?: string;
 }
 
 interface TenantStats {
@@ -182,6 +182,9 @@ export default function AdminDashboard() {
 
         // Fetch all tenants with stats
         await loadTenantsData();
+        
+        // Fetch revenue data
+        await fetchRevenueData();
 
       } catch (error: any) {
         console.error('❌ NUCLEAR: Admin dashboard error:', error);
@@ -197,25 +200,33 @@ export default function AdminDashboard() {
 
   const loadTenantsData = async () => {
     try {
-      // Fetch all tenants with their users
+      // Fetch all tenants
       const { data: tenantsData, error: tenantsError } = await supabase
         .from('tenants')
-        .select(`
-          *,
-          users!inner(
-            id,
-            email,
-            role,
-            subscription_tier,
-            subscription_status,
-            created_at
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (tenantsError) throw tenantsError;
 
-      setTenants(tenantsData || []);
+      // Fetch subscription info for each tenant from users table
+      const tenantsWithSubscription = await Promise.all(
+        (tenantsData || []).map(async (tenant) => {
+          const { data: userData } = await supabase
+            .from('users')
+            .select('subscription_tier, subscription_status')
+            .eq('tenant_id', tenant.id)
+            .eq('role', 'sme')
+            .single();
+          
+          return {
+            ...tenant,
+            subscription_tier: userData?.subscription_tier || 'free',
+            subscription_status: userData?.subscription_status || 'active'
+          };
+        })
+      );
+
+      setTenants(tenantsWithSubscription);
 
       // Calculate stats for each tenant
       const stats: TenantStats = {};
@@ -223,7 +234,7 @@ export default function AdminDashboard() {
       let totalInvoices = 0;
       let totalUsers = 0;
 
-      for (const tenant of tenantsData || []) {
+      for (const tenant of tenantsWithSubscription) {
         const [invoicesResult, usersResult] = await Promise.all([
           supabase
             .from('invoices')
@@ -256,7 +267,7 @@ export default function AdminDashboard() {
 
       setTenantStats(stats);
       setDashboardStats({
-        totalTenants: tenantsData?.length || 0,
+        totalTenants: tenantsWithSubscription?.length || 0,
         totalRevenue,
         totalInvoices,
         totalUsers,
@@ -296,29 +307,47 @@ export default function AdminDashboard() {
     return matchesSearch && matchesTier && matchesStatus;
   });
 
-  // Real-time revenue data based on actual invoices
-  const getRevenueData = () => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const currentMonth = new Date().getMonth();
-    const revenueData = [];
-    
-    for (let i = 5; i >= 0; i--) {
-      const monthIndex = (currentMonth - i + 12) % 12;
-      const monthName = months[monthIndex];
-      
-      // Calculate revenue for this month (simplified - in real app, you'd query by date range)
-      const monthlyRevenue = Math.floor(Math.random() * 100000) + 50000; // Placeholder until we implement date-based queries
-      
-      revenueData.push({
-        month: monthName,
-        revenue: monthlyRevenue
-      });
-    }
-    
-    return revenueData;
-  };
+  // Real-time revenue data from actual invoices
+  const [revenueData, setRevenueData] = useState<Array<{month: string, revenue: number}>>([]);
 
-  const revenueData = getRevenueData();
+  const fetchRevenueData = async () => {
+    try {
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const currentMonth = new Date().getMonth();
+      const revenueData = [];
+      
+      for (let i = 5; i >= 0; i--) {
+        const monthIndex = (currentMonth - i + 12) % 12;
+        const monthName = months[monthIndex];
+        
+        // Calculate start and end of month
+        const year = new Date().getFullYear();
+        const startDate = new Date(year, monthIndex, 1);
+        const endDate = new Date(year, monthIndex + 1, 0);
+        
+        // Fetch invoices for this month
+        const { data: invoices, error } = await supabase
+          .from('invoices')
+          .select('amount, status')
+          .eq('status', 'paid')
+          .gte('created_at', startDate.toISOString())
+          .lte('created_at', endDate.toISOString());
+        
+        if (error) throw error;
+        
+        const monthlyRevenue = invoices?.reduce((sum, invoice) => sum + (invoice.amount || 0), 0) || 0;
+        
+        revenueData.push({
+          month: monthName,
+          revenue: monthlyRevenue
+        });
+      }
+      
+      setRevenueData(revenueData);
+    } catch (error) {
+      console.error('Error fetching revenue data:', error);
+    }
+  };
 
   const tierDistributionData = Object.entries(
     tenants.reduce((acc, tenant) => {
@@ -361,12 +390,6 @@ export default function AdminDashboard() {
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     Total Tenants
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                    <TrendingUpIcon sx={{ fontSize: 16, mr: 0.5 }} />
-                    <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                      +12.5%
-                    </Typography>
-                  </Box>
                 </Box>
                 <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 56, height: 56 }}>
                   <BusinessIcon sx={{ fontSize: 28 }} />
@@ -393,12 +416,6 @@ export default function AdminDashboard() {
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     Total Revenue
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                    <TrendingUpIcon sx={{ fontSize: 16, mr: 0.5 }} />
-                    <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                      +8.2%
-                    </Typography>
-                  </Box>
                 </Box>
                 <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 56, height: 56 }}>
                   <MoneyIcon sx={{ fontSize: 28 }} />
@@ -425,12 +442,6 @@ export default function AdminDashboard() {
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     Total Invoices
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                    <TrendingUpIcon sx={{ fontSize: 16, mr: 0.5 }} />
-                    <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                      +15.3%
-                    </Typography>
-                  </Box>
                 </Box>
                 <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 56, height: 56 }}>
                   <ReceiptIcon sx={{ fontSize: 28 }} />
@@ -457,12 +468,6 @@ export default function AdminDashboard() {
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
                     Total Users
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                    <TrendingDownIcon sx={{ fontSize: 16, mr: 0.5 }} />
-                    <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                      -2.1%
-                    </Typography>
-                  </Box>
                 </Box>
                 <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 56, height: 56 }}>
                   <PeopleIcon sx={{ fontSize: 28 }} />
@@ -805,8 +810,6 @@ export default function AdminDashboard() {
                     .from('tenants')
                     .update({
                       business_name: newTenant.business_name.trim(),
-                      subscription_tier: newTenant.subscription_tier,
-                      subscription_status: newTenant.subscription_status,
                     })
                     .eq('id', editTenant.id);
 
@@ -814,14 +817,12 @@ export default function AdminDashboard() {
                   
                   setSnackbar({ open: true, message: 'Tenant updated successfully', severity: 'success' });
                 } else {
-                  // Create new tenant
-                  const { error: insertError } = await supabase
-                    .from('tenants')
-                    .insert({
-                      business_name: newTenant.business_name.trim(),
-                      subscription_tier: newTenant.subscription_tier,
-                      subscription_status: newTenant.subscription_status,
-                    });
+                // Create new tenant
+                const { error: insertError } = await supabase
+                  .from('tenants')
+                  .insert({
+                    business_name: newTenant.business_name.trim(),
+                  });
 
                   if (insertError) throw insertError;
                   

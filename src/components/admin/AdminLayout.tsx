@@ -64,9 +64,10 @@ export default function AdminLayout({
             ml: { md: '280px' },
             width: { md: 'calc(100% - 280px)' },
             zIndex: theme.zIndex.drawer + 1,
+            height: '64px', // Fixed height
           }}
         >
-          <Toolbar>
+          <Toolbar sx={{ minHeight: '64px !important', height: '64px' }}>
             {isMobile && (
               <IconButton
                 color="inherit"
@@ -106,9 +107,10 @@ export default function AdminLayout({
         {/* Page Content */}
         <Box
           sx={{
-            pt: '80px', // Account for app bar height
+            pt: '80px', // Increased padding to account for fixed header
             px: { xs: 2, sm: 3, md: 4 },
             py: 3,
+            minHeight: 'calc(100vh - 80px)',
           }}
         >
           {children}

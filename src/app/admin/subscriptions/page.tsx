@@ -181,11 +181,9 @@ export default function AdminSubscriptions() {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          label="+12.5%" 
-                          color="success" 
-                          size="small" 
-                        />
+                        <Typography variant="body2" color="text.secondary">
+                          -
+                        </Typography>
                       </TableCell>
                       <TableCell align="center">
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
