@@ -322,7 +322,7 @@ export default function PricingPage() {
                         if (plan.name === 'Enterprise') {
                           router.push('/contact');
                         } else {
-                          router.push(`/signup?plan=${plan.name.toLowerCase()}&first_visit=true`);
+                          router.push(`/sme/signup?plan=${plan.name.toLowerCase()}&first_visit=true`);
                         }
                       }}
                       variant={plan.popular ? 'contained' : 'outlined'}
