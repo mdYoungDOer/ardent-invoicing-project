@@ -64,10 +64,13 @@ export default function AdminLayout({
             ml: { md: '280px' },
             width: { md: 'calc(100% - 280px)' },
             zIndex: theme.zIndex.drawer + 1,
-            height: '64px', // Fixed height
           }}
         >
-          <Toolbar sx={{ minHeight: '64px !important', height: '64px' }}>
+          <Toolbar sx={{ 
+            minHeight: '56px !important',
+            height: '56px',
+            px: { xs: 2, sm: 3 }
+          }}>
             {isMobile && (
               <IconButton
                 color="inherit"
@@ -81,12 +84,13 @@ export default function AdminLayout({
             )}
             
             <Typography 
-              variant="h4" 
+              variant="h5" 
               component="h1" 
               sx={{ 
                 fontWeight: 700,
                 color: 'text.primary',
                 flexGrow: 1,
+                fontSize: { xs: '1.5rem', sm: '1.75rem' }
               }}
             >
               {title}
@@ -107,10 +111,11 @@ export default function AdminLayout({
         {/* Page Content */}
         <Box
           sx={{
-            pt: '80px', // Increased padding to account for fixed header
+            pt: '72px', // Proper spacing for 56px toolbar + 16px margin
             px: { xs: 2, sm: 3, md: 4 },
             py: 3,
-            minHeight: 'calc(100vh - 80px)',
+            minHeight: 'calc(100vh - 72px)',
+            position: 'relative',
           }}
         >
           {children}

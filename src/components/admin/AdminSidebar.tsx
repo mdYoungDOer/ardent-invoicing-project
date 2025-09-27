@@ -110,13 +110,15 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
             src="/logo.png"
             alt="Ardent Invoicing"
             sx={{
-              width: 48,
-              height: 48,
-              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
+              height: 40, // Fixed height to maintain proportions
+              width: 'auto', // Let width adjust automatically
+              maxWidth: '100%',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
               transition: 'all 0.3s ease-in-out',
               '&:hover': {
-                transform: 'scale(1.05)',
-                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.2))',
+                transform: 'scale(1.02)',
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
               }
             }}
           />
