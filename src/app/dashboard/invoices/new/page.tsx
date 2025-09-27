@@ -32,6 +32,7 @@ import { createInvoice, createInvoiceLineItems, checkInvoiceQuota } from '@/lib/
 import { getExchangeRate } from '@/lib/exchange-rates';
 import { createInvoiceSchema, type CreateInvoiceData } from '@/lib/validations';
 import { getCurrencyFlag } from '@/lib/exchange-rates';
+import { supabase } from '@/lib/supabase';
 import SMELayout from '@/components/sme/SMELayout';
 
 const CURRENCIES = [
@@ -43,12 +44,23 @@ const CURRENCIES = [
   { value: 'AUD', label: '🇦🇺 Australian Dollar (AUD)' },
 ];
 
+interface Customer {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  company?: string;
+}
+
 export default function NewInvoicePage() {
   const router = useRouter();
   const { user, tenant, setLoading, setError, addInvoice } = useAppStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [exchangeRate, setExchangeRate] = useState<number | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState('GHS');
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   const {
     control,
@@ -93,6 +105,13 @@ export default function NewInvoicePage() {
   const discountAmount = watch('discount_amount') || 0;
   const total = subtotal + taxAmount - discountAmount;
 
+  // Load customers when component mounts
+  useEffect(() => {
+    if (tenant?.id) {
+      loadCustomers();
+    }
+  }, [tenant?.id]);
+
   // Fetch exchange rate when currency changes
   useEffect(() => {
     if (watchedCurrency !== 'GHS') {
@@ -102,6 +121,23 @@ export default function NewInvoicePage() {
     }
   }, [watchedCurrency]);
 
+  const loadCustomers = async () => {
+    if (!tenant?.id) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('tenant_id', tenant.id)
+        .order('name', { ascending: true });
+
+      if (error) throw error;
+      setCustomers(data || []);
+    } catch (error) {
+      console.error('Error loading customers:', error);
+    }
+  };
+
   const fetchExchangeRate = async () => {
     try {
       const rate = await getExchangeRate('GHS', watchedCurrency);
@@ -109,6 +145,17 @@ export default function NewInvoicePage() {
     } catch (error) {
       console.error('Failed to fetch exchange rate:', error);
       setExchangeRate(null);
+    }
+  };
+
+  const handleCustomerSelect = (customer: Customer | null) => {
+    setSelectedCustomer(customer);
+    if (customer) {
+      // Auto-fill form fields with customer data
+      setValue('client_name', customer.name);
+      setValue('client_email', customer.email || '');
+      setValue('client_phone', customer.phone || '');
+      setValue('client_address', customer.address || '');
     }
   };
 
@@ -235,6 +282,30 @@ export default function NewInvoicePage() {
                   <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                     Client Information
                   </Typography>
+                  
+                  {/* Customer Selection */}
+                  {customers.length > 0 && (
+                    <TextField
+                      fullWidth
+                      select
+                      label="Select Existing Customer (Optional)"
+                      value={selectedCustomer?.id || ''}
+                      onChange={(e) => {
+                        const customer = customers.find(c => c.id === e.target.value);
+                        handleCustomerSelect(customer || null);
+                      }}
+                      sx={{ mb: 2 }}
+                    >
+                      <MenuItem value="">
+                        <em>Create new customer</em>
+                      </MenuItem>
+                      {customers.map((customer) => (
+                        <MenuItem key={customer.id} value={customer.id}>
+                          {customer.name} {customer.company && `(${customer.company})`}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
                   
                   <Controller
                     name="client_name"
