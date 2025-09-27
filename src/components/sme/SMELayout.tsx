@@ -175,22 +175,24 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
   const drawer = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Logo */}
-      <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ p: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Box
           component="img"
           src="/logo.png"
           alt="Ardent Invoicing"
           sx={{
-            height: 40,
+            height: 48,
             width: 'auto',
             maxWidth: '100%',
             objectFit: 'contain',
-            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
+            filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
+            transition: 'all 0.3s ease-in-out',
+            '&:hover': {
+              transform: 'scale(1.05)',
+              filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.2))',
+            }
           }}
         />
-        <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-          Ardent
-        </Typography>
       </Box>
 
       <Divider />
