@@ -1,0 +1,176 @@
+# Supabase Configuration File
+# This file configures your Supabase project settings
+
+[project]
+# Your project reference ID from the Supabase dashboard
+project_id = "your-project-id"
+
+# The region where your Supabase project is hosted
+region = "us-east-1"
+
+# Database settings
+[database]
+# Enable database backups
+backups_enabled = true
+
+# Backup retention period in days
+backup_retention_days = 30
+
+# Enable connection pooling
+connection_pooling = true
+
+# Max connections per pool
+max_connections = 100
+
+# Edge Functions configuration
+[functions]
+# Enable Edge Functions
+enabled = true
+
+# Default timeout for functions (in seconds)
+timeout = 300
+
+# Memory limit for functions (in MB)
+memory_limit = 128
+
+# Environment variables for Edge Functions
+[functions.env]
+# These will be available to all Edge Functions
+NEXT_PUBLIC_APP_URL = "https://ardentinvoicing.com"
+NEXT_PUBLIC_EXCHANGE_RATE_API_KEY = "your-exchange-rate-api-key"
+
+# Storage configuration
+[storage]
+# Enable file storage
+enabled = true
+
+# Default bucket settings
+[buckets]
+# Receipts bucket
+receipts = { public = false, file_size_limit = 10485760, allowed_mime_types = ["image/jpeg", "image/png", "image/webp", "application/pdf"] }
+
+# Invoices bucket
+invoices = { public = false, file_size_limit = 10485760, allowed_mime_types = ["application/pdf"] }
+
+# Business logos bucket
+business-logos = { public = true, file_size_limit = 5242880, allowed_mime_types = ["image/jpeg", "image/png", "image/webp"] }
+
+# User avatars bucket
+user-avatars = { public = true, file_size_limit = 5242880, allowed_mime_types = ["image/jpeg", "image/png", "image/webp"] }
+
+# Documents bucket
+documents = { public = false, file_size_limit = 10485760, allowed_mime_types = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"] }
+
+# Exports bucket
+exports = { public = false, file_size_limit = 52428800, allowed_mime_types = ["application/pdf", "text/csv", "application/vnd.ms-excel"] }
+
+# Real-time configuration
+[realtime]
+# Enable real-time subscriptions
+enabled = true
+
+# Max connections per client
+max_connections = 100
+
+# Auth configuration
+[auth]
+# Enable authentication
+enabled = true
+
+# JWT expiry time (in seconds)
+jwt_expiry = 3600
+
+# Refresh token expiry time (in seconds)
+refresh_token_expiry = 604800
+
+# Enable email confirmations
+enable_email_confirmations = true
+
+# Enable phone confirmations
+enable_phone_confirmations = false
+
+# Email template settings
+[email_templates]
+# Custom email templates
+invite_user = "templates/invite_user.html"
+magic_link = "templates/magic_link.html"
+email_change = "templates/email_change.html"
+reset_password = "templates/reset_password.html"
+
+# API configuration
+[api]
+# Enable REST API
+rest_enabled = true
+
+# Enable GraphQL API
+graphql_enabled = false
+
+# API rate limiting
+rate_limit = 1000
+
+# Rate limit window (in seconds)
+rate_limit_window = 60
+
+# Monitoring and logging
+[monitoring]
+# Enable performance monitoring
+performance_monitoring = true
+
+# Enable error tracking
+error_tracking = true
+
+# Log retention period (in days)
+log_retention_days = 30
+
+# Alerting configuration
+[alerts]
+# Enable system alerts
+enabled = true
+
+# Email notifications for critical issues
+email_alerts = true
+
+# Slack webhook for alerts (optional)
+slack_webhook_url = ""
+
+# Alert thresholds
+[alerts.thresholds]
+# Database response time threshold (in ms)
+database_response_time = 5000
+
+# Error rate threshold (percentage)
+error_rate = 10
+
+# Storage usage threshold (percentage)
+storage_usage = 80
+
+# Cron jobs configuration
+[cron]
+# Enable cron jobs
+enabled = true
+
+# Jobs configuration
+[jobs]
+# Recurring invoice processing (daily at 6:00 AM GMT)
+recurring_invoices = { schedule = "0 6 * * *", function = "process-recurring-invoices" }
+
+# Payment reminders (daily at 9:00 AM GMT)
+payment_reminders = { schedule = "0 9 * * *", function = "send-payment-reminders" }
+
+# Subscription billing (daily at 2:00 AM GMT)
+subscription_billing = { schedule = "0 2 * * *", function = "process-subscription-billing" }
+
+# Analytics generation (daily at 1:00 AM GMT)
+analytics_generation = { schedule = "0 1 * * *", function = "generate-analytics" }
+
+# Exchange rate updates (daily at 5:00 AM GMT)
+exchange_rate_updates = { schedule = "0 5 * * *", function = "update-exchange-rates" }
+
+# Data cleanup (weekly on Sunday at 3:00 AM GMT)
+data_cleanup = { schedule = "0 3 * * 0", function = "cleanup-old-data" }
+
+# Backup management (daily at 11:00 PM GMT)
+backup_management = { schedule = "0 23 * * *", function = "manage-backups" }
+
+# System health monitoring (every 15 minutes)
+system_health = { schedule = "*/15 * * * *", function = "monitor-system-health" }
