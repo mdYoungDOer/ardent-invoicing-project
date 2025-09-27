@@ -99,19 +99,45 @@ export async function POST(request: NextRequest) {
     console.log('✅ Tenant created, ID:', tenantData.id);
 
     // Create user record with service role (bypasses RLS)
-    const { error: userError } = await supabaseAdmin
+    // Try with new fields first, fallback to essential fields only
+    let userRecord: any = {
+      id: authData.user.id,
+      email,
+      full_name: fullName,
+      role: 'sme',
+      tenant_id: tenantData.id,
+      subscription_tier: initialPlan,
+      invoice_quota_used: 0,
+      is_unlimited_free: false,
+      preferred_plan: preferredPlan || null,
+      subscription_status: 'trial',
+      trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
+    };
+
+    let { error: userError } = await supabaseAdmin
       .from('users')
-      .insert({
+      .insert(userRecord);
+
+    // If the insert fails due to missing columns, try with essential fields only
+    if (userError && userError.message.includes('column') && userError.message.includes('does not exist')) {
+      console.warn('⚠️ New columns not found, falling back to essential fields only');
+      userRecord = {
         id: authData.user.id,
         email,
         full_name: fullName,
         role: 'sme',
         tenant_id: tenantData.id,
         subscription_tier: initialPlan,
-        preferred_plan: preferredPlan || null, // Store preferred plan for later upgrade
-        subscription_status: 'trial',
-        trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() // 14-day trial
-      });
+        invoice_quota_used: 0,
+        is_unlimited_free: false
+      };
+
+      const { error: fallbackError } = await supabaseAdmin
+        .from('users')
+        .insert(userRecord);
+      
+      userError = fallbackError;
+    }
 
     if (userError) {
       console.error('❌ User creation error:', userError);
