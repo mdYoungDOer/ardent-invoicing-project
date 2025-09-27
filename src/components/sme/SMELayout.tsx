@@ -44,6 +44,7 @@ import {
   Diamond as DiamondIcon,
   ExpandLess as ExpandLessIcon,
   ExpandMore as ExpandMoreIcon,
+  Add as AddIcon,
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -378,12 +379,15 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
           ml: { md: `${DRAWER_WIDTH}px` },
           bgcolor: 'background.paper',
           color: 'text.primary',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
           borderBottom: '1px solid',
-          borderColor: 'divider',
+          borderColor: 'grey.200',
+          backdropFilter: 'blur(8px)',
+          zIndex: theme.zIndex.appBar,
         }}
       >
-        <Toolbar sx={{ minHeight: '64px !important' }}>
+        <Toolbar sx={{ minHeight: '72px !important', px: 3 }}>
+          {/* Mobile Menu Button */}
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -394,51 +398,139 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
             <MenuIcon />
           </IconButton>
 
+          {/* Page Title */}
+          <Typography variant="h6" sx={{ 
+            fontWeight: 700, 
+            color: 'text.primary',
+            mr: 3,
+            display: { xs: 'none', sm: 'block' }
+          }}>
+            {title}
+          </Typography>
+
           {/* Search Bar */}
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'center', 
             bgcolor: 'grey.50', 
-            borderRadius: 2, 
-            px: 2, 
-            py: 1,
+            borderRadius: 3, 
+            px: 3, 
+            py: 1.5,
             flexGrow: 1,
-            maxWidth: 400,
-            mr: 2
+            maxWidth: 500,
+            mr: 3,
+            border: '1px solid',
+            borderColor: 'grey.200',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              borderColor: 'grey.300',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            },
+            '&:focus-within': {
+              borderColor: 'primary.main',
+              boxShadow: '0 0 0 3px rgba(166, 124, 0, 0.1)',
+            }
           }}>
-            <SearchIcon sx={{ color: 'text.secondary', mr: 1, fontSize: 20 }} />
+            <SearchIcon sx={{ color: 'text.secondary', mr: 1.5, fontSize: 20 }} />
             <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }}>
-              Q Search
+              Search invoices, customers, expenses...
             </Typography>
             <Box sx={{ 
-              bgcolor: 'grey.200', 
-              borderRadius: 1, 
-              px: 1, 
+              bgcolor: 'grey.100', 
+              borderRadius: 1.5, 
+              px: 1.5, 
               py: 0.5,
               display: 'flex',
               alignItems: 'center',
-              gap: 0.5
+              gap: 0.5,
+              border: '1px solid',
+              borderColor: 'grey.200'
             }}>
-              <KeyboardIcon sx={{ fontSize: 12 }} />
-              <Typography variant="caption" sx={{ fontSize: '0.625rem' }}>
-                ⌘ + F
+              <KeyboardIcon sx={{ fontSize: 14, color: 'text.secondary' }} />
+              <Typography variant="caption" sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'text.secondary' }}>
+                ⌘K
               </Typography>
             </Box>
           </Box>
 
-          {/* Right side icons */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton color="inherit">
-              <NotificationsIcon />
+          {/* Right side actions */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            {/* Notifications */}
+            <IconButton 
+              color="inherit"
+              sx={{
+                position: 'relative',
+                '&:hover': {
+                  bgcolor: 'grey.100',
+                }
+              }}
+            >
+              <Badge badgeContent={3} color="error" sx={{
+                '& .MuiBadge-badge': {
+                  fontSize: '0.75rem',
+                  height: 18,
+                  minWidth: 18,
+                }
+              }}>
+                <NotificationsIcon sx={{ fontSize: 22 }} />
+              </Badge>
             </IconButton>
-            <IconButton color="inherit">
-              <AccountCircleIcon />
-            </IconButton>
-            <IconButton color="inherit" onClick={handleProfileMenuOpen}>
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
-                {user?.email?.charAt(0).toUpperCase() || 'U'}
-              </Avatar>
-            </IconButton>
+
+            {/* Quick Actions */}
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<AddIcon />}
+              sx={{
+                borderColor: 'grey.300',
+                color: 'text.primary',
+                textTransform: 'none',
+                fontWeight: 500,
+                px: 2,
+                '&:hover': {
+                  borderColor: 'primary.main',
+                  bgcolor: 'primary.50',
+                }
+              }}
+            >
+              Quick Add
+            </Button>
+
+            {/* User Profile */}
+            <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
+              <Box sx={{ textAlign: 'right', mr: 2, display: { xs: 'none', sm: 'block' } }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                  {user?.email?.split('@')[0] || 'User'}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  {tenant?.business_name || 'Business'}
+                </Typography>
+              </Box>
+              <IconButton 
+                onClick={handleProfileMenuOpen}
+                sx={{
+                  border: '2px solid',
+                  borderColor: 'grey.200',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    transform: 'scale(1.05)',
+                  },
+                  transition: 'all 0.2s ease-in-out',
+                }}
+              >
+                <Avatar sx={{ 
+                  width: 36, 
+                  height: 36, 
+                  bgcolor: 'primary.main',
+                  fontWeight: 600,
+                  fontSize: '1rem'
+                }}>
+                  {user?.email?.charAt(0).toUpperCase() || 'U'}
+                </Avatar>
+              </IconButton>
+            </Box>
+
+            {/* Profile Menu */}
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
@@ -451,14 +543,35 @@ export default function SMELayout({ children, title }: SMELayoutProps) {
                 vertical: 'top',
                 horizontal: 'right',
               }}
+              PaperProps={{
+                sx: {
+                  mt: 1,
+                  minWidth: 200,
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                  border: '1px solid',
+                  borderColor: 'grey.200',
+                  borderRadius: 2,
+                }
+              }}
             >
-              <MenuItem onClick={handleProfileMenuClose}>
-                <AccountCircleIcon sx={{ mr: 1 }} />
-                Profile
+              <MenuItem onClick={handleProfileMenuClose} sx={{ py: 1.5 }}>
+                <AccountCircleIcon sx={{ mr: 2, color: 'text.secondary' }} />
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  Profile Settings
+                </Typography>
               </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <LogoutIcon sx={{ mr: 1 }} />
-                Logout
+              <MenuItem onClick={handleProfileMenuClose} sx={{ py: 1.5 }}>
+                <SettingsIcon sx={{ mr: 2, color: 'text.secondary' }} />
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  Preferences
+                </Typography>
+              </MenuItem>
+              <Divider />
+              <MenuItem onClick={handleLogout} sx={{ py: 1.5, color: 'error.main' }}>
+                <LogoutIcon sx={{ mr: 2 }} />
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  Sign Out
+                </Typography>
               </MenuItem>
             </Menu>
           </Box>
