@@ -56,6 +56,19 @@ export default function AdminProfile() {
 
   return (
     <AdminLayout title="Profile" user={user}>
+      {/* Page Title */}
+      <Typography 
+        variant="h4" 
+        component="h1" 
+        sx={{ 
+          fontWeight: 700,
+          color: 'text.primary',
+          mb: 4,
+        }}
+      >
+        Profile
+      </Typography>
+
       <Grid container spacing={3}>
         {/* Profile Information */}
         <Grid size={{ xs: 12, md: 4 }}>

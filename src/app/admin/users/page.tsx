@@ -110,6 +110,19 @@ export default function AdminUsers() {
 
   return (
     <AdminLayout title="Users" user={user}>
+      {/* Page Title */}
+      <Typography 
+        variant="h4" 
+        component="h1" 
+        sx={{ 
+          fontWeight: 700,
+          color: 'text.primary',
+          mb: 4,
+        }}
+      >
+        Users
+      </Typography>
+
       {/* User Stats */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>

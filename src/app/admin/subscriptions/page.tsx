@@ -76,6 +76,19 @@ export default function AdminSubscriptions() {
 
   return (
     <AdminLayout title="Subscriptions" user={user}>
+      {/* Page Title */}
+      <Typography 
+        variant="h4" 
+        component="h1" 
+        sx={{ 
+          fontWeight: 700,
+          color: 'text.primary',
+          mb: 4,
+        }}
+      >
+        Subscriptions
+      </Typography>
+
       <Grid container spacing={3}>
         {/* Subscription Plans */}
         {SUBSCRIPTION_PLANS.map((plan) => (

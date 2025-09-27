@@ -66,6 +66,19 @@ export default function AdminSettings() {
 
   return (
     <AdminLayout title="Settings" user={user}>
+      {/* Page Title */}
+      <Typography 
+        variant="h4" 
+        component="h1" 
+        sx={{ 
+          fontWeight: 700,
+          color: 'text.primary',
+          mb: 4,
+        }}
+      >
+        Settings
+      </Typography>
+
       <Grid container spacing={3}>
         {/* General Settings */}
         <Grid size={{ xs: 12, md: 6 }}>

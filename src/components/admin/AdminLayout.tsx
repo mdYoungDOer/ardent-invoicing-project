@@ -3,16 +3,7 @@
 import React from 'react';
 import {
   Box,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
-import {
-  Menu as MenuIcon,
-} from '@mui/icons-material';
 import AdminSidebar from './AdminSidebar';
 
 interface AdminLayoutProps {
@@ -23,19 +14,13 @@ interface AdminLayoutProps {
     email: string;
     role: string;
   };
-  onMenuClick?: () => void;
-  mobileOpen?: boolean;
 }
 
 export default function AdminLayout({ 
   children, 
   title, 
-  user, 
-  onMenuClick, 
-  mobileOpen 
+  user
 }: AdminLayoutProps) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -52,69 +37,12 @@ export default function AdminLayout({
           ml: { md: '280px' }, // Account for sidebar width
         }}
       >
-        {/* Top App Bar */}
-        <AppBar
-          position="fixed"
-          sx={{
-            bgcolor: 'background.paper',
-            color: 'text.primary',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            ml: { md: '280px' },
-            width: { md: 'calc(100% - 280px)' },
-            zIndex: theme.zIndex.drawer + 1,
-          }}
-        >
-          <Toolbar sx={{ 
-            minHeight: '56px !important',
-            height: '56px',
-            px: { xs: 2, sm: 3 }
-          }}>
-            {isMobile && (
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={onMenuClick}
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
-            
-            <Typography 
-              variant="h5" 
-              component="h1" 
-              sx={{ 
-                fontWeight: 700,
-                color: 'text.primary',
-                flexGrow: 1,
-                fontSize: { xs: '1.5rem', sm: '1.75rem' }
-              }}
-            >
-              {title}
-            </Typography>
-
-            {/* Time period selector placeholder */}
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              color: 'text.secondary',
-              fontSize: '0.875rem',
-            }}>
-              Time period:
-            </Box>
-          </Toolbar>
-        </AppBar>
-
         {/* Page Content */}
         <Box
           sx={{
-            pt: '72px', // Proper spacing for 56px toolbar + 16px margin
             px: { xs: 2, sm: 3, md: 4 },
             py: 3,
-            minHeight: 'calc(100vh - 72px)',
+            minHeight: '100vh',
             position: 'relative',
           }}
         >

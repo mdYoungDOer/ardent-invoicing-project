@@ -129,6 +129,19 @@ export default function AdminTenants() {
 
   return (
     <AdminLayout title="Tenants" user={user}>
+      {/* Page Title */}
+      <Typography 
+        variant="h4" 
+        component="h1" 
+        sx={{ 
+          fontWeight: 700,
+          color: 'text.primary',
+          mb: 4,
+        }}
+      >
+        Tenants
+      </Typography>
+
       <Card>
         <CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
