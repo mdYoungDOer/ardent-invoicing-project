@@ -22,14 +22,15 @@ import {
   Business as BusinessIcon
 } from '@mui/icons-material';
 import { useTheme as useNextTheme } from 'next-themes';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
-export default function SmeSignup() {
+function SmeSignupContent() {
   const { theme: nextTheme, setTheme } = useNextTheme();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -268,5 +269,17 @@ export default function SmeSignup() {
         </Container>
       </Box>
     </Box>
+  );
+}
+
+export default function SmeSignup() {
+  return (
+    <Suspense fallback={
+      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    }>
+      <SmeSignupContent />
+    </Suspense>
   );
 }
