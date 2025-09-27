@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import {
   Box,
   Typography,
@@ -404,7 +405,12 @@ export default function AdminDashboard() {
   return (
     <AdminLayout title="Dashboard" user={user}>
       {/* Page Title */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Typography 
             variant="h4" 
             component="h1" 
@@ -443,8 +449,13 @@ export default function AdminDashboard() {
         </Box>
 
       {/* Key Metrics Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card sx={{ 
             height: '100%',
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -554,6 +565,7 @@ export default function AdminDashboard() {
           </Card>
         </Grid>
       </Grid>
+      </motion.div>
 
       {/* Charts Section */}
       <Grid container spacing={3} sx={{ mb: 4 }}>

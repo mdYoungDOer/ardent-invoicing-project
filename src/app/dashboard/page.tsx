@@ -1,35 +1,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Box, Typography, Alert } from '@mui/material';
 import { useAppStore } from '@/lib/store';
 import { supabase } from '@/lib/supabase';
 import SMELayout from '@/components/sme/SMELayout';
 import DashboardContent from '@/components/sme/DashboardContent';
+import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
+import GuidedTour, { dashboardTourSteps } from '@/components/onboarding/GuidedTour';
 
 export const dynamic = 'force-dynamic';
 
-interface User {
-  id: string;
-  email: string;
-  role: string;
-  tenant_id: string;
-  subscription_tier: string;
-  invoice_quota_used: number;
-  is_unlimited_free?: boolean;
-}
-
-interface Tenant {
-  id: string;
-  business_name: string;
-}
 
 export default function Dashboard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, tenant } = useAppStore();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -77,7 +68,7 @@ export default function Dashboard() {
             } else {
               console.log('⚠️ NUCLEAR: Stored data too old, falling back to session');
             }
-          } catch (parseError) {
+          } catch {
             console.log('⚠️ NUCLEAR: Failed to parse stored data, falling back to session');
           }
         }
@@ -124,6 +115,20 @@ export default function Dashboard() {
           useAppStore.getState().setTenant(tenantData);
         }
 
+        // Check if onboarding is needed
+        if (userData && tenantData) {
+          const needsOnboarding = !tenantData.onboarding_completed;
+          const isFirstVisit = searchParams.get('first_visit') === 'true';
+          const fromOnboarding = searchParams.get('onboarding') === 'true';
+          
+          if (needsOnboarding || isFirstVisit) {
+            setShowOnboarding(true);
+          } else if (fromOnboarding) {
+            // Show tour after onboarding completion
+            setTimeout(() => setShowTour(true), 1000);
+          }
+        }
+
       } catch (error: unknown) {
         setError(error instanceof Error ? error.message : 'Failed to load user data');
       } finally {
@@ -132,7 +137,7 @@ export default function Dashboard() {
     };
 
     fetchUserData();
-  }, [router]);
+  }, [router, searchParams]);
 
   if (loading) {
     return (
@@ -154,9 +159,39 @@ export default function Dashboard() {
     );
   }
 
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    // Redirect to create first invoice
+    router.push('/dashboard/invoices/new?onboarding=true');
+  };
+
+  const handleTourComplete = () => {
+    setShowTour(false);
+  };
+
   return (
-    <SMELayout title="Dashboard">
-      <DashboardContent />
-    </SMELayout>
+    <>
+      <SMELayout title="Dashboard">
+        <DashboardContent />
+      </SMELayout>
+
+      {/* Onboarding Wizard */}
+      <OnboardingWizard
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        onComplete={handleOnboardingComplete}
+        user={user}
+        tenant={tenant}
+      />
+
+      {/* Guided Tour */}
+      <GuidedTour
+        isOpen={showTour}
+        onClose={() => setShowTour(false)}
+        onComplete={handleTourComplete}
+        steps={dashboardTourSteps}
+        context="dashboard"
+      />
+    </>
   );
 }

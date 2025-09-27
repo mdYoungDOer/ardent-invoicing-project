@@ -32,10 +32,13 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
 export default function PricingPage() {
+  const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mounted, setMounted] = useState(false);
@@ -315,13 +318,28 @@ export default function PricingPage() {
                     </List>
 
                     <Button 
-                      component={Link} 
-                      href={plan.name === 'Enterprise' ? '/contact' : '/sme/signup'}
+                      onClick={() => {
+                        if (plan.name === 'Enterprise') {
+                          router.push('/contact');
+                        } else {
+                          router.push(`/signup?plan=${plan.name.toLowerCase()}&first_visit=true`);
+                        }
+                      }}
                       variant={plan.popular ? 'contained' : 'outlined'}
                       fullWidth
                       size="large"
                       sx={{ 
                         mt: 'auto',
+                        fontWeight: 600,
+                        textTransform: 'none',
+                        borderRadius: 2,
+                        py: 1.5,
+                        boxShadow: plan.popular ? 4 : 2,
+                        '&:hover': {
+                          boxShadow: 8,
+                          transform: 'translateY(-2px)',
+                          transition: 'all 0.3s ease'
+                        },
                         ...(plan.popular && {
                           bgcolor: 'primary.main',
                           '&:hover': { bgcolor: 'primary.dark' }

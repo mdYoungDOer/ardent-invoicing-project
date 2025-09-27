@@ -28,6 +28,7 @@ import {
 } from '@mui/icons-material';
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppStore } from '@/lib/store';
@@ -250,7 +251,12 @@ export default function NewExpensePage() {
     <SMELayout title="Add New Expense">
       <Box sx={{ p: 4 }}>
         {/* Header Actions */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <IconButton onClick={() => router.back()}>
               <ArrowBackIcon />

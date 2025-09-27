@@ -23,8 +23,8 @@ import {
   Send as SendIcon,
   Schedule as ScheduleIcon
 } from '@mui/icons-material';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppStore } from '@/lib/store';
@@ -34,6 +34,8 @@ import { createInvoiceSchema, type CreateInvoiceData } from '@/lib/validations';
 import { getCurrencyFlag } from '@/lib/exchange-rates';
 import { supabase } from '@/lib/supabase';
 import SMELayout from '@/components/sme/SMELayout';
+import GuidedTour, { invoiceTourSteps } from '@/components/onboarding/GuidedTour';
+import { motion } from 'framer-motion';
 
 const CURRENCIES = [
   { value: 'GHS', label: '🇬🇭 Ghana Cedis (GHS)', default: true },
@@ -53,14 +55,16 @@ interface Customer {
   company?: string;
 }
 
-export default function NewInvoicePage() {
+function NewInvoicePageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, tenant, setLoading, setError, addInvoice } = useAppStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [exchangeRate, setExchangeRate] = useState<number | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState('GHS');
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [showTour, setShowTour] = useState(false);
 
   const {
     control,
@@ -104,6 +108,14 @@ export default function NewInvoicePage() {
   const taxAmount = (subtotal * (watch('tax_rate') || 0)) / 100;
   const discountAmount = watch('discount_amount') || 0;
   const total = subtotal + taxAmount - discountAmount;
+
+  // Initialize guided tour if coming from onboarding
+  useEffect(() => {
+    const fromOnboarding = searchParams.get('onboarding') === 'true';
+    if (fromOnboarding) {
+      setTimeout(() => setShowTour(true), 1000);
+    }
+  }, [searchParams]);
 
   // Load customers when component mounts
   useEffect(() => {
@@ -276,12 +288,13 @@ export default function NewInvoicePage() {
               startIcon={<SendIcon />}
               onClick={handleSubmit((data) => onSubmit({ ...data, status: 'sent' as any }))}
               disabled={isSubmitting}
+              data-tour="save-send"
             >
               {isSubmitting ? <CircularProgress size={20} /> : 'Send Invoice'}
             </Button>
           </Box>
         </Box>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} data-tour="invoice-form">
           <Grid container spacing={4}>
             {/* Client Information */}
             <Grid item xs={12} md={6}>
@@ -656,6 +669,23 @@ export default function NewInvoicePage() {
           </Grid>
         </form>
       </Box>
+
+      {/* Guided Tour */}
+      <GuidedTour
+        isOpen={showTour}
+        onClose={() => setShowTour(false)}
+        onComplete={() => setShowTour(false)}
+        steps={invoiceTourSteps}
+        context="invoice"
+      />
     </SMELayout>
+  );
+}
+
+export default function NewInvoicePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewInvoicePageContent />
+    </Suspense>
   );
 }

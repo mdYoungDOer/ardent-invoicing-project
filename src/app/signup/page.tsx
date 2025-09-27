@@ -24,8 +24,8 @@ import {
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import { useTheme as useNextTheme } from 'next-themes';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
@@ -55,13 +55,15 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-export default function Signup() {
+function SignupContent() {
   const { theme: nextTheme, setTheme } = useNextTheme();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [selectedPlan, setSelectedPlan] = useState('free');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -69,6 +71,19 @@ export default function Signup() {
     businessName: '',
     fullName: ''
   });
+
+  // Handle plan parameter from pricing page
+  useEffect(() => {
+    const plan = searchParams.get('plan');
+    
+    if (plan) {
+      setSelectedPlan(plan);
+      // Auto-focus on SME signup if coming from pricing
+      if (plan !== 'enterprise') {
+        setTabValue(1);
+      }
+    }
+  }, [searchParams]);
 
   const toggleTheme = () => {
     setTheme(nextTheme === 'dark' ? 'light' : 'dark');
@@ -149,13 +164,13 @@ export default function Signup() {
 
       setSuccess('Account created successfully! Please check your email to verify your account.');
       
-      // Redirect to login after 3 seconds
+      // Redirect to dashboard with onboarding parameters
       setTimeout(() => {
-        router.push('/login');
+        router.push(`/dashboard?first_visit=true&plan=${selectedPlan}`);
       }, 3000);
 
-    } catch (error: any) {
-      setError(error.message || 'An error occurred during signup');
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred during signup');
     } finally {
       setLoading(false);
     }
@@ -214,8 +229,8 @@ export default function Signup() {
         router.push('/login');
       }, 3000);
 
-    } catch (error: any) {
-      setError(error.message || 'An error occurred during signup');
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred during signup');
     } finally {
       setLoading(false);
     }
@@ -433,5 +448,13 @@ export default function Signup() {
         </Container>
       </Box>
     </Box>
+  );
+}
+
+export default function Signup() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignupContent />
+    </Suspense>
   );
 }

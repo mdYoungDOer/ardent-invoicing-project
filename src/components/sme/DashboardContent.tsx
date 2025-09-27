@@ -40,6 +40,8 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { formatCurrency } from '@/lib/exchange-rates';
 import { getInvoiceStats, getExpenseStats, fetchInvoices, fetchExpenses } from '@/lib/supabase-queries';
+import EmptyState from '@/components/ui/EmptyState';
+import { motion } from 'framer-motion';
 
 interface DashboardStats {
   totalRevenue: number;
@@ -315,10 +317,15 @@ export default function DashboardContent() {
   return (
     <Box sx={{ p: 4 }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700 }}>
-          Dashboard
-        </Typography>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }} data-tour="dashboard-header">
+          <Typography variant="h4" sx={{ fontWeight: 700 }}>
+            Dashboard
+          </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <FormControl size="small" sx={{ minWidth: 120 }}>
             <Select
@@ -347,11 +354,47 @@ export default function DashboardContent() {
         </Box>
       </Box>
 
+      {/* Quick Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.05 }}
+      >
+        <Box sx={{ mb: 3 }} data-tour="create-invoice">
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<AssessmentIcon />}
+            onClick={() => router.push('/dashboard/invoices/new')}
+            sx={{
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 600,
+              boxShadow: 4,
+              '&:hover': {
+                boxShadow: 8,
+                transform: 'translateY(-2px)',
+                transition: 'all 0.3s ease'
+              }
+            }}
+          >
+            Create New Invoice
+          </Button>
+        </Box>
+      </motion.div>
+
       {/* KPI Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <Grid container spacing={3} sx={{ mb: 4 }} data-tour="quick-stats">
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box>
                   <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
@@ -635,7 +678,7 @@ export default function DashboardContent() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }} data-tour="recent-activity">
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   Recent Activity
                 </Typography>
@@ -694,6 +737,7 @@ export default function DashboardContent() {
           </Card>
         </Grid>
       </Grid>
+      </motion.div>
     </Box>
   );
 }
