@@ -32,12 +32,12 @@ export const updateInvoiceSchema = createInvoiceSchema.partial().extend({
 // Expense validation schemas
 export const createExpenseSchema = z.object({
   description: z.string().min(1, 'Description is required'),
-  amount: z.number().min(0.01, 'Amount must be greater than 0'),
+  amount: z.coerce.number().min(0.01, 'Amount must be greater than 0'),
   currency: z.enum(['GHS', 'USD', 'GBP', 'EUR', 'CAD', 'AUD']),
   category: z.string().min(1, 'Category is required'),
   expense_date: z.string().min(1, 'Expense date is required'),
   location: z.string().optional(),
-  mileage_distance: z.number().min(0).optional(),
+  mileage_distance: z.coerce.number().min(0).optional().or(z.undefined()),
   tags: z.array(z.string()).optional(),
   is_business: z.boolean().default(true),
 });

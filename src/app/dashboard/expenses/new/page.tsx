@@ -383,6 +383,11 @@ export default function NewExpensePage() {
                             fullWidth
                             label="Amount *"
                             type="number"
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(value === '' ? 0 : parseFloat(value) || 0);
+                            }}
                             InputProps={{
                               startAdornment: getCurrencyFlag(watch('currency')) + ' ',
                             }}
@@ -518,6 +523,11 @@ export default function NewExpensePage() {
                           fullWidth
                           label="Mileage (km)"
                           type="number"
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(value === '' ? undefined : parseFloat(value) || undefined);
+                          }}
                           error={!!errors.mileage_distance}
                           helperText={errors.mileage_distance?.message}
                         />
