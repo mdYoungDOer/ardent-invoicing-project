@@ -99,29 +99,45 @@ export async function POST(request: NextRequest) {
     console.log('✅ Tenant created, ID:', tenantData.id);
 
     // Create user record with service role (bypasses RLS)
+    // Only insert fields that actually exist in the users table
+    const userRecord: any = {
+      id: authData.user.id,
+      email,
+      role: 'sme',
+      tenant_id: tenantData.id,
+      subscription_tier: initialPlan,
+      invoice_quota_used: 0,
+      is_unlimited_free: false
+    };
+
+    // Add optional fields if they exist
+    if (preferredPlan) {
+      userRecord.preferred_plan = preferredPlan;
+    }
+    userRecord.subscription_status = 'trial';
+    userRecord.trial_ends_at = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+
+    // Store full_name in user metadata instead of separate column
     const { error: userError } = await supabaseAdmin
       .from('users')
-      .insert({
-        id: authData.user.id,
-        email,
-        full_name: fullName,
-        role: 'sme',
-        tenant_id: tenantData.id,
-        subscription_tier: initialPlan,
-        invoice_quota_used: 0,
-        is_unlimited_free: false,
-        preferred_plan: preferredPlan || null,
-        subscription_status: 'trial',
-        trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString()
-      });
+      .insert(userRecord);
 
     if (userError) {
       console.error('❌ User creation error:', userError);
+      console.error('❌ User record attempted:', JSON.stringify(userRecord, null, 2));
+      console.error('❌ Auth user ID:', authData.user.id);
+      console.error('❌ Tenant ID:', tenantData.id);
+      
       // Clean up created records
       await supabaseAdmin.from('tenants').delete().eq('id', tenantData.id);
       await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      
       return NextResponse.json(
-        { error: 'Failed to create user profile' },
+        { 
+          error: 'Failed to create user profile',
+          details: userError.message,
+          code: userError.code
+        },
         { status: 500 }
       );
     }
